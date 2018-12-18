@@ -68,8 +68,8 @@ public class Strategy {
                   (game.gameMap.haliteOnMap < Magic.END_GAME_HALITE  * game.gameMap.width * game.gameMap.height && ship.halite > Magic.END_GAME_DELIVER_HALITE)) {
             g = new DropoffGoal(plan.me, false);
         }
-        else if (game.gameMap.at(ship).halite < Magic.getCollectDownTo(game.gameMap) || (game.gameMap.at(ship).hasStructure() && game.gameMap.at(ship).structure.owner == plan.me)) {
-            g = new TerrainGoal(10, Magic.getCollectDownTo(game.gameMap), ship);
+        else if (ship.halite >= game.gameMap.at(ship).moveCost() && (game.gameMap.at(ship).halite < Magic.getCollectDownTo(game.gameMap) || (game.gameMap.at(ship).hasStructure() && game.gameMap.at(ship).structure.owner == plan.me))) {
+            g = new TerrainGoal(10, Magic.SEARCH_DEPTH);
         }
 
         // *** pathfind based on goal ***

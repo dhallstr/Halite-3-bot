@@ -29,6 +29,8 @@ public class Magic {
     public static int START_DELIVER_HALITE;
     public static int END_GAME_DELIVER_HALITE, END_GAME_HALITE = 35;
 
+    public static int SEARCH_DEPTH;
+
 
     public static ArrayList<int[]> INSPIRE_OFFSET;
 
@@ -52,6 +54,7 @@ public class Magic {
     public static void updateConstants(boolean isTwoPlayer, int width, int height) {
         int size = (width + height) / 2; // in case it is a rectangle
         END_GAME_HALITE += (int)((size - 32) / 32.0 * (45 - END_GAME_HALITE));
+        SEARCH_DEPTH = 20 + (size - 32) / 3;
         if (isTwoPlayer) {
             MAX_DROPOFFS = (int)(size / 11);
         }

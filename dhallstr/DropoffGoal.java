@@ -6,8 +6,6 @@ public class DropoffGoal extends Goal {
     PlayerId id;
     boolean crashOkay;
 
-    Goal simple = null;
-
     public DropoffGoal(PlayerId me, boolean crashOkay) {
         id = me;
         this.crashOkay = crashOkay;
@@ -19,19 +17,6 @@ public class DropoffGoal extends Goal {
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
         return cell.hasStructure() && cell.structure.owner.equals(id) ? 300 - cell.cost - 5 * cell.actualDist : -10001;
     }
-
-    @Override
-    public int getAutoAccept() {
-        return crashOkay ? 100 : 10000;
-    }
-
-    @Override
-    public int getMinScore() {
-        return -10000;
-    }
-
-    @Override
-    public boolean waitAfterNavigate() { return false;}
 
     @Override
     public int getNumberStays(Ship s, MapCell cell, PlannedLocations plan, GameMap map) {
@@ -52,20 +37,11 @@ public class DropoffGoal extends Goal {
         return cell.structure != null && cell.structure.owner.equals(id);
     }
 
-    public int getTurns() {
+    public int getMaxTurns() {
         return Constants.MAX_TURNS;
     }
 
-    public Goal getSimpleGoal() {
-        return simple;
-    }
-    public Goal setSimpleGoal(Goal g){simple = g; return this;}
-
     public Intent getIntent() {
         return crashOkay ? Intent.CRASH_HOME : Intent.DROPOFF;
-    }
-
-    public Direction[] orderDirections(GameMap map, MapCell cell) {
-        return order(map, cell, false);
     }
 }

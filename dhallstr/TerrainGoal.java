@@ -4,35 +4,19 @@ import hlt.*;
 
 public class TerrainGoal extends Goal {
 
-    PlayerId me;
-    int myHalite;
+    //PlayerId me;
     int neededHalite;
     int turns;
 
-    Goal simple;
-
-    public int getTurns() {
+    public int getMaxTurns() {
         return turns;
     }
 
-    public Goal getSimpleGoal() {
-        return simple;
-    }
-
-    public Goal setSimpleGoal(Goal g) {
-        simple = g;
-        return this;
-    }
-
-    public TerrainGoal(int halite, int turns, Ship me) {
+    public TerrainGoal(int halite, int turns) {
         neededHalite = halite;
         this.turns = turns;
-        this.me = me.owner;
-        myHalite = me.halite;
-        simple = null;
+        //this.me = me.owner;
     }
-
-    public boolean overrideUnsafe(MapCell cell) { return false; }
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
@@ -42,7 +26,7 @@ public class TerrainGoal extends Goal {
         }
 
         int turns = cell.actualDist + getNumberStays(s, cell, plan, game.gameMap) + game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell.position);
-        return (totalHalite - s.halite) / turns;
+        return (totalHalite - s.halite) / (turns == 0 ? 1 : turns);
     }
 
     @Override
@@ -59,25 +43,11 @@ public class TerrainGoal extends Goal {
         return turnsStayed;
     }
 
-    @Override
-    public int getAutoAccept() {
-        return Integer.MAX_VALUE;
-    }
-
-    @Override
-    public int getMinScore() {
-        return Integer.MIN_VALUE;
-    }
-
     public Intent getIntent() {
         return Intent.GATHER;
     }
 
     public boolean meetsGoal(MapCell cell) {
         return (cell.halite >= neededHalite);
-    }
-
-    public Direction[] orderDirections(GameMap map, MapCell cell) {
-        return order(map, cell, true);
     }
 }
