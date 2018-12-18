@@ -36,14 +36,14 @@ public class DropoffGoal extends Goal {
     @Override
     public int getNumberStays(Ship s, MapCell cell, PlannedLocations plan, GameMap map) {
         if (crashOkay) return 0;
-        double halite = plan.getProjectedHalite(map, cell.position, cell.dist);
+        int halite = plan.getProjectedHalite(map, cell.position, cell.dist);
         int myHalite = s.halite - cell.cost;
         int turnsStayed;
         for (turnsStayed = 0; ; turnsStayed++) {
-            int mined = Math.min(cell.collectAmount(), Constants.MAX_HALITE - myHalite);
+            int mined = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
             halite -= mined;
             myHalite += mined;
-            if (mined < Magic.MIN_BACK_TO_DROPOFF_WAIT_HALITE) break;
+            if (mined < Magic.getCollectDownTo(map)) break;
         }
         return turnsStayed;
     }

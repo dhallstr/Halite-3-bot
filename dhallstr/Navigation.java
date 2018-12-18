@@ -46,7 +46,7 @@ public class Navigation {
                     halite -= mined;
                 }
             }
-            if (curr.actualDist == prevDist && s.halite - curr.cost < curr.moveCost(plan.getProjectedHalite(map, curr.position, curr.dist))) {
+            if (curr.actualDist == prevDist && s.halite - curr.cost < curr.moveCost(curr.halite)) {
                 curr.actualDist++;
                 curr.cost -= curr.collectAmount(plan.getProjectedHalite(map, curr.position, curr.dist));
             }

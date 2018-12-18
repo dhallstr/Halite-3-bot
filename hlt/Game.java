@@ -1,5 +1,7 @@
 package hlt;
 
+import dhallstr.Magic;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -10,6 +12,7 @@ public class Game {
     public final Player me;
     public final GameMap gameMap;
     public int totalShips;
+
 
     public Game() {
         Constants.populateConstants(Input.readLine());
@@ -26,6 +29,7 @@ public class Game {
         me = players.get(myId.id);
         gameMap = GameMap._generate();
         totalShips = 0;
+        gameMap.avgHaliteNearMyDropoffs = 0;
     }
 
     public void ready(final String name) {
@@ -62,6 +66,16 @@ public class Game {
             totalShips += player.ships.values().size();
         }
         gameMap.updateInRange(this, me.id);
+        int numTiles = 0;
+        for (int x = 0; x < gameMap.width; x++) {
+            for (int y = 0; y < gameMap.height; y++) {
+                if (gameMap.calculateDistanceToDropoff(me, new Position(x, y)) < Magic.NEAR_DROPOFF_DIST) {
+                    gameMap.avgHaliteNearMyDropoffs += gameMap.at(new Position(x, y)).halite;
+                    numTiles++;
+                }
+            }
+        }
+        gameMap.avgHaliteNearMyDropoffs /= numTiles;
     }
 
     public void endTurn(final Collection<Command> commands) {
