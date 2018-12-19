@@ -4,6 +4,7 @@ import dhallstr.Magic;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 
 public class Game {
     public int turnNumber;
@@ -29,7 +30,7 @@ public class Game {
         me = players.get(myId.id);
         gameMap = GameMap._generate();
         totalShips = 0;
-        gameMap.avgHaliteNearMyDropoffs = 0;
+        gameMap.percentileHaliteNearMyDropoffs = 0;
     }
 
     public void ready(final String name) {
@@ -66,16 +67,16 @@ public class Game {
             totalShips += player.ships.values().size();
         }
         gameMap.updateInRange(this, me.id);
-        int numTiles = 0;
+        ArrayList<Integer> haliteAmounts = new ArrayList<>(gameMap.width * gameMap.height);
         for (int x = 0; x < gameMap.width; x++) {
             for (int y = 0; y < gameMap.height; y++) {
                 if (gameMap.calculateDistanceToDropoff(me, new Position(x, y)) < Magic.NEAR_DROPOFF_DIST) {
-                    gameMap.avgHaliteNearMyDropoffs += gameMap.at(new Position(x, y)).halite;
-                    numTiles++;
+                    haliteAmounts.add(gameMap.at(new Position(x, y)).halite);
                 }
             }
         }
-        gameMap.avgHaliteNearMyDropoffs /= numTiles;
+        haliteAmounts.sort(Comparator.comparingInt(x -> x));
+        gameMap.percentileHaliteNearMyDropoffs = haliteAmounts.get((int)(haliteAmounts.size() * Magic.FIND_PERCENTILE));
     }
 
     public void endTurn(final Collection<Command> commands) {

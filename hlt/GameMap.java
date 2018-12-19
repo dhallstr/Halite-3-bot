@@ -11,7 +11,7 @@ public class GameMap {
     public final MapCell[][] cells;
 
     public int haliteOnMap = 0;
-    public int avgHaliteNearMyDropoffs;
+    public int percentileHaliteNearMyDropoffs;
 
     public GameMap(final int width, final int height) {
         this.width = width;
