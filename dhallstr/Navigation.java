@@ -40,8 +40,9 @@ public class Navigation {
                         curr.actualDist += -numStays + i;
                         break;
                     }
-                    int mined = Math.min(curr.collectAmount(halite), Constants.MAX_HALITE - s.halite+curr.cost);
-                    curr.cost -= mined;
+                    int mined = Math.min(curr.minedAmount(halite), Constants.MAX_HALITE - s.halite + curr.cost);
+                    int collected = Math.min(curr.collectAmount(halite), Constants.MAX_HALITE - s.halite + curr.cost);
+                    curr.cost -= collected;
                     halite -= mined;
                 }
             }
@@ -101,8 +102,9 @@ public class Navigation {
 
             int halite = curr.halite;// plan.getProjectedHalite(map, curr.position, curr.dist);
             for (int i = 0; i < prevDist - curr.dist - 1; i++) {
-                int mined = Math.min(curr.collectAmount(halite), Constants.MAX_HALITE - s.halite + cost);
-                cost -= mined;
+                int mined = Math.min(curr.minedAmount(halite), Constants.MAX_HALITE - s.halite + cost);
+                int collected = Math.min(curr.collectAmount(halite), Constants.MAX_HALITE - s.halite + cost);
+                cost -= collected;
                 halite -= mined;
             }
             prevDist = curr.dist;
@@ -127,8 +129,9 @@ public class Navigation {
                 halite = curr.halite;
             }
             else {
-                int mined = Math.min(curr.collectAmount(halite), Constants.MAX_HALITE - s.halite + cost);
-                cost -= mined;
+                int mined = Math.min(curr.minedAmount(halite), Constants.MAX_HALITE - s.halite + cost);
+                int collected = Math.min(curr.collectAmount(halite), Constants.MAX_HALITE - s.halite + cost);
+                cost -= collected;
                 halite -= mined;
             }
 

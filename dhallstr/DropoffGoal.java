@@ -2,6 +2,8 @@ package dhallstr;
 
 import hlt.*;
 
+import java.lang.invoke.ConstantCallSite;
+
 public class DropoffGoal extends Goal {
     PlayerId id;
     boolean crashOkay;
@@ -15,7 +17,7 @@ public class DropoffGoal extends Goal {
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
-        return cell.hasStructure() && cell.structure.owner.equals(id) ? 300 - cell.cost - 5 * cell.actualDist : -10001;
+        return cell.hasStructure() && cell.structure.owner.equals(id) ? 300 - cell.cost - 5 * cell.actualDist : Integer.MIN_VALUE;
     }
 
     @Override
@@ -23,12 +25,14 @@ public class DropoffGoal extends Goal {
         if (crashOkay) return 0;
         int halite = plan.getProjectedHalite(map, cell.position, cell.dist);
         int myHalite = s.halite - cell.cost;
+        if (halite <= Magic.getCollectDownTo(map) || myHalite == Constants.MAX_HALITE) return 0;
         int turnsStayed;
-        for (turnsStayed = 0; ; turnsStayed++) {
-            int mined = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
+        for (turnsStayed = 1; ; turnsStayed++) {
+            int mined = Math.min(cell.minedAmount(halite), Constants.MAX_HALITE - myHalite);
+            int collected = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
             halite -= mined;
-            myHalite += mined;
-            if (mined < Magic.getCollectDownTo(map)) break;
+            myHalite += collected;
+            if (halite <= Magic.getCollectDownTo(map) || myHalite == Constants.MAX_HALITE) break;
         }
         return turnsStayed;
     }

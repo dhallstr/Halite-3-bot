@@ -20,9 +20,9 @@ public class TerrainGoal extends Goal {
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
-        int totalHalite = s.halite - cell.cost + Math.max(plan.getProjectedHalite(game.gameMap, cell.position, cell.dist) - Magic.getCollectDownTo(game.gameMap), 0);
+        int totalHalite = s.halite - cell.cost + Math.max((plan.getProjectedHalite(game.gameMap, cell.position, cell.dist) - Magic.getCollectDownTo(game.gameMap)) * (cell.isInspired ? Constants.INSPIRED_EXTRACT_RATIO : 1), 0);
         if (totalHalite > Constants.MAX_HALITE) {
-            totalHalite = Constants.MAX_HALITE - (totalHalite - Constants.MAX_HALITE);
+            totalHalite = Constants.MAX_HALITE - (Constants.MAX_HALITE - s.halite + cell.cost - Math.max((plan.getProjectedHalite(game.gameMap, cell.position, cell.dist) - Magic.getCollectDownTo(game.gameMap)), 0));
         }
 
         int turns = cell.actualDist + getNumberStays(s, cell, plan, game.gameMap) + game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell.position);
@@ -32,13 +32,15 @@ public class TerrainGoal extends Goal {
     @Override
     public int getNumberStays(Ship s, MapCell cell, PlannedLocations plan, GameMap map) {
         int halite = plan.getProjectedHalite(map, cell.position, cell.dist);
+        int myHalite = s.halite - cell.cost;
+        if (halite <= Magic.getCollectDownTo(map) || myHalite == Constants.MAX_HALITE) return 0;
         int turnsStayed;
-        int minedTotal = 0;
-        for (turnsStayed = 0; ; turnsStayed++) {
-            int mined = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - s.halite + cell.cost - minedTotal);
+        for (turnsStayed = 1; ; turnsStayed++) {
+            int mined = Math.min(cell.minedAmount(halite), Constants.MAX_HALITE - myHalite);
+            int collected = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
             halite -= mined;
-            minedTotal += mined;
-            if (mined < Magic.getCollectDownTo(map)) break;
+            myHalite += collected;
+            if (halite <= Magic.getCollectDownTo(map) || myHalite == Constants.MAX_HALITE) break;
         }
         return turnsStayed;
     }

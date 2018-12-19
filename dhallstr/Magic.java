@@ -23,7 +23,7 @@ public class Magic {
     // Mining constants
     // Tiles are mined down to COLLECTION_INT + COLLECTION_SLOPE * (amount of halite "near" a friendly dropoff)
     public static int NEAR_DROPOFF_DIST = 18;// halite within this distance of a friendly dropoff is considered "near"
-    public static double COLLECTION_INT = 15, COLLECTION_SLOPE = 0.28;
+    public static double COLLECTION_INT = 10, COLLECTION_SLOPE = 2;
 
     public static int COLLECT_DOWN_TO;
     public static int START_DELIVER_HALITE;
