@@ -36,9 +36,7 @@ public class Magic {
 
     public static ArrayList<int[]> INSPIRE_OFFSET;
 
-
-
-    public static void updateConstants() {
+    public static void updateConstants(boolean isTwoPlayer, int width, int height) {
         COLLECT_DOWN_TO = Constants.MAX_HALITE / 14;
         START_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.92);
         END_GAME_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.6);
@@ -51,9 +49,7 @@ public class Magic {
                 }
             }
         }
-    }
 
-    public static void updateConstants(boolean isTwoPlayer, int width, int height) {
         int size = (width + height) / 2; // in case it is a rectangle
         END_GAME_HALITE += (int)((size - 32) / 32.0 * (45 - END_GAME_HALITE));
         SEARCH_DEPTH = 45;//20 + (size - 32) / 3;
