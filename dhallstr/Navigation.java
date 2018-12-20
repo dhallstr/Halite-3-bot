@@ -49,7 +49,7 @@ public class Navigation {
             }
             if (curr.actualDist == prevDist && s.halite - curr.cost < curr.moveCost(curr.halite)) {
                 curr.actualDist++;
-                curr.cost -= curr.collectAmount(plan.getProjectedHalite(map, curr.position, curr.dist));
+                curr.cost -= Math.min(curr.collectAmount(plan.getProjectedHalite(map, curr.position, curr.dist)), Constants.MAX_HALITE - s.halite + curr.cost);
             }
 
 

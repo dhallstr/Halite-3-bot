@@ -20,9 +20,9 @@ public class TerrainGoal extends Goal {
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
-        int totalHalite = s.halite - cell.cost + Math.max((plan.getProjectedHalite(game.gameMap, cell.position, cell.dist) - Magic.getCollectDownTo(game.gameMap)) * (cell.isInspired ? Constants.INSPIRED_EXTRACT_RATIO : 1), 0);
+        int totalHalite = s.halite - cell.cost + Math.max((plan.getProjectedHalite(game.gameMap, cell.position, cell.actualDist) - Magic.getCollectDownTo(game.gameMap)), 0);
         if (totalHalite > Constants.MAX_HALITE) {
-            totalHalite = Constants.MAX_HALITE - (Constants.MAX_HALITE - s.halite + cell.cost - Math.max((plan.getProjectedHalite(game.gameMap, cell.position, cell.dist) - Magic.getCollectDownTo(game.gameMap)), 0));
+            totalHalite = 2 * Constants.MAX_HALITE - s.halite + cell.cost - Math.max((plan.getProjectedHalite(game.gameMap, cell.position, cell.actualDist) - Magic.getCollectDownTo(game.gameMap)), 0);
         }
 
         int turns = cell.actualDist + getNumberStays(s, cell, plan, game.gameMap) + game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell.position);

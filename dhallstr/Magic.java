@@ -6,7 +6,7 @@ import hlt.GameMap;
 import java.util.ArrayList;
 
 public class Magic {
-    public static final String BOT_NAME = "MinGW";
+    public static final String BOT_NAME = "Alkali";
 
     // Dropoff constants
     public static final int MIN_DIST_FOR_BUILD = 15;
@@ -22,10 +22,10 @@ public class Magic {
 
     // Mining constants
     // Tiles are mined down to COLLECTION_INT + COLLECTION_SLOPE * (FIND_PERCENTILE percentile of halite "near" a friendly dropoff)
-    public static int NEAR_DROPOFF_DIST = 25;// halite within this distance of a friendly dropoff is considered "near"
-    public static double FIND_PERCENTILE = 0.85;
-    public static double COLLECTION_INT = 71,//19,
-                        COLLECTION_SLOPE = 0;//0.28;
+    public static int NEAR_DROPOFF_DIST = 40;// halite within this distance of a friendly dropoff is considered "near"
+    public static double FIND_PERCENTILE = 0.75;
+    public static double COLLECTION_INT = 25,
+                        COLLECTION_SLOPE = 0.27;
 
     public static int COLLECT_DOWN_TO;
     public static int START_DELIVER_HALITE;
@@ -40,8 +40,8 @@ public class Magic {
 
     public static void updateConstants() {
         COLLECT_DOWN_TO = Constants.MAX_HALITE / 14;
-        START_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.95);
-        END_GAME_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.5);
+        START_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.92);
+        END_GAME_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.6);
 
         INSPIRE_OFFSET = new ArrayList<>(2*Constants.INSPIRATION_RADIUS*(Constants.INSPIRATION_RADIUS+1)+1);
         for (int i = - Constants.INSPIRATION_RADIUS; i <= Constants.INSPIRATION_RADIUS; i++) {
@@ -56,7 +56,7 @@ public class Magic {
     public static void updateConstants(boolean isTwoPlayer, int width, int height) {
         int size = (width + height) / 2; // in case it is a rectangle
         END_GAME_HALITE += (int)((size - 32) / 32.0 * (45 - END_GAME_HALITE));
-        SEARCH_DEPTH = 20 + (size - 32) / 3;
+        SEARCH_DEPTH = 45;//20 + (size - 32) / 3;
         if (isTwoPlayer) {
             MAX_DROPOFFS = (int)(size / 11);
         }

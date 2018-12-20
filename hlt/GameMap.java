@@ -115,26 +115,34 @@ public class GameMap {
     }
 
     public void updateInRange(Game game, PlayerId me) {
+        haliteOnMap = 0;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < height; j++) {
+                cells[i][j].enemyShipsNearby = 0;
+                haliteOnMap += cells[i][j].halite;
+            }
+        }
 
         for (Player p: game.players) {
-            if (p.id.equals(me)) continue;
+            if (p.id.id == me.id) continue;
             for (Ship s: p.ships.values()) {
                 for (int[] offset: Magic.INSPIRE_OFFSET) {
                     cells[(s.position.y + offset[0] + height)%height][(s.position.x + offset[1] + width)%width].enemyShipsNearby++;
                 }
             }
         }
-
-        haliteOnMap = 0;
+        int numinspired = 0;
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < height; j++) {
-                cells[i][j].enemyShipsNearby = 0;
-                haliteOnMap += cells[i][j].halite;
                 if (Constants.INSPIRATION_ENABLED) {
-                    cells[i][j].isInspired = cells[i][j].enemyShipsNearby >= Constants.INSPIRATION_SHIP_COUNT;
+                    cells[i][j].isInspired = (cells[i][j].enemyShipsNearby >= Constants.INSPIRATION_SHIP_COUNT);
+                    if (cells[i][j].isInspired) {
+                        numinspired++;
+                    }
                 }
             }
         }
+        Log.log(numinspired == 0 ? "No inspired" : "" + numinspired + " number of inspired locations");
     }
 
     @Deprecated

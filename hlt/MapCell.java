@@ -34,11 +34,11 @@ public class MapCell {
         return isInspired ? halite / Constants.INSPIRED_MOVE_COST_RATIO : halite / Constants.MOVE_COST_RATIO;
     }
 
-    public int collectAmount(double halite) {
-        return (int)Math.ceil(isInspired ? halite / (double)Constants.INSPIRED_EXTRACT_RATIO : halite / (double)Constants.EXTRACT_RATIO);
+    public int collectAmount(int halite) {
+        return (int)(minedAmount(halite) * (isInspired ? (1 + Constants.INSPIRED_BONUS_MULTIPLIER) : 1));
     }
-    public int minedAmount(double halite) {
-        return (int)Math.ceil(halite / (double)Constants.EXTRACT_RATIO);
+    public int minedAmount(int halite) {
+        return isInspired ? ((halite + Constants.INSPIRED_EXTRACT_RATIO - 1) / Constants.INSPIRED_EXTRACT_RATIO) : ((halite + Constants.EXTRACT_RATIO - 1) / Constants.EXTRACT_RATIO);
     }
 
     public boolean isEmpty() {
