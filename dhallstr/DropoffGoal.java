@@ -17,7 +17,7 @@ public class DropoffGoal extends Goal {
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
-        return meetsGoal(cell) ? 300 - (int)(cell.lost * (Strategy.IS_TWO_PLAYER ? 1.5 : 2)) + cell.gained - 6 * cell.actualDist : Integer.MIN_VALUE;
+        return meetsGoal(cell) ? (300 - (int)(cell.lost * (Strategy.IS_TWO_PLAYER ? 1.5 : 2)) + cell.gained - 6 * cell.actualDist) : Integer.MIN_VALUE;
     }
 
     @Override
