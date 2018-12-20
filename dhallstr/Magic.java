@@ -61,6 +61,7 @@ public class Magic {
             MAX_DROPOFFS = (int)(size / 11);
         }
         else {
+            COLLECTION_END_GAME_HALITE = 20;
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
             END_GAME_HALITE = 25;
             MAX_DROPOFFS = (int)(size / 11);
