@@ -49,7 +49,7 @@ public class PlannedLocations {
             p = p.directionalOffset(plan[i]);
             addLoc(map, p, s.id, i+1);
             if (plan[i] == Direction.STILL) {
-                setWasMined(map, p, i+1, 1);
+                setWasMined(map, p, i, 1);
             }
         }
     }
@@ -72,7 +72,7 @@ public class PlannedLocations {
         MapCell cell = map.at(p);
         int halite = cell.halite;
         for (int i = 0; i < turnOffset; i++) {
-            future = getFuture(map, p, turnOffset);
+            future = getFuture(map, p, i);
             if (future != null && future.wasMined == 1) {
                 halite -= cell.minedAmount(halite);
             }

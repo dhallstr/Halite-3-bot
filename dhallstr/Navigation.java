@@ -36,7 +36,8 @@ public class Navigation {
                 curr.actualDist+= numStays;
                 int halite = plan.getProjectedHalite(map, curr.position, curr.dist);
                 for (int i = 0; i < numStays; i++) {
-                    if (!plan.isSafe(map, curr.position, s, curr.dist + 1 + i, false ) && !goal.overrideUnsafe(curr)) {
+
+                    if ((!plan.isSafe(map, curr.position, s, curr.dist + 1 + i, false ) && !goal.overrideUnsafe(curr))) {
                         curr.actualDist += -numStays + i;
                         break;
                     }
