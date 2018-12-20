@@ -49,7 +49,7 @@ public class PlannedLocations {
             p = p.directionalOffset(plan[i]);
             addLoc(map, p, s.id, i+1);
             if (plan[i] == Direction.STILL) {
-                setHaliteDiff(map, p, i+1, -map.at(p).collectAmount(getProjectedHalite(map, p, i+1)));
+                setWasMined(map, p, i+1, 1);
             }
         }
     }
@@ -60,22 +60,23 @@ public class PlannedLocations {
         if (p != null) {
             cancelPlan(map, s, turnOffset + 1);
             set(map, p, turnOffset, null);
-            setHaliteDiff(map, p, turnOffset, 0);
+            setWasMined(map, p, turnOffset, 0);
         }
     }
 
     int getProjectedHalite(GameMap map, Position p, int turnOffset) {
         if (cells[0][0].size() - 1 < turnOffset)
             return 0;
-        Position norm = map.normalize(p);
 
         FutureNode future;
-        int halite = map.at(p).halite;
-        do {
+        MapCell cell = map.at(p);
+        int halite = cell.halite;
+        for (int i = 0; i < turnOffset; i++) {
             future = getFuture(map, p, turnOffset);
-            halite += future == null ? 0 : future.haliteDiff;
+            if (future != null && future.wasMined == 1) {
+                halite -= cell.minedAmount(halite);
+            }
         }
-        while (turnOffset-- > 0);
         return halite;
     }
 
@@ -98,11 +99,11 @@ public class PlannedLocations {
         cells[norm.y][norm.x].get(turnOffset).id = id;
     }
 
-    public void setHaliteDiff(GameMap map, Position p, int turnOffset, int diff) {
+    public void setWasMined(GameMap map, Position p, int turnOffset, int wasMined) {
         if (cells[0][0].size() - 1 < turnOffset)
             return;
         Position norm = map.normalize(p);
-        cells[norm.y][norm.x].get(turnOffset).haliteDiff = diff;
+        cells[norm.y][norm.x].get(turnOffset).wasMined = wasMined;
     }
 
     private void addLoc(GameMap map, Position p, EntityId id, int turnOffset) {
@@ -141,6 +142,6 @@ public class PlannedLocations {
 
     private class FutureNode {
         EntityId id = null;
-        int haliteDiff = 0;
+        int wasMined = 0;
     }
 }
