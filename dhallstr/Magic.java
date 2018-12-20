@@ -21,13 +21,12 @@ public class Magic {
 
 
     // Mining constants
-    // Tiles are mined down to COLLECTION_INT + COLLECTION_SLOPE * (FIND_PERCENTILE percentile of halite "near" a friendly dropoff)
-    public static int NEAR_DROPOFF_DIST = 40;// halite within this distance of a friendly dropoff is considered "near"
+    // Tiles are mined down to COLLECTION_INT + COLLECTION_SLOPE * (FIND_PERCENTILE percentile of halite "near" a friendly dropoff, i.e. within SEARCH_DEPTH)
     public static double FIND_PERCENTILE = 0.75;
     public static double COLLECTION_INT = 25,
                         COLLECTION_SLOPE = 0.27;
     public static double END_GAME_FIND_PERCENTILE = 0.9;
-    public static int COLLECTION_END_GAME_HALITE = 30;
+    public static int COLLECTION_END_GAME_HALITE = 26;
     public static double END_GAME_COLLECTION_INT = 12,
                         END_GAME_COLLECTION_SLOPE = 0.2;
 
@@ -56,14 +55,16 @@ public class Magic {
 
         int size = (width + height) / 2; // in case it is a rectangle
         END_GAME_HALITE += (int)((size - 32) / 32.0 * (45 - END_GAME_HALITE));
-        SEARCH_DEPTH = 45;//20 + (size - 32) / 3;
         if (isTwoPlayer) {
             MAX_DROPOFFS = (int)(size / 11);
+            SEARCH_DEPTH = 65;
         }
         else {
+            COLLECTION_END_GAME_HALITE = 16;
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
             END_GAME_HALITE = 25;
             MAX_DROPOFFS = (int)(size / 11);
+            SEARCH_DEPTH = 45;
         }
     }
 

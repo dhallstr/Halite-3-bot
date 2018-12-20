@@ -70,7 +70,7 @@ public class Game {
         ArrayList<Integer> haliteAmounts = new ArrayList<>(gameMap.width * gameMap.height);
         for (int x = 0; x < gameMap.width; x++) {
             for (int y = 0; y < gameMap.height; y++) {
-                if (gameMap.calculateDistanceToDropoff(me, new Position(x, y)) < Magic.NEAR_DROPOFF_DIST) {
+                if (gameMap.calculateDistanceToDropoff(me, new Position(x, y)) < Magic.SEARCH_DEPTH) {
                     haliteAmounts.add(gameMap.at(new Position(x, y)).halite);
                 }
             }
