@@ -2,11 +2,11 @@ package dhallstr;
 
 import hlt.*;
 
+import java.lang.invoke.ConstantCallSite;
+
 public class DropoffGoal extends Goal {
     PlayerId id;
     boolean crashOkay;
-
-    Goal simple = null;
 
     public DropoffGoal(PlayerId me, boolean crashOkay) {
         id = me;
@@ -17,33 +17,22 @@ public class DropoffGoal extends Goal {
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
-        return cell.hasStructure() && cell.structure.owner.equals(id) ? 300 - cell.cost - 5 * cell.actualDist : -10001;
+        return meetsGoal(cell) ? 300 - cell.cost - 7 * cell.actualDist : Integer.MIN_VALUE;
     }
-
-    @Override
-    public int getAutoAccept() {
-        return crashOkay ? 100 : 10000;
-    }
-
-    @Override
-    public int getMinScore() {
-        return -10000;
-    }
-
-    @Override
-    public boolean waitAfterNavigate() { return false;}
 
     @Override
     public int getNumberStays(Ship s, MapCell cell, PlannedLocations plan, GameMap map) {
         if (crashOkay) return 0;
-        double halite = plan.getProjectedHalite(map, cell.position, cell.dist);
+        int halite = plan.getProjectedHalite(map, cell.position, cell.dist);
         int myHalite = s.halite - cell.cost;
+        if (halite <= Magic.getCollectDownTo(map) || myHalite == Constants.MAX_HALITE) return 0;
         int turnsStayed;
-        for (turnsStayed = 0; ; turnsStayed++) {
-            int mined = Math.min(cell.collectAmount(), Constants.MAX_HALITE - myHalite);
+        for (turnsStayed = 1; ; turnsStayed++) {
+            int mined = Math.min(cell.minedAmount(halite), Constants.MAX_HALITE - myHalite);
+            int collected = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
             halite -= mined;
-            myHalite += mined;
-            if (mined < Magic.MIN_BACK_TO_DROPOFF_WAIT_HALITE) break;
+            myHalite += collected;
+            if (halite <= Magic.getCollectDownTo(map) || myHalite == Constants.MAX_HALITE) break;
         }
         return turnsStayed;
     }
@@ -52,20 +41,11 @@ public class DropoffGoal extends Goal {
         return cell.structure != null && cell.structure.owner.equals(id);
     }
 
-    public int getTurns() {
+    public int getMaxTurns() {
         return Constants.MAX_TURNS;
     }
 
-    public Goal getSimpleGoal() {
-        return simple;
-    }
-    public Goal setSimpleGoal(Goal g){simple = g; return this;}
-
     public Intent getIntent() {
         return crashOkay ? Intent.CRASH_HOME : Intent.DROPOFF;
-    }
-
-    public Direction[] orderDirections(GameMap map, MapCell cell) {
-        return order(map, cell, false);
     }
 }

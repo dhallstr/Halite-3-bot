@@ -52,26 +52,23 @@ public class Strategy {
 
         // *** use the move that was planned ahead ***
         if (plannedMove != null && plan.isSafe(game.gameMap, ship.position.directionalOffset(plannedMove), ship, 1, COLLISIONS_DISABLED) &&
-                !(game.gameMap.at(ship).hasStructure() && game.gameMap.at(ship).structure.owner == plan.me) &&
-                ship.halite >= game.gameMap.at(ship).moveCost()) {
+                ship.halite >= game.gameMap.at(ship).moveCost() && !(intent == Intent.GATHER && plannedMove == Direction.STILL && ship.halite == Constants.MAX_HALITE)) {
             return ship.move(plannedMove);
         }
-        else if (plannedMove != null && !plan.isSafe(game.gameMap, ship.position.directionalOffset(plannedMove), ship, 1, COLLISIONS_DISABLED)) {
+        else if (plannedMove != null) {
             resolveCancelledMove(game, ship, plan, commands);
         }
 
 
         // *** create a new goal ***
+
         Goal g = null;
-        if (ship.halite > Magic.START_DELIVER_HALITE && ship.halite + Magic.MIN_BACK_TO_DROPOFF_WAIT_HALITE < Constants.MAX_HALITE && game.gameMap.at(ship).halite > (Constants.MAX_HALITE - ship.halite - Magic.MIN_BACK_TO_DROPOFF_WAIT_HALITE) * Constants.EXTRACT_RATIO) {
-            g = null;
-        }
-        else if (ship.halite > Magic.START_DELIVER_HALITE || (ship.halite > Magic.END_DELIVER_HALITE && intent == Intent.DROPOFF) ||
+        if (ship.halite > Magic.START_DELIVER_HALITE ||
                   (game.gameMap.haliteOnMap < Magic.END_GAME_HALITE  * game.gameMap.width * game.gameMap.height && ship.halite > Magic.END_GAME_DELIVER_HALITE)) {
             g = new DropoffGoal(plan.me, false);
         }
-        else if (game.gameMap.at(ship).halite < Magic.COLLECT_DOWN_TO || (game.gameMap.at(ship).hasStructure() && game.gameMap.at(ship).structure.owner == plan.me)) {
-            g = new TerrainGoal(10, 30, ship);
+        else if (ship.halite >= game.gameMap.at(ship).moveCost()) {
+            g = new TerrainGoal(10, Magic.SEARCH_DEPTH);
         }
 
         // *** pathfind based on goal ***

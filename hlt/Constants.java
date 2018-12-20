@@ -62,7 +62,6 @@ public class Constants {
         INSPIRED_EXTRACT_RATIO = getInt(constantsMap, "INSPIRED_EXTRACT_RATIO");
         INSPIRED_BONUS_MULTIPLIER = getDouble(constantsMap, "INSPIRED_BONUS_MULTIPLIER");
         INSPIRED_MOVE_COST_RATIO = getInt(constantsMap, "INSPIRED_MOVE_COST_RATIO");
-        dhallstr.Magic.updateConstants();
     }
 
     private static int getInt(final Map<String, String> map, final String key) {

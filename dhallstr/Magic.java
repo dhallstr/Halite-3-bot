@@ -1,12 +1,14 @@
 package dhallstr;
 
 import hlt.Constants;
+import hlt.GameMap;
 
 import java.util.ArrayList;
 
 public class Magic {
-    public static final String BOT_NAME = "MinGW";
+    public static final String BOT_NAME = "Alkali";
 
+    // Dropoff constants
     public static final int MIN_DIST_FOR_BUILD = 15;
     public static final int BUILD_DROPOFF_RADIUS = 6;
     public static final int MIN_HALITE_FOR_BUILD = 9000;
@@ -17,21 +19,27 @@ public class Magic {
     public static final int MIN_FRIENDLY_AROUND_FOR_DROPOFF = 7;
     public static int MAX_DROPOFFS = 1;// includes shipyard
 
+
+    // Mining constants
+    // Tiles are mined down to COLLECTION_INT + COLLECTION_SLOPE * (FIND_PERCENTILE percentile of halite "near" a friendly dropoff)
+    public static int NEAR_DROPOFF_DIST = 40;// halite within this distance of a friendly dropoff is considered "near"
+    public static double FIND_PERCENTILE = 0.75;
+    public static double COLLECTION_INT = 25,
+                        COLLECTION_SLOPE = 0.27;
+
     public static int COLLECT_DOWN_TO;
-    public static int START_DELIVER_HALITE, END_DELIVER_HALITE;
+    public static int START_DELIVER_HALITE;
     public static int END_GAME_DELIVER_HALITE, END_GAME_HALITE = 35;
 
-    public static int MIN_BACK_TO_DROPOFF_WAIT_HALITE, MIN_GATHER_WAIT_HALITE;
-    public static double GATHER_HALITE_RATIO;
+    public static int SEARCH_DEPTH;
+
 
     public static ArrayList<int[]> INSPIRE_OFFSET;
 
-    public static void updateConstants() {
+    public static void updateConstants(boolean isTwoPlayer, int width, int height) {
         COLLECT_DOWN_TO = Constants.MAX_HALITE / 14;
-        START_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.95);
-        END_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.75);
-
-        END_GAME_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.5);
+        START_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.92);
+        END_GAME_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.6);
 
         INSPIRE_OFFSET = new ArrayList<>(2*Constants.INSPIRATION_RADIUS*(Constants.INSPIRATION_RADIUS+1)+1);
         for (int i = - Constants.INSPIRATION_RADIUS; i <= Constants.INSPIRATION_RADIUS; i++) {
@@ -41,25 +49,21 @@ public class Magic {
                 }
             }
         }
-    }
 
-    public static void updateConstants(boolean isTwoPlayer, int width, int height) {
         int size = (width + height) / 2; // in case it is a rectangle
         END_GAME_HALITE += (int)((size - 32) / 32.0 * (45 - END_GAME_HALITE));
+        SEARCH_DEPTH = 45;//20 + (size - 32) / 3;
         if (isTwoPlayer) {
-            MIN_BACK_TO_DROPOFF_WAIT_HALITE = (int)(Constants.MAX_HALITE * 0.018);
-            MIN_GATHER_WAIT_HALITE = (int)(Constants.MAX_HALITE * (0.03 - 0.01 * ((64 - size)/32.0)));//0.04);
-            GATHER_HALITE_RATIO = 2.0;
             MAX_DROPOFFS = (int)(size / 11);
         }
         else {
-            MIN_BACK_TO_DROPOFF_WAIT_HALITE = (int)(Constants.MAX_HALITE * 0.018);
-            //MIN_GATHER_WAIT_HALITE = (int)(Constants.MAX_HALITE * (0.022 + 0.01 * ((size - 32)/32.0)));//0.04);
-            MIN_GATHER_WAIT_HALITE = (int)(Constants.MAX_HALITE * (0.03 - 0.01 * ((64 - size)/32.0)));
-            GATHER_HALITE_RATIO = 2.8;
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
             END_GAME_HALITE = 25;
             MAX_DROPOFFS = (int)(size / 11);
         }
+    }
+
+    public static int getCollectDownTo(GameMap game) {
+        return (int)(COLLECTION_INT + COLLECTION_SLOPE * game.percentileHaliteNearMyDropoffs);
     }
 }
