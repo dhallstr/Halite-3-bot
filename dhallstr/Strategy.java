@@ -114,8 +114,8 @@ public class Strategy {
 
 
     public static boolean shouldSpawn(Game game, PlannedLocations plan, Player me, GameMap gameMap, ArrayList<Command> commandQueue) {
-        return (game.turnNumber <= (Strategy.IS_TWO_PLAYER ? Constants.MAX_TURNS - 150 : Constants.MAX_TURNS - 150) &&
-                (((game.gameMap.haliteOnMap - (game.gameMap.width * game.gameMap.height) *(Strategy.IS_TWO_PLAYER ? 10 : 3))) / (1620 + 18 * game.totalShips) > game.me.ships.size())) &&
+        return (game.turnNumber <= (Strategy.IS_TWO_PLAYER ? Constants.MAX_TURNS - 130 : Constants.MAX_TURNS - 130) &&
+                (((game.gameMap.haliteOnMap - (game.gameMap.width * game.gameMap.height) *(Strategy.IS_TWO_PLAYER ? 8 : 3))) / (1620 + 18 * game.totalShips) > game.me.ships.size())) &&
                 me.halite >= Constants.SHIP_COST &&
                 (game.turnNumber > 5 || me.ships.size() <= 4) &&
                 isSpawnSafe(gameMap, me, plan, commandQueue);
