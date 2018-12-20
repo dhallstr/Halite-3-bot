@@ -26,6 +26,10 @@ public class Magic {
     public static double FIND_PERCENTILE = 0.75;
     public static double COLLECTION_INT = 25,
                         COLLECTION_SLOPE = 0.27;
+    public static double END_GAME_FIND_PERCENTILE = 0.9;
+    public static int COLLECTION_END_GAME_HALITE = 30;
+    public static double END_GAME_COLLECTION_INT = 12,
+                        END_GAME_COLLECTION_SLOPE = 0.2;
 
     public static int COLLECT_DOWN_TO;
     public static int START_DELIVER_HALITE;
@@ -64,6 +68,8 @@ public class Magic {
     }
 
     public static int getCollectDownTo(GameMap game) {
-        return (int)(COLLECTION_INT + COLLECTION_SLOPE * game.percentileHaliteNearMyDropoffs);
+        boolean isEndGame =game.percentileHaliteNearMyDropoffs > COLLECTION_END_GAME_HALITE;
+        if (isEndGame) FIND_PERCENTILE = END_GAME_FIND_PERCENTILE; // will take effect next turn
+        return (int)(isEndGame ? (COLLECTION_INT + COLLECTION_SLOPE * game.percentileHaliteNearMyDropoffs) : (END_GAME_COLLECTION_INT + END_GAME_COLLECTION_SLOPE * game.percentileHaliteNearMyDropoffs));
     }
 }

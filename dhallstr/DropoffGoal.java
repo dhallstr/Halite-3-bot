@@ -17,14 +17,14 @@ public class DropoffGoal extends Goal {
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
-        return meetsGoal(cell) ? 300 - cell.cost - 7 * cell.actualDist : Integer.MIN_VALUE;
+        return meetsGoal(cell) ? 300 - cell.lost * 2 + cell.gained - 6 * cell.actualDist : Integer.MIN_VALUE;
     }
 
     @Override
     public int getNumberStays(Ship s, MapCell cell, PlannedLocations plan, GameMap map) {
         if (crashOkay) return 0;
         int halite = plan.getProjectedHalite(map, cell.position, cell.dist);
-        int myHalite = s.halite - cell.cost;
+        int myHalite = s.halite - cell.lost + cell.gained;
         if (halite <= Magic.getCollectDownTo(map) || myHalite == Constants.MAX_HALITE) return 0;
         int turnsStayed;
         for (turnsStayed = 1; ; turnsStayed++) {
