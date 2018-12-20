@@ -12,7 +12,8 @@ public class MapCell {
     public boolean visited = false;
     public Direction path = Direction.STILL;
     public int dist = 0, actualDist = 0;
-    public int cost = 0;
+    public int lost = 0;
+    public int gained = 0;
 
     // These are used in other BFS applications
     public boolean secondaryVisited = false;

@@ -41,15 +41,15 @@ public class Navigation {
                         curr.actualDist += -numStays + i;
                         break;
                     }
-                    int mined = Math.min(curr.minedAmount(halite), Constants.MAX_HALITE - s.halite + curr.cost);
-                    int collected = Math.min(curr.collectAmount(halite), Constants.MAX_HALITE - s.halite + curr.cost);
-                    curr.cost -= collected;
+                    int mined = Math.min(curr.minedAmount(halite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
+                    int collected = Math.min(curr.collectAmount(halite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
+                    curr.gained += collected;
                     halite -= mined;
                 }
             }
-            if (curr.actualDist == prevDist && s.halite - curr.cost < curr.moveCost(curr.halite)) {
+            if (curr.actualDist == prevDist && s.halite - curr.lost + curr.gained < curr.moveCost(curr.halite)) {
                 curr.actualDist++;
-                curr.cost -= Math.min(curr.collectAmount(plan.getProjectedHalite(map, curr.position, curr.dist)), Constants.MAX_HALITE - s.halite + curr.cost);
+                curr.gained += Math.min(curr.collectAmount(plan.getProjectedHalite(map, curr.position, curr.dist)), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
             }
 
 
@@ -67,14 +67,15 @@ public class Navigation {
                     m.path = d;
                     m.dist = curr.actualDist + 1;
                     m.actualDist = m.dist;
-                    m.cost = curr.cost + curr.moveCost();
+                    m.lost = curr.lost + curr.moveCost();
+                    m.gained = curr.gained;
                 }
             }
             if ((plan.isSafe(map, curr.position, s, curr.actualDist + 1, false) || goal.overrideUnsafe(curr)) && curr.actualDist - curr.dist < 2 &&
                     !curr.hasStructure()) {
                 queue.add(curr);
                 curr.actualDist++;
-                curr.cost -= curr.collectAmount(plan.getProjectedHalite(map, curr.position, curr.dist));
+                curr.gained += curr.collectAmount(plan.getProjectedHalite(map, curr.position, curr.dist));
             }
         }
         return finishSearch(game, s, goal, plan, map, best, bestScore);
