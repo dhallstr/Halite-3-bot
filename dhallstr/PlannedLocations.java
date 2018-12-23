@@ -46,6 +46,7 @@ public class PlannedLocations {
         shipPlans.put(s.id, intent);
         Position p = s.position;
         for (int i = 0; i < plan.length; i++) {
+            if (plan[i] == null) break;
             p = p.directionalOffset(plan[i]);
             addLoc(map, p, s.id, i+1);
             if (plan[i] == Direction.STILL) {

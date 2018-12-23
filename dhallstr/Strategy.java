@@ -73,15 +73,18 @@ public class Strategy {
         }
 
         // *** pathfind based on goal ***
-        Direction[] path;
+        Direction[] path = null;
         if (g != null) {
             long time = System.currentTimeMillis();
-            path = Navigation.bfs(game, ship, g, plan);
+            if (g instanceof DropoffGoal)
+                path = Navigation.bfs(game, ship, g, plan);
+            else
+                path = Navigation.dfs(game, ship, g, plan);
             time
                     = System.currentTimeMillis() - time;
             Log.log("Navigation time: " + time);
         }
-        else {
+        if (path == null) {
             path = new Direction[] {Direction.STILL};
         }
         Log.log(Arrays.toString(path));

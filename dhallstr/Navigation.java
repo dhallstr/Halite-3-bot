@@ -6,6 +6,79 @@ import java.util.LinkedList;
 
 public class Navigation {
 
+    private static int bestScore = 0;
+    private static Direction[] best = null;
+
+    static Direction[] dfs(Game game, Ship s, Goal goal, PlannedLocations plan) {
+        game.gameMap.setAllUnvisited();
+        bestScore = Integer.MIN_VALUE;
+        best = new Direction[goal.getMaxTurns()];
+        Direction[] dirs = new Direction[goal.getMaxTurns()];
+        dfs(dirs, game, s, game.gameMap.at(s.position), goal, plan, 0);
+        return best[0] == null ? null : best;
+    }
+
+    private static void dfs(Direction[] dirs, Game game, Ship s, MapCell curr, Goal goal, PlannedLocations plan, int depth) {
+        if (depth >= goal.getMaxTurns() ||
+           (!plan.isSafe(game.gameMap, curr.position, s, depth, false ) && !goal.overrideUnsafe(curr))) return;
+        int score = goal.rateTile(game, curr, s, plan);
+
+        if (goal.meetsGoal(curr) && score > bestScore) {
+            bestScore = score;
+            System.arraycopy(dirs, 0, best, 0, dirs.length);
+        }
+        if(score > curr.bestScore) {
+            curr.bestScore = score;
+        }
+        //else return;
+
+        curr.actualDist = depth + 1;
+        curr.dist = depth + 1;
+        dirs[depth] = Direction.STILL;
+        int minedAmount = Math.min(curr.collectAmount(curr.haliteExpected), Constants.MAX_HALITE - (s.halite - curr.lost + curr.gained));
+        curr.haliteExpected -= minedAmount;
+        curr.gained += minedAmount;
+
+        dfs(dirs, game, s, curr, goal, plan, depth+1);
+
+        curr.haliteExpected += minedAmount;
+        curr.gained -= minedAmount;
+        curr.actualDist = depth;
+        curr.dist = depth;
+
+        if (!(s.halite + curr.gained - curr.lost == Constants.MAX_HALITE)) {
+            for (Direction d : Direction.ALL_CARDINALS) {
+
+                dirs[depth] = d;
+                MapCell m = game.gameMap.at(curr.position.directionalOffset(d));
+                if (m.visited) continue;
+                int prevDist = m.actualDist;
+                int prevLost = m.lost;
+                int prevGained = m.gained;
+
+
+                int costAmount = curr.moveCost(curr.haliteExpected);
+                if (costAmount > s.halite - curr.lost + curr.gained) break;//all of the moves have the same cost
+                m.actualDist = depth + 1;
+                m.dist = depth + 1;
+
+
+                m.lost = curr.lost + costAmount;
+                m.gained = curr.gained;
+                m.visited = true;
+
+                dfs(dirs, game, s, m, goal, plan, depth + 1);
+
+                m.actualDist = prevDist;
+                m.dist = prevDist;
+                m.lost = prevLost;
+                m.gained = prevGained;
+                m.visited = false;
+            }
+        }
+        dirs[depth] = null;
+    }
+
     static Direction[] bfs(Game game, Ship s, Goal goal, PlannedLocations plan) {
 
         GameMap map = game.gameMap;

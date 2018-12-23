@@ -8,12 +8,14 @@ public class MapCell {
 
     public boolean isInspired = false;
 
-    // These are used in navigation and their value should never be used elsewhere
+    // These are used in navigation and their value should never be used elsewhere. Otherwise behavior is undefined
     public boolean visited = false;
     public Direction path = Direction.STILL;
     public int dist = 0, actualDist = 0;
     public int lost = 0;
     public int gained = 0;
+    public int haliteExpected = 0;
+    public int bestScore = 0;
 
     // These are used in other BFS applications
     public boolean secondaryVisited = false;

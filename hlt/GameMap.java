@@ -235,6 +235,8 @@ public class GameMap {
                 cells[i][j].actualDist = 0;
                 cells[i][j].lost = 0;
                 cells[i][j].gained = 0;
+                cells[i][j].haliteExpected = cells[i][j].halite;
+                cells[i][j].bestScore = Integer.MIN_VALUE;
             }
         }
     }

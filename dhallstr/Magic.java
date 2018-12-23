@@ -56,13 +56,13 @@ public class Magic {
         int size = (width + height) / 2; // in case it is a rectangle
         END_GAME_HALITE += (int)((size - 32) / 32.0 * (45 - END_GAME_HALITE));
         if (isTwoPlayer) {
-            MAX_DROPOFFS = (int)(size / 11);
+            MAX_DROPOFFS = (size / 11);
             SEARCH_DEPTH = 65;
         }
         else {
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
             END_GAME_HALITE = 25;
-            MAX_DROPOFFS = (int)(size / 11);
+            MAX_DROPOFFS = (size / 11);
             SEARCH_DEPTH = 45;
         }
     }
