@@ -180,6 +180,37 @@ public class GameMap {
         return total;
     }
 
+    public int findHalitePercentile(Position pos, int radius, double percentile) {
+        assert(percentile >= 0 && percentile < 1);
+
+        setAllSecondaryUnvisited();
+
+        LinkedList<MapCell> queue = new LinkedList<>();
+        queue.add(at(pos));
+        at(pos).secondaryVisited = true;
+        ArrayList<Integer> halites = new ArrayList<Integer>(radius * radius);
+        halites.add(at(pos).halite);
+        while (!queue.isEmpty()) {
+            MapCell curr = queue.poll();
+            if (curr == null) continue;
+
+            if (curr.secondaryDist > radius) {
+                break;
+            }
+
+            for (Direction d: Direction.ALL_CARDINALS) {
+                MapCell m = offset(curr, d);
+                if (!m.secondaryVisited){
+                    queue.add(m);
+                    m.secondaryVisited = true;
+                    m.secondaryDist = curr.secondaryDist + 1;
+                    halites.add(m.halite);
+                }
+            }
+        }
+        return halites.get((int)(percentile * halites.size()));
+    }
+
     public Position normalize(final Position position) {
         final int x = ((position.x % width) + width) % width;
         final int y = ((position.y % height) + height) % height;

@@ -7,6 +7,7 @@ import java.util.LinkedList;
 public class Navigation {
 
     static Direction[] bfs(Game game, Ship s, Goal goal, PlannedLocations plan) {
+
         GameMap map = game.gameMap;
 
         map.setAllUnvisited();

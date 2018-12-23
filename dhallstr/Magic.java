@@ -26,7 +26,7 @@ public class Magic {
     public static double COLLECTION_INT = 25,
                         COLLECTION_SLOPE = 0.27;
     public static double END_GAME_FIND_PERCENTILE = 0.9;
-    public static int COLLECTION_END_GAME_HALITE = 26;
+    public static int COLLECTION_END_GAME_HALITE = 30;
     public static double END_GAME_COLLECTION_INT = 12,
                         END_GAME_COLLECTION_SLOPE = 0.2;
 
@@ -60,7 +60,6 @@ public class Magic {
             SEARCH_DEPTH = 65;
         }
         else {
-            COLLECTION_END_GAME_HALITE = 16;
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
             END_GAME_HALITE = 25;
             MAX_DROPOFFS = (int)(size / 11);
