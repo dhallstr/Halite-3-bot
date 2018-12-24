@@ -1,0 +1,17 @@
+
+Turn 419
+================================================================
+warning: owned entities 26, 73 collided on cell (13, 36) as the result of moves on this turn
+At command 3 of 5:
+    1   m 1 n
+    2   m 54 w
+>>> 3   m 26 n
+    4   m 73 w
+    5   m 18 n
+
+Other commands that placed an entity on this cell:
+    2   m 54 w
+    3   m 26 n
+>>> 4   m 73 w
+    5   m 18 n
+

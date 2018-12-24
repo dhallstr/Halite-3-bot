@@ -1,0 +1,35 @@
+
+Turn 418
+================================================================
+warning: owned entities 82, 84 collided on cell (11, 20) as the result of moves on this turn
+At command 4 of 7:
+    2   m 84 o
+    3   m 52 e
+>>> 4   m 82 w
+    5   m 80 s
+    6   m 9 s
+
+
+Turn 420
+================================================================
+warning: owned entities 80, 72, 52 collided on cell (11, 20) as the result of moves on this turn
+At command 1 of 5:
+>>> 1   m 80 s
+    2   m 49 s
+    3   m 72 w
+
+Other commands that placed an entity on this cell:
+    1   m 80 s
+    2   m 49 s
+>>> 3   m 72 w
+    4   m 52 o
+    5   m 9 s
+
+
+Turn 422
+================================================================
+warning: owned entities 49, 9 collided on cell (11, 20) as the result of moves on this turn
+At command 1 of 2:
+>>> 1   m 49 e
+    2   m 9 o
+

@@ -1,0 +1,40 @@
+
+Turn 394
+================================================================
+warning: owned entities 86, 96 collided on cell (16, 24) as the result of moves on this turn
+At command 3 of 6:
+    1   m 105 w
+    2   m 55 w
+>>> 3   m 86 n
+    4   m 80 w
+    5   m 96 w
+
+Other commands that placed an entity on this cell:
+    3   m 86 n
+    4   m 80 w
+>>> 5   m 96 w
+    6   m 104 n
+
+
+Turn 395
+================================================================
+warning: owned entities 80, 104 collided on cell (16, 24) as the result of moves on this turn
+At command 3 of 4:
+    1   m 55 o
+    2   m 105 w
+>>> 3   m 80 w
+    4   m 104 n
+
+Other commands that placed an entity on this cell:
+    2   m 105 w
+    3   m 80 w
+>>> 4   m 104 n
+
+
+Turn 396
+================================================================
+warning: owned entities 105, 55 collided on cell (23, 16) as the result of moves on this turn
+At command 1 of 2:
+>>> 1   m 105 w
+    2   m 55 o
+

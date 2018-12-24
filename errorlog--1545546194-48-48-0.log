@@ -1,0 +1,93 @@
+
+Turn 440
+================================================================
+warning: owned entities 63, 57 collided on cell (12, 24) as the result of moves on this turn
+At command 3 of 15:
+    1   m 115 w
+    2   m 39 e
+>>> 3   m 63 w
+    4   m 37 w
+    5   m 55 e
+
+Other commands that placed an entity on this cell:
+    8   m 13 s
+    9   m 64 n
+>>> 10   m 57 s
+    11   m 88 e
+    12   m 3 w
+
+
+Turn 443
+================================================================
+warning: owned entities 88, 37, 13, 115 collided on cell (4, 17) as the result of moves on this turn
+At command 1 of 13:
+>>> 1   m 88 e
+    2   m 37 w
+    3   m 3 w
+
+Other commands that placed an entity on this cell:
+    1   m 88 e
+>>> 2   m 37 w
+    3   m 3 w
+    4   m 67 n
+
+    8   m 39 e
+    9   m 124 n
+>>> 10   m 13 s
+    11   m 79 s
+    12   m 36 n
+
+warning: owned entities 39, 124, 21 collided on cell (12, 24) as the result of moves on this turn
+At command 8 of 13:
+    6   m 115 o
+    7   m 55 e
+>>> 8   m 39 e
+    9   m 124 n
+    10   m 13 s
+
+Other commands that placed an entity on this cell:
+    7   m 55 e
+    8   m 39 e
+>>> 9   m 124 n
+    10   m 13 s
+    11   m 79 s
+
+
+Turn 444
+================================================================
+warning: owned entities 3, 55 collided on cell (4, 17) as the result of moves on this turn
+At command 3 of 6:
+    1   m 67 n
+    2   m 79 s
+>>> 3   m 3 w
+    4   m 64 w
+    5   m 55 e
+
+Other commands that placed an entity on this cell:
+    3   m 3 w
+    4   m 64 w
+>>> 5   m 55 e
+    6   m 36 w
+
+
+Turn 445
+================================================================
+warning: owned entities 67, 64 collided on cell (12, 24) as the result of moves on this turn
+At command 3 of 4:
+    1   m 64 o
+    2   m 79 w
+>>> 3   m 67 w
+    4   m 36 n
+
+warning: owned entities 79, 36 collided on cell (4, 17) as the result of moves on this turn
+At command 2 of 4:
+    1   m 64 o
+>>> 2   m 79 w
+    3   m 67 w
+    4   m 36 n
+
+Other commands that placed an entity on this cell:
+    2   m 79 w
+    3   m 67 w
+>>> 4   m 36 n
+

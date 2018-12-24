@@ -1,0 +1,28 @@
+
+Turn 443
+================================================================
+warning: owned entities 48, 63 collided on cell (17, 34) as the result of moves on this turn
+At command 2 of 7:
+    1   m 133 e
+>>> 2   m 48 n
+    3   m 32 o
+    4   m 124 e
+
+
+Turn 446
+================================================================
+warning: owned entities 124, 133 collided on cell (6, 10) as the result of moves on this turn
+At command 1 of 5:
+>>> 1   m 124 e
+    2   m 32 e
+    3   m 110 e
+
+
+Turn 448
+================================================================
+warning: owned entities 110, 25 collided on cell (2, 32) as the result of moves on this turn
+At command 2 of 3:
+    1   m 32 o
+>>> 2   m 110 n
+    3   m 25 o
+

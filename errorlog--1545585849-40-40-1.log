@@ -1,0 +1,94 @@
+
+Turn 418
+================================================================
+warning: owned entities 58, 77 collided on cell (1, 7) as the result of moves on this turn
+At command 8 of 13:
+    6   m 44 e
+    7   m 77 o
+>>> 8   m 58 w
+    9   m 59 s
+    10   m 80 w
+
+
+Turn 419
+================================================================
+warning: owned entities 44, 76, 80 collided on cell (1, 7) as the result of moves on this turn
+At command 1 of 14:
+>>> 1   m 44 n
+    2   m 75 n
+    3   m 62 w
+
+Other commands that placed an entity on this cell:
+    3   m 62 w
+    4   m 82 o
+>>> 5   m 76 s
+    6   m 43 e
+    7   m 80 w
+
+    5   m 76 s
+    6   m 43 e
+>>> 7   m 80 w
+    8   m 61 o
+    9   m 59 w
+
+
+Turn 420
+================================================================
+warning: owned entities 43, 78 collided on cell (1, 7) as the result of moves on this turn
+At command 1 of 11:
+>>> 1   m 43 n
+    2   m 62 w
+    3   m 14 e
+
+Other commands that placed an entity on this cell:
+    5   m 75 o
+    6   m 42 e
+>>> 7   m 78 s
+    8   m 41 n
+    9   m 82 s
+
+
+Turn 421
+================================================================
+warning: owned entities 62, 61 collided on cell (1, 7) as the result of moves on this turn
+At command 5 of 9:
+    3   m 42 e
+    4   m 14 e
+>>> 5   m 62 s
+    6   m 61 w
+    7   m 82 s
+
+Other commands that placed an entity on this cell:
+    4   m 14 e
+    5   m 62 s
+>>> 6   m 61 w
+    7   m 82 s
+    8   m 74 e
+
+
+Turn 422
+================================================================
+warning: owned entities 82, 14, 74, 42 collided on cell (1, 7) as the result of moves on this turn
+At command 1 of 7:
+>>> 1   m 82 w
+    2   m 14 s
+    3   m 74 e
+
+Other commands that placed an entity on this cell:
+    1   m 82 w
+>>> 2   m 14 s
+    3   m 74 e
+    4   m 41 s
+
+    1   m 82 w
+    2   m 14 s
+>>> 3   m 74 e
+    4   m 41 s
+    5   m 42 n
+
+    3   m 74 e
+    4   m 41 s
+>>> 5   m 42 n
+    6   m 75 e
+    7   m 59 o
+

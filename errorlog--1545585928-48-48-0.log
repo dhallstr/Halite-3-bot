@@ -1,0 +1,94 @@
+
+Turn 441
+================================================================
+warning: owned entities 49, 1 collided on cell (12, 24) as the result of moves on this turn
+At command 11 of 14:
+    9   m 74 w
+    10   m 16 w
+>>> 11   m 49 n
+    12   m 46 w
+    13   m 69 s
+
+
+Turn 442
+================================================================
+warning: owned entities 74, 37 collided on cell (12, 24) as the result of moves on this turn
+At command 7 of 12:
+    5   m 52 w
+    6   m 63 w
+>>> 7   m 74 w
+    8   m 37 s
+    9   m 69 o
+
+Other commands that placed an entity on this cell:
+    6   m 63 w
+    7   m 74 w
+>>> 8   m 37 s
+    9   m 69 o
+    10   m 73 s
+
+
+Turn 443
+================================================================
+warning: owned entities 16, 63, 46 collided on cell (12, 24) as the result of moves on this turn
+At command 6 of 10:
+    4   m 73 s
+    5   m 18 w
+>>> 6   m 16 s
+    7   m 63 n
+    8   m 46 w
+
+Other commands that placed an entity on this cell:
+    5   m 18 w
+    6   m 16 s
+>>> 7   m 63 n
+    8   m 46 w
+    9   m 3 s
+
+    6   m 16 s
+    7   m 63 n
+>>> 8   m 46 w
+    9   m 3 s
+    10   m 69 s
+
+
+Turn 444
+================================================================
+warning: owned entities 52, 73, 18, 3 collided on cell (12, 24) as the result of moves on this turn
+At command 1 of 7:
+>>> 1   m 52 n
+    2   m 6 w
+    3   m 73 e
+
+Other commands that placed an entity on this cell:
+    1   m 52 n
+    2   m 6 w
+>>> 3   m 73 e
+    4   m 23 s
+    5   m 18 w
+
+    3   m 73 e
+    4   m 23 s
+>>> 5   m 18 w
+    6   m 3 s
+    7   m 69 s
+
+    4   m 23 s
+    5   m 18 w
+>>> 6   m 3 s
+    7   m 69 s
+
+
+Turn 445
+================================================================
+warning: owned entities 23, 69 collided on cell (12, 24) as the result of moves on this turn
+At command 2 of 3:
+    1   m 6 w
+>>> 2   m 23 w
+    3   m 69 s
+
+Other commands that placed an entity on this cell:
+    1   m 6 w
+    2   m 23 w
+>>> 3   m 69 s
+

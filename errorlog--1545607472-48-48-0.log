@@ -1,0 +1,26 @@
+
+Turn 444
+================================================================
+warning: owned entities 71, 31, 88 collided on cell (6, 15) as the result of moves on this turn
+At command 1 of 7:
+>>> 1   m 71 e
+    2   m 141 e
+    3   m 102 n
+
+Other commands that placed an entity on this cell:
+    2   m 141 e
+    3   m 102 n
+>>> 4   m 31 n
+    5   m 88 o
+    6   m 27 o
+
+
+Turn 446
+================================================================
+warning: owned entities 27, 141 collided on cell (14, 8) as the result of moves on this turn
+At command 3 of 4:
+    1   m 141 o
+    2   m 102 s
+>>> 3   m 27 s
+    4   m 124 s
+

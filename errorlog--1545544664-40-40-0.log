@@ -1,0 +1,11 @@
+
+Turn 25
+================================================================
+error: failed to decode bot message: "E" (at position 1)
+Last input received was:
+Exception in thread "main" java.lang.NullPointerException
+	at hlt.Command.move(Command.java:19)
+	at hlt.Ship.move(Ship.java:20)
+	at dhallstr.Strategy.evaluateMove(Strategy.java:93)
+	at MyBot.main(MyBot.java:43)
+

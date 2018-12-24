@@ -1,0 +1,281 @@
+
+Turn 389
+================================================================
+warning: owned entities 105, 96, 65 collided on cell (13, 11) as the result of moves on this turn
+At command 20 of 40:
+    18   m 23 e
+    19   m 94 s
+>>> 20   m 105 s
+    21   m 110 w
+    22   m 89 w
+
+Other commands that placed an entity on this cell:
+    23   m 10 w
+    24   m 78 e
+>>> 25   m 96 n
+    26   m 65 e
+    27   m 50 w
+
+    24   m 78 e
+    25   m 96 n
+>>> 26   m 65 e
+    27   m 50 w
+    28   m 44 s
+
+
+Turn 390
+================================================================
+warning: owned entities 112, 89 collided on cell (23, 16) as the result of moves on this turn
+At command 4 of 37:
+    2   m 92 s
+    3   m 93 e
+>>> 4   m 112 w
+    5   m 97 s
+    6   m 59 o
+
+Other commands that placed an entity on this cell:
+    12   m 64 o
+    13   m 114 w
+>>> 14   m 89 n
+    15   m 10 w
+    16   m 101 w
+
+warning: owned entities 106, 91, 32 collided on cell (13, 11) as the result of moves on this turn
+At command 9 of 37:
+    7   m 60 n
+    8   m 103 e
+>>> 9   m 106 n
+    10   m 23 e
+    11   m 109 e
+
+Other commands that placed an entity on this cell:
+    16   m 101 w
+    17   m 73 e
+>>> 18   m 91 s
+    19   m 94 w
+    20   m 110 w
+
+    27   m 79 o
+    28   m 111 n
+>>> 29   m 32 e
+    30   m 90 w
+    31   m 84 w
+
+
+Turn 391
+================================================================
+warning: owned entities 114, 25 collided on cell (23, 16) as the result of moves on this turn
+At command 3 of 32:
+    1   m 73 o
+    2   m 57 n
+>>> 3   m 114 n
+    4   m 10 w
+    5   m 74 e
+
+Other commands that placed an entity on this cell:
+    22   m 84 o
+    23   m 100 s
+>>> 24   m 25 w
+    25   m 104 w
+    26   m 82 s
+
+
+Turn 392
+================================================================
+warning: owned entities 103, 74, 60, 23 collided on cell (13, 11) as the result of moves on this turn
+At command 8 of 30:
+    6   m 101 w
+    7   m 94 o
+>>> 8   m 103 e
+    9   m 92 w
+    10   m 64 o
+
+Other commands that placed an entity on this cell:
+    14   m 100 o
+    15   m 111 e
+>>> 16   m 74 s
+    17   m 60 n
+    18   m 93 e
+
+    15   m 111 e
+    16   m 74 s
+>>> 17   m 60 n
+    18   m 93 e
+    19   m 104 s
+
+warning: owned entities 50, 57, 93, 104 collided on cell (23, 16) as the result of moves on this turn
+At command 5 of 30:
+    3   m 83 o
+    4   m 44 n
+>>> 5   m 50 n
+    6   m 101 w
+    7   m 94 o
+
+Other commands that placed an entity on this cell:
+    9   m 92 w
+    10   m 64 o
+>>> 11   m 57 w
+    12   m 97 w
+    13   m 10 n
+
+    16   m 74 s
+    17   m 60 n
+>>> 18   m 93 e
+    19   m 104 s
+    20   m 82 o
+
+    17   m 60 n
+    18   m 93 e
+>>> 19   m 104 s
+    20   m 82 o
+    21   m 54 w
+
+
+Turn 393
+================================================================
+warning: owned entities 73, 59, 54, 84 collided on cell (23, 16) as the result of moves on this turn
+At command 3 of 22:
+    1   m 90 n
+    2   m 109 o
+>>> 3   m 73 e
+    4   m 72 o
+    5   m 59 n
+
+Other commands that placed an entity on this cell:
+    3   m 73 e
+    4   m 72 o
+>>> 5   m 59 n
+    6   m 101 w
+    7   m 111 e
+
+    12   m 78 s
+    13   m 97 w
+>>> 14   m 54 s
+    15   m 92 w
+    16   m 84 w
+
+    14   m 54 s
+    15   m 92 w
+>>> 16   m 84 w
+    17   m 83 s
+    18   m 94 w
+
+
+Turn 394
+================================================================
+warning: owned entities 80, 111, 110, 83 collided on cell (23, 16) as the result of moves on this turn
+At command 2 of 18:
+    1   m 44 w
+>>> 2   m 80 w
+    3   m 111 n
+    4   m 101 s
+
+Other commands that placed an entity on this cell:
+    1   m 44 w
+    2   m 80 w
+>>> 3   m 111 n
+    4   m 101 s
+    5   m 90 e
+
+    6   m 82 w
+    7   m 64 w
+>>> 8   m 110 e
+    9   m 97 n
+    10   m 94 w
+
+    11   m 78 o
+    12   m 92 w
+>>> 13   m 83 s
+    14   m 100 w
+    15   m 79 w
+
+warning: owned entities 101, 97, 94, 78 collided on cell (13, 11) as the result of moves on this turn
+At command 4 of 18:
+    2   m 80 w
+    3   m 111 n
+>>> 4   m 101 s
+    5   m 90 e
+    6   m 82 w
+
+Other commands that placed an entity on this cell:
+    7   m 64 w
+    8   m 110 e
+>>> 9   m 97 n
+    10   m 94 w
+    11   m 78 o
+
+    8   m 110 e
+    9   m 97 n
+>>> 10   m 94 w
+    11   m 78 o
+    12   m 92 w
+
+
+Turn 395
+================================================================
+warning: owned entities 64, 100, 44 collided on cell (13, 11) as the result of moves on this turn
+At command 1 of 10:
+>>> 1   m 64 n
+    2   m 90 e
+    3   m 100 w
+
+Other commands that placed an entity on this cell:
+    1   m 64 n
+    2   m 90 e
+>>> 3   m 100 w
+    4   m 82 w
+    5   m 44 s
+
+    3   m 100 w
+    4   m 82 w
+>>> 5   m 44 s
+    6   m 79 w
+    7   m 92 w
+
+warning: owned entities 90, 92, 109 collided on cell (23, 16) as the result of moves on this turn
+At command 2 of 10:
+    1   m 64 n
+>>> 2   m 90 e
+    3   m 100 w
+    4   m 82 w
+
+Other commands that placed an entity on this cell:
+    5   m 44 s
+    6   m 79 w
+>>> 7   m 92 w
+    8   m 109 s
+    9   m 72 e
+
+    6   m 79 w
+    7   m 92 w
+>>> 8   m 109 s
+    9   m 72 e
+    10   m 10 e
+
+
+Turn 396
+================================================================
+warning: owned entities 10, 72 collided on cell (23, 16) as the result of moves on this turn
+At command 3 of 4:
+    1   m 82 w
+    2   m 79 n
+>>> 3   m 10 e
+    4   m 72 s
+
+Other commands that placed an entity on this cell:
+    2   m 79 n
+    3   m 10 e
+>>> 4   m 72 s
+
+warning: owned entities 82, 79 collided on cell (13, 11) as the result of moves on this turn
+At command 1 of 4:
+>>> 1   m 82 w
+    2   m 79 n
+    3   m 10 e
+
+Other commands that placed an entity on this cell:
+    1   m 82 w
+>>> 2   m 79 n
+    3   m 10 e
+    4   m 72 s
+
