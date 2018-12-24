@@ -15,7 +15,10 @@ public class MapCell {
     public int lost = 0;
     public int gained = 0;
     public int haliteExpected = 0;
-    public int bestScore = 0;
+    public int bestHaliteD = 0;
+    public int bestPathLength = 0;
+    public int bestFuturePathCost = 0;
+
 
     // These are used in other BFS applications
     public boolean secondaryVisited = false;

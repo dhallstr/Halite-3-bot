@@ -5,46 +5,59 @@ import hlt.*;
 import java.util.LinkedList;
 
 public class Navigation {
-
+    private static int numTriedAgain = 0;
     private static int bestScore = 0;
     private static Direction[] best = null;
 
     static Direction[] dfs(Game game, Ship s, Goal goal, PlannedLocations plan) {
+        numTriedAgain = 0;
         game.gameMap.setAllUnvisited();
         bestScore = Integer.MIN_VALUE;
         best = new Direction[goal.getMaxTurns()];
         Direction[] dirs = new Direction[goal.getMaxTurns()];
         dfs(dirs, game, s, game.gameMap.at(s.position), goal, plan, 0);
+        Log.log("Tried again: " + numTriedAgain);
         return best[0] == null ? null : best;
     }
 
-    private static void dfs(Direction[] dirs, Game game, Ship s, MapCell curr, Goal goal, PlannedLocations plan, int depth) {
+    private static int dfs(Direction[] dirs, Game game, Ship s, MapCell curr, Goal goal, PlannedLocations plan, int depth) {
         if (depth >= goal.getMaxTurns() ||
-           (!plan.isSafe(game.gameMap, curr.position, s, depth, false ) && !goal.overrideUnsafe(curr))) return;
+           (!plan.isSafe(game.gameMap, curr.position, s, depth, false ) && !goal.overrideUnsafe(curr))) return Integer.MIN_VALUE;
         int score = goal.rateTile(game, curr, s, plan);
 
         if (goal.meetsGoal(curr) && score > bestScore) {
             bestScore = score;
             System.arraycopy(dirs, 0, best, 0, dirs.length);
         }
-        if(score > curr.bestScore) {
-            curr.bestScore = score;
-        }
-        //else return;
+        if (curr.haliteExpected == curr.halite && curr.bestFuturePathCost == -1) curr.haliteExpected = plan.getProjectedHalite(game.gameMap, curr.position, depth);
+        int futureScore = score;
 
-        curr.actualDist = depth + 1;
-        curr.dist = depth + 1;
-        dirs[depth] = Direction.STILL;
         int minedAmount = Math.min(curr.collectAmount(curr.haliteExpected), Constants.MAX_HALITE - (s.halite - curr.lost + curr.gained));
-        curr.haliteExpected -= minedAmount;
-        curr.gained += minedAmount;
+        if (minedAmount > 0) {
+            curr.actualDist = depth + 1;
+            curr.dist = depth + 1;
+            dirs[depth] = Direction.STILL;
 
-        dfs(dirs, game, s, curr, goal, plan, depth+1);
+            curr.haliteExpected -= minedAmount;
+            curr.gained += minedAmount;
 
-        curr.haliteExpected += minedAmount;
-        curr.gained -= minedAmount;
-        curr.actualDist = depth;
-        curr.dist = depth;
+            futureScore = Math.max(futureScore, dfs(dirs, game, s, curr, goal, plan, depth + 1));
+
+            curr.haliteExpected += minedAmount;
+            curr.gained -= minedAmount;
+            curr.actualDist = depth;
+            curr.dist = depth;
+        }
+        int distToHome = 0;//game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), curr.position);
+        if(curr.bestFuturePathCost == -1 || curr.bestPathLength == 0 || curr.gained - curr.lost - /*curr.bestFuturePathCost*/30 * (curr.actualDist + distToHome) > curr.bestHaliteD - /*curr.bestFuturePathCost*/30 * curr.bestPathLength) {
+            curr.bestPathLength = curr.actualDist + distToHome;
+            curr.bestHaliteD = curr.gained - curr.lost;
+            numTriedAgain ++;
+        }
+        else {
+            dirs[depth] = null;
+            return curr.bestFuturePathCost != -1 ? curr.bestFuturePathCost : Integer.MIN_VALUE;
+        }
 
         if (!(s.halite + curr.gained - curr.lost == Constants.MAX_HALITE)) {
             for (Direction d : Direction.ALL_CARDINALS) {
@@ -67,7 +80,7 @@ public class Navigation {
                 m.gained = curr.gained;
                 m.visited = true;
 
-                dfs(dirs, game, s, m, goal, plan, depth + 1);
+                futureScore = Math.max(futureScore, dfs(dirs, game, s, m, goal, plan, depth + 1));
 
                 m.actualDist = prevDist;
                 m.dist = prevDist;
@@ -76,7 +89,11 @@ public class Navigation {
                 m.visited = false;
             }
         }
+        if (futureScore > curr.bestFuturePathCost) {
+            curr.bestFuturePathCost = futureScore;
+        }
         dirs[depth] = null;
+        return curr.bestFuturePathCost;
     }
 
     static Direction[] bfs(Game game, Ship s, Goal goal, PlannedLocations plan) {

@@ -2,6 +2,7 @@ package dhallstr;
 
 import hlt.*;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -43,6 +44,7 @@ public class PlannedLocations {
 
     void addPlan(GameMap map, Ship s, Direction[] plan, Intent intent) {
         cancelPlan(map, s, 1);
+        Log.log("Adding plan of ship " + s.id + " " + Arrays.toString(plan));
         shipPlans.put(s.id, intent);
         Position p = s.position;
         for (int i = 0; i < plan.length; i++) {
@@ -56,6 +58,7 @@ public class PlannedLocations {
     }
 
     void cancelPlan(GameMap map, Ship s, int turnOffset) {
+        Log.log("Cancelling plan of ship " + s.id);
         if (shipPlans.get(s.id) != null) shipPlans.put(s.id, Intent.NONE);
         Position p = getLocation(map, s, turnOffset);
         if (p != null) {
