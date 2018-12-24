@@ -4,69 +4,56 @@ import hlt.*;
 
 public class TerrainGoal extends Goal {
 
-    PlayerId me;
-    int myHalite;
+    //PlayerId me;
     int neededHalite;
     int turns;
 
-    Goal simple;
-
-    public int getTurns() {
+    public int getMaxTurns() {
         return turns;
     }
 
-    public Goal getSimpleGoal() {
-        return simple;
-    }
-
-    public Goal setSimpleGoal(Goal g) {
-        simple = g;
-        return this;
-    }
-
-    public TerrainGoal(int halite, int turns, Ship me) {
+    public TerrainGoal(int halite, int turns) {
         neededHalite = halite;
         this.turns = turns;
-        this.me = me.owner;
-        myHalite = me.halite;
-        simple = null;
+        //this.me = me.owner;
     }
-
-    public boolean overrideUnsafe(MapCell cell) { return false; }
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
-        int totalHalite = s.halite - cell.cost + Math.max(plan.getProjectedHalite(game.gameMap, cell.position, cell.dist) - Magic.MIN_GATHER_WAIT_HALITE, 0);
+        int totalHalite = s.halite - cell.lost + cell.gained + Math.max((plan.getProjectedHalite(game.gameMap, cell.position, cell.actualDist) - Magic.getCollectDownTo(game.gameMap)), 0);
         if (totalHalite > Constants.MAX_HALITE) {
-            totalHalite = (2 * Constants.MAX_HALITE - totalHalite);
+            totalHalite = 2 * Constants.MAX_HALITE - s.halite + cell.lost - cell.gained - Math.max((plan.getProjectedHalite(game.gameMap, cell.position, cell.actualDist) - Magic.getCollectDownTo(game.gameMap)), 0);
         }
+        int numStays = getNumberStays(s, cell, plan, game.gameMap);
+        /*int halite = plan.getProjectedHalite(game.gameMap, cell.position, cell.actualDist);
+        int myHalite = s.halite - cell.lost + cell.gained;
+        for (int i = 0; i < numStays; i++) {
+            int mined = Math.min(cell.minedAmount(halite), Constants.MAX_HALITE - myHalite);
+            int collected = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
+            halite -= mined;
+            myHalite += collected;
+        }
+        totalHalite -= cell.moveCost(halite);*/
 
-        int turns = cell.actualDist + getNumberStays(s, cell, plan, game.gameMap) + game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell.position);
-        return (totalHalite - s.halite) / turns;
+
+        int turns = cell.actualDist + numStays + game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell.position);
+        return (totalHalite - s.halite) / (turns == 0 ? 1 : turns);
     }
 
     @Override
     public int getNumberStays(Ship s, MapCell cell, PlannedLocations plan, GameMap map) {
         int halite = plan.getProjectedHalite(map, cell.position, cell.dist);
+        int myHalite = s.halite - cell.lost + cell.gained;
+        if (halite <= Magic.getCollectDownTo(map) || myHalite == Constants.MAX_HALITE) return 0;
         int turnsStayed;
-        int minedTotal = 0;
-        for (turnsStayed = 0; ; turnsStayed++) {
-            int mined = Math.min(cell.isInspired ? halite / Constants.INSPIRED_EXTRACT_RATIO : halite / Constants.EXTRACT_RATIO, Constants.MAX_HALITE - s.halite + cell.cost - minedTotal);
+        for (turnsStayed = 1; ; turnsStayed++) {
+            int mined = Math.min(cell.minedAmount(halite), Constants.MAX_HALITE - myHalite);
+            int collected = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
             halite -= mined;
-            minedTotal += mined;
-            if (mined < Magic.MIN_GATHER_WAIT_HALITE) break;
+            myHalite += collected;
+            if (halite <= Magic.getCollectDownTo(map) || myHalite == Constants.MAX_HALITE) break;
         }
         return turnsStayed;
-    }
-
-    @Override
-    public int getAutoAccept() {
-        return Integer.MAX_VALUE;
-    }
-
-    @Override
-    public int getMinScore() {
-        return Integer.MIN_VALUE;
     }
 
     public Intent getIntent() {
@@ -75,9 +62,5 @@ public class TerrainGoal extends Goal {
 
     public boolean meetsGoal(MapCell cell) {
         return (cell.halite >= neededHalite);
-    }
-
-    public Direction[] orderDirections(GameMap map, MapCell cell) {
-        return order(map, cell, true);
     }
 }

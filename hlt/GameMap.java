@@ -11,6 +11,7 @@ public class GameMap {
     public final MapCell[][] cells;
 
     public int haliteOnMap = 0;
+    public int percentileHaliteNearMyDropoffs;
 
     public GameMap(final int width, final int height) {
         this.width = width;
@@ -114,26 +115,34 @@ public class GameMap {
     }
 
     public void updateInRange(Game game, PlayerId me) {
+        haliteOnMap = 0;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < height; j++) {
+                cells[i][j].enemyShipsNearby = 0;
+                haliteOnMap += cells[i][j].halite;
+            }
+        }
 
         for (Player p: game.players) {
-            if (p.id.equals(me)) continue;
+            if (p.id.id == me.id) continue;
             for (Ship s: p.ships.values()) {
                 for (int[] offset: Magic.INSPIRE_OFFSET) {
                     cells[(s.position.y + offset[0] + height)%height][(s.position.x + offset[1] + width)%width].enemyShipsNearby++;
                 }
             }
         }
-
-        haliteOnMap = 0;
+        int numinspired = 0;
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < height; j++) {
-                cells[i][j].enemyShipsNearby = 0;
-                haliteOnMap += cells[i][j].halite;
                 if (Constants.INSPIRATION_ENABLED) {
-                    cells[i][j].isInspired = cells[i][j].enemyShipsNearby >= Constants.INSPIRATION_SHIP_COUNT;
+                    cells[i][j].isInspired = (cells[i][j].enemyShipsNearby >= Constants.INSPIRATION_SHIP_COUNT);
+                    if (cells[i][j].isInspired) {
+                        numinspired++;
+                    }
                 }
             }
         }
+        Log.log(numinspired == 0 ? "No inspired" : "" + numinspired + " number of inspired locations");
     }
 
     @Deprecated
@@ -171,6 +180,37 @@ public class GameMap {
         return total;
     }
 
+    public int findHalitePercentile(Position pos, int radius, double percentile) {
+        assert(percentile >= 0 && percentile < 1);
+
+        setAllSecondaryUnvisited();
+
+        LinkedList<MapCell> queue = new LinkedList<>();
+        queue.add(at(pos));
+        at(pos).secondaryVisited = true;
+        ArrayList<Integer> halites = new ArrayList<Integer>(radius * radius);
+        halites.add(at(pos).halite);
+        while (!queue.isEmpty()) {
+            MapCell curr = queue.poll();
+            if (curr == null) continue;
+
+            if (curr.secondaryDist > radius) {
+                break;
+            }
+
+            for (Direction d: Direction.ALL_CARDINALS) {
+                MapCell m = offset(curr, d);
+                if (!m.secondaryVisited){
+                    queue.add(m);
+                    m.secondaryVisited = true;
+                    m.secondaryDist = curr.secondaryDist + 1;
+                    halites.add(m.halite);
+                }
+            }
+        }
+        return halites.get((int)(percentile * halites.size()));
+    }
+
     public Position normalize(final Position position) {
         final int x = ((position.x % width) + width) % width;
         final int y = ((position.y % height) + height) % height;
@@ -193,7 +233,8 @@ public class GameMap {
                 cells[i][j].path = Direction.STILL;
                 cells[i][j].dist = 0;
                 cells[i][j].actualDist = 0;
-                cells[i][j].cost = 0;
+                cells[i][j].lost = 0;
+                cells[i][j].gained = 0;
             }
         }
     }

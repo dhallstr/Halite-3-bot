@@ -53,25 +53,25 @@ public class Strategy {
         // *** use the move that was planned ahead ***
         if (plannedMove != null && plan.isSafe(game.gameMap, ship.position.directionalOffset(plannedMove), ship, 1, COLLISIONS_DISABLED) &&
                 !(game.gameMap.at(ship).hasStructure() && game.gameMap.at(ship).structure.owner == plan.me) &&
-                (ship.halite >= game.gameMap.at(ship).moveCost() && plannedMove != Direction.STILL)) {
+                (ship.halite >= game.gameMap.at(ship).moveCost() && plannedMove != Direction.STILL) &&
+                (intent == Intent.GATHER && plannedMove == Direction.STILL && ship.halite == Constants.MAX_HALITE)) {
             return ship.move(plannedMove);
         }
-        else if (plannedMove != null && !plan.isSafe(game.gameMap, ship.position.directionalOffset(plannedMove), ship, 1, COLLISIONS_DISABLED)) {
+        else if (plannedMove != null) {
             resolveCancelledMove(game, ship, plan, commands);
         }
 
 
         // *** create a new goal ***
+
         Goal g = null;
-        if (ship.halite > Magic.START_DELIVER_HALITE && ship.halite + Magic.MIN_BACK_TO_DROPOFF_WAIT_HALITE < Constants.MAX_HALITE && game.gameMap.at(ship).halite > (Constants.MAX_HALITE - ship.halite - Magic.MIN_BACK_TO_DROPOFF_WAIT_HALITE) * Constants.EXTRACT_RATIO) {
-            g = null;
-        }
-        else if (ship.halite > Magic.START_DELIVER_HALITE || (ship.halite > Magic.END_DELIVER_HALITE && intent == Intent.DROPOFF) ||
+        if (ship.halite > Magic.START_DELIVER_HALITE ||
+                (intent == Intent.DROPOFF && ship.halite != 0) ||
                   (game.gameMap.haliteOnMap < Magic.END_GAME_HALITE  * game.gameMap.width * game.gameMap.height && ship.halite > Magic.END_GAME_DELIVER_HALITE)) {
             g = new DropoffGoal(plan.me, false);
         }
-        else if (game.gameMap.at(ship).halite < Magic.COLLECT_DOWN_TO || (game.gameMap.at(ship).hasStructure() && game.gameMap.at(ship).structure.owner == plan.me)) {
-            g = new TerrainGoal(10, 30, ship);
+        else if (ship.halite >= game.gameMap.at(ship).moveCost()) {
+            g = new TerrainGoal(10, Magic.SEARCH_DEPTH);
         }
 
         // *** pathfind based on goal ***
@@ -116,8 +116,8 @@ public class Strategy {
 
 
     public static boolean shouldSpawn(Game game, PlannedLocations plan, Player me, GameMap gameMap, ArrayList<Command> commandQueue) {
-        return (game.turnNumber <= (Strategy.IS_TWO_PLAYER ? Constants.MAX_TURNS - 150 : Constants.MAX_TURNS - 150) &&
-                (((game.gameMap.haliteOnMap - (game.gameMap.width * game.gameMap.height) *(Strategy.IS_TWO_PLAYER ? 10 : 3))) / (1620 + 18 * game.totalShips) > game.me.ships.size())) &&
+        return (game.turnNumber <= (Strategy.IS_TWO_PLAYER ? Constants.MAX_TURNS - 140 : Constants.MAX_TURNS - 140) &&
+                (((game.gameMap.haliteOnMap - (game.gameMap.width * game.gameMap.height) *(Strategy.IS_TWO_PLAYER ? 8 : 3))) / (1620 + 18 * game.totalShips) > game.me.ships.size())) &&
                 me.halite >= Constants.SHIP_COST &&
                 (game.turnNumber > 5 || me.ships.size() <= 4) &&
                 isSpawnSafe(gameMap, me, plan, commandQueue);

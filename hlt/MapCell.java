@@ -12,7 +12,8 @@ public class MapCell {
     public boolean visited = false;
     public Direction path = Direction.STILL;
     public int dist = 0, actualDist = 0;
-    public int cost = 0;
+    public int lost = 0;
+    public int gained = 0;
 
     // These are used in other BFS applications
     public boolean secondaryVisited = false;
@@ -31,14 +32,14 @@ public class MapCell {
         return moveCost(halite);
     }
     public int moveCost(int halite) {
-        return halite / Constants.MOVE_COST_RATIO;
+        return isInspired ? halite / Constants.INSPIRED_MOVE_COST_RATIO : halite / Constants.MOVE_COST_RATIO;
     }
 
     public int collectAmount(int halite) {
-        return (int)Math.ceil(isInspired ? halite / (double)Constants.INSPIRED_EXTRACT_RATIO : halite / (double)Constants.EXTRACT_RATIO);
+        return (int)(minedAmount(halite) * (isInspired ? (1 + Constants.INSPIRED_BONUS_MULTIPLIER) : 1));
     }
-    public int collectAmount() {
-        return collectAmount(halite);
+    public int minedAmount(int halite) {
+        return isInspired ? ((halite + Constants.INSPIRED_EXTRACT_RATIO - 1) / Constants.INSPIRED_EXTRACT_RATIO) : ((halite + Constants.EXTRACT_RATIO - 1) / Constants.EXTRACT_RATIO);
     }
 
     public boolean isEmpty() {
