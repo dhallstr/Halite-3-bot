@@ -3,6 +3,8 @@ package dhallstr;
 import hlt.*;
 
 import java.lang.invoke.ConstantCallSite;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 public class DropoffGoal extends Goal {
     PlayerId id;
@@ -47,5 +49,10 @@ public class DropoffGoal extends Goal {
 
     public Intent getIntent() {
         return crashOkay ? Intent.CRASH_HOME : Intent.DROPOFF;
+    }
+
+    public ArrayList<Direction> sort (GameMap map, MapCell curr, ArrayList<Direction> dirs) {
+        dirs.sort(Comparator.comparingInt(d -> map.at(curr.position.directionalOffset(d)).halite));
+        return dirs;
     }
 }

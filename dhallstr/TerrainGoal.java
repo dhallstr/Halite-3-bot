@@ -2,6 +2,8 @@ package dhallstr;
 
 import hlt.*;
 
+import java.util.ArrayList;
+
 public class TerrainGoal extends Goal {
 
     //PlayerId me;
@@ -17,6 +19,8 @@ public class TerrainGoal extends Goal {
         this.turns = turns;
         //this.me = me.owner;
     }
+
+
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
@@ -62,5 +66,10 @@ public class TerrainGoal extends Goal {
 
     public boolean meetsGoal(MapCell cell) {
         return (cell.halite >= neededHalite);
+    }
+
+    public ArrayList<Direction> sort(GameMap map, MapCell curr, ArrayList<Direction> dirs) {
+        dirs.sort((d1, d2) -> map.at(curr.position.directionalOffset(d2)).halite - map.at(curr.position.directionalOffset(d1)).halite);
+        return dirs;
     }
 }
