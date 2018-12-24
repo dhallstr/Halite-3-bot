@@ -60,7 +60,7 @@ public class Navigation {
 
 
 
-            for (Direction d: Direction.ALL_CARDINALS) {
+            for (Direction d: goal.sort(game.gameMap, curr, Direction.ALL_CARDINALS)) {
                 MapCell m = map.offset(curr, d);
                 if (!m.visited && (plan.isSafe(map, m.position, s, curr.actualDist + 1, curr.actualDist <= 1 && Strategy.COLLISIONS_DISABLED) || goal.overrideUnsafe(m))){
                     queue.add(m);
