@@ -52,7 +52,8 @@ public class Strategy {
 
         // *** use the move that was planned ahead ***
         if (plannedMove != null && plan.isSafe(game.gameMap, ship.position.directionalOffset(plannedMove), ship, 1, COLLISIONS_DISABLED) &&
-                (ship.halite >= game.gameMap.at(ship).moveCost() || plannedMove == Direction.STILL) && !(intent == Intent.GATHER && plannedMove == Direction.STILL && ship.halite == Constants.MAX_HALITE)) {
+                (ship.halite >= game.gameMap.at(ship).moveCost() || plannedMove == Direction.STILL) &&
+                !(intent == Intent.GATHER && plannedMove == Direction.STILL && ship.halite == Constants.MAX_HALITE)) {
             return ship.move(plannedMove);
         }
         else if (plannedMove != null) {

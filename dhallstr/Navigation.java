@@ -49,14 +49,14 @@ public class Navigation {
             curr.dist = depth;
         }
         int distToHome = 0;//game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), curr.position);
-        if(curr.bestFuturePathCost == -1 || curr.bestPathLength == 0 || curr.gained - curr.lost - /*curr.bestFuturePathCost*/30 * (curr.actualDist + distToHome) > curr.bestHaliteD - /*curr.bestFuturePathCost*/30 * curr.bestPathLength) {
+        if(curr.bestFuturePathCost == -1 || curr.bestPathLength == 0 || curr.gained - curr.lost - /*curr.bestFuturePathCost*/10 * (curr.actualDist + distToHome) > curr.bestHaliteD - /*curr.bestFuturePathCost*/10 * curr.bestPathLength) {
             curr.bestPathLength = curr.actualDist + distToHome;
             curr.bestHaliteD = curr.gained - curr.lost;
             numTriedAgain ++;
         }
         else {
             dirs[depth] = null;
-            return curr.bestFuturePathCost != -1 ? curr.bestFuturePathCost : Integer.MIN_VALUE;
+            return (curr.bestFuturePathCost != -1) ? curr.bestFuturePathCost : Integer.MIN_VALUE;
         }
 
         if (!(s.halite + curr.gained - curr.lost == Constants.MAX_HALITE)) {
