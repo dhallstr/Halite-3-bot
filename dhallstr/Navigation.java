@@ -18,44 +18,48 @@ public class Navigation {
 
         MapCell best = null;
         int bestScore = Integer.MIN_VALUE;
+        int bestActualDist = 0;
 
         while (!queue.isEmpty()) {
             MapCell curr = queue.poll();
             if (curr == null) continue;
 
-            if (goal.meetsGoal(curr)) {
-                int score = goal.rateTile(game, curr, s, plan);
-                if (score > bestScore) {
-                    best = curr;
-                    bestScore = score;
-                }
-            }
-
             int prevDist = curr.actualDist;
             int numStays = goal.getNumberStays(s, curr, plan, map);
+            int cellHalite = plan.getProjectedHalite(map, curr.position, curr.dist);
             if (numStays > 0) {
                 curr.actualDist+= numStays;
-                int halite = plan.getProjectedHalite(map, curr.position, curr.dist);
+
                 for (int i = 0; i < numStays; i++) {
 
                     if ((!plan.isSafe(map, curr.position, s, curr.dist + 1 + i, false ) && !goal.overrideUnsafe(curr))) {
                         curr.actualDist += -numStays + i;
                         break;
                     }
-                    int mined = Math.min(curr.minedAmount(halite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
-                    int collected = Math.min(curr.collectAmount(halite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
+                    int mined = Math.min(curr.minedAmount(cellHalite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
+                    int collected = Math.min(curr.collectAmount(cellHalite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
                     curr.gained += collected;
-                    halite -= mined;
+                    cellHalite -= mined;
                 }
             }
             if (curr.actualDist == prevDist && s.halite - curr.lost + curr.gained < curr.moveCost(curr.halite)) {
                 curr.actualDist++;
                 curr.gained += Math.min(curr.collectAmount(plan.getProjectedHalite(map, curr.position, curr.dist)), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
+                cellHalite -= Math.min(curr.collectAmount(cellHalite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
+            }
+
+            if (goal.meetsGoal(curr)) {
+                int score = goal.rateTile(game, curr, s, plan);
+                if (score > bestScore) {
+                    best = curr;
+                    bestScore = score;
+                    bestActualDist = curr.actualDist;
+                }
             }
 
 
             if (curr.actualDist > goal.getMaxTurns()) {
-                return finishSearch(game, s, goal, plan, map, best, bestScore);
+                return finishSearch(game, s, goal, plan, map, best, bestScore, bestActualDist);
             }
 
 
@@ -76,14 +80,15 @@ public class Navigation {
                     !curr.hasStructure()) {
                 queue.add(curr);
                 curr.actualDist++;
-                curr.gained += curr.collectAmount(plan.getProjectedHalite(map, curr.position, curr.dist));
+                curr.gained += curr.collectAmount(cellHalite);
             }
         }
-        return finishSearch(game, s, goal, plan, map, best, bestScore);
+        return finishSearch(game, s, goal, plan, map, best, bestScore, bestActualDist);
     }
 
-    private static Direction[] finishSearch(Game game, Ship s, Goal goal, PlannedLocations plan, GameMap map, MapCell best, int bestScore) {
+    private static Direction[] finishSearch(Game game, Ship s, Goal goal, PlannedLocations plan, GameMap map, MapCell best, int bestScore, int bestActualDist) {
         if (best != null) {
+            best.actualDist = bestActualDist;
             Log.log("Best goal at " + best.position.toString() + " with score " + bestScore);
             return extractPath(map, plan, s, best);
         }
