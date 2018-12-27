@@ -9,7 +9,7 @@ public class MapCell {
     public boolean isInspired = false;
 
     // These are used in navigation and their value should never be used elsewhere
-    public boolean visited = false;
+    public boolean visited = false, processed = false;
     public Direction path = Direction.STILL;
     public int dist = 0, actualDist = 0;
     public int lost = 0;

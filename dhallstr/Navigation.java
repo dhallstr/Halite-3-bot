@@ -24,6 +24,8 @@ public class Navigation {
             MapCell curr = queue.poll();
             if (curr == null) continue;
 
+            curr.processed = true;
+
             int prevDist = curr.actualDist;
             int numStays = goal.getNumberStays(s, curr, plan, map);
             int cellHalite = plan.getProjectedHalite(map, curr.position, curr.dist);

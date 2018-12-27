@@ -230,6 +230,7 @@ public class GameMap {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 cells[i][j].visited = false;
+                cells[i][j].processed = false;
                 cells[i][j].path = Direction.STILL;
                 cells[i][j].dist = 0;
                 cells[i][j].actualDist = 0;
