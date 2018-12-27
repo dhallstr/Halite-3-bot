@@ -25,21 +25,8 @@ public class TerrainGoal extends Goal {
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
         int totalHalite = s.halite - cell.lost + cell.gained;
-
-        int numStays = getNumberStays(s, cell, plan, game.gameMap);
-        int halite = plan.getProjectedHalite(game.gameMap, cell.position, cell.actualDist);
-        for (int i = 0; i < numStays; i++) {
-            int mined = Math.min(cell.minedAmount(halite), Constants.MAX_HALITE - totalHalite);
-            int collected = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - totalHalite);
-            halite -= mined;
-            totalHalite += collected;
-        }
-
-
-        int turns = cell.actualDist + numStays + game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell.position);
-        int extraTurns = 0;
-        extraTurns += cell.moveCost(halite) / (Math.max(Magic.getCollectDownTo(game.gameMap), 6) / Constants.EXTRACT_RATIO);
-        return Math.max((totalHalite - s.halite - cell.moveCost(halite)) / (turns == 0 ? 1 : turns), (totalHalite - s.halite) / (turns + extraTurns == 0 ? 1 : turns + extraTurns));
+        int turns = cell.actualDist + game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell.position);
+        return (totalHalite - s.halite) / (turns == 0 ? 1 : turns);
     }
 
     @Override
@@ -67,7 +54,7 @@ public class TerrainGoal extends Goal {
     }
 
     public ArrayList<Direction> sort(GameMap map, MapCell curr, ArrayList<Direction> dirs) {
-        dirs.sort((d1, d2) -> map.at(curr.position.directionalOffset(d2)).halite - map.at(curr.position.directionalOffset(d1)).halite);
+        //dirs.sort((d1, d2) -> map.at(curr.position.directionalOffset(d2)).halite - map.at(curr.position.directionalOffset(d1)).halite);
         return dirs;
     }
 }
