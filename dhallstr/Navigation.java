@@ -77,6 +77,16 @@ public class Navigation {
                     m.lost = curr.lost + curr.moveCost();
                     m.gained = curr.gained;
                 }
+                else if (m.visited && !m.processed) {
+                    // if this path is strictly better than the first one we found, change it
+                    if (curr.gained - curr.lost - curr.moveCost() >= m.gained - m.lost && curr.actualDist + 1 <= m.actualDist) {
+                        m.path = d;
+                        m.dist = curr.actualDist + 1;
+                        m.actualDist = m.dist;
+                        m.lost = curr.lost - curr.moveCost();
+                        m.gained = curr.gained;
+                    }
+                }
             }
             if ((plan.isSafe(map, curr.position, s, curr.actualDist + 1, false) || goal.overrideUnsafe(curr)) && curr.actualDist - curr.dist < 2 &&
                     !curr.hasStructure()) {
