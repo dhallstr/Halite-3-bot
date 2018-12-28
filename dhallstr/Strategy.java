@@ -19,7 +19,7 @@ public class Strategy {
 
         // *** RETURN HOME END GAME ***
         if (intent == Intent.CRASH_HOME || game.turnNumber + 3 + game.gameMap.calculateDistanceToDropoff(game.me, ship.position) * 1.2 + 2 * game.me.ships.size() / 24 > Constants.MAX_TURNS) {
-            if (intent != Intent.CRASH_HOME || plannedMove == null) {
+            if (intent != Intent.CRASH_HOME || plannedMove == null || (plannedMove != Direction.STILL && ship.halite < game.gameMap.at(ship.position).moveCost())) {
                 plan.cancelPlan(game.gameMap, ship, 1);
                 return returnHome(game, ship, plan, commands, plannedMove == null);
             }
@@ -124,7 +124,7 @@ public class Strategy {
                 isSpawnSafe(gameMap, me, plan, commandQueue);
     }
 
-    public static boolean isSpawnSafe(GameMap gameMap, Player me, PlannedLocations plan, ArrayList<Command> commands) {
+    private static boolean isSpawnSafe(GameMap gameMap, Player me, PlannedLocations plan, ArrayList<Command> commands) {
         return plan.isSafe(gameMap, me.shipyard.position, new Ship(me.id, EntityId.NONE, me.shipyard.position, 0), 1, false)&&
                 (gameMap.at(me.shipyard).ship == null || !gameMap.at(me.shipyard).ship.owner.equals(me.id) ||
                         (shipIsMoving(gameMap.at(me.shipyard).ship.id, commands)));
@@ -141,7 +141,7 @@ public class Strategy {
     }
 
     public static boolean shouldDisableCollisions(Game game) {
-        return !IS_TWO_PLAYER || (game.getEnemyShips() >= game.me.ships.size());
+        return !IS_TWO_PLAYER || (Math.abs(game.getEnemyShips() - game.me.ships.size()) > 10 || game.getEnemyShips() > game.me.ships.size());
     }
 
     private static Command returnHome(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands, boolean cancelIfStill) {
@@ -150,8 +150,8 @@ public class Strategy {
             path = new Direction[] {Direction.STILL};
             resolveCancelledMove(game, ship, plan, commands);
         }
-       /* else if (path[0] == Direction.STILL)
-            resolveCancelledMove(game, ship, plan, commands);*/
+       else if (path[0] == Direction.STILL && cancelIfStill)
+            resolveCancelledMove(game, ship, plan, commands);
         plan.addPlan(game.gameMap, ship, path, Intent.CRASH_HOME);
         return ship.move(path[0]);
     }
