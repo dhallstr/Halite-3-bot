@@ -141,7 +141,7 @@ public class Strategy {
     }
 
     public static boolean shouldDisableCollisions(Game game) {
-        return true;//!IS_TWO_PLAYER || (game.getEnemyShips() >= game.me.ships.size());
+        return !IS_TWO_PLAYER || (game.getEnemyShips() >= game.me.ships.size());
     }
 
     private static Command returnHome(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands, boolean cancelIfStill) {
