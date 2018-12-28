@@ -41,8 +41,8 @@ public class Magic {
 
     public static void updateConstants(boolean isTwoPlayer, int width, int height) {
         COLLECT_DOWN_TO = Constants.MAX_HALITE / 14;
-        START_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.92);
-        END_GAME_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.6);
+        START_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.96);
+        END_GAME_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.75);
 
         INSPIRE_OFFSET = new ArrayList<>(2*Constants.INSPIRATION_RADIUS*(Constants.INSPIRATION_RADIUS+1)+1);
         for (int i = - Constants.INSPIRATION_RADIUS; i <= Constants.INSPIRATION_RADIUS; i++) {
