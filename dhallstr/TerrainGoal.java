@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 public class TerrainGoal extends Goal {
 
-    //PlayerId me;
     int neededHalite;
     int turns;
 
@@ -17,15 +16,13 @@ public class TerrainGoal extends Goal {
     public TerrainGoal(int halite, int turns) {
         neededHalite = halite;
         this.turns = turns;
-        //this.me = me.owner;
     }
-
-
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
         int totalHalite = s.halite - cell.lost + cell.gained;
-        int turns = cell.actualDist + game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell.position);
+        int distToDropoff = game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell.position) + 5;
+        int turns = cell.actualDist + distToDropoff;
         int halite = plan.getProjectedHalite(game.gameMap, cell.position, cell.actualDist);
         int myHalite = totalHalite;
         for (int i = cell.dist; i < cell.actualDist; i++) {
@@ -33,7 +30,8 @@ public class TerrainGoal extends Goal {
             halite -= Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
             myHalite += Math.min(cell.minedAmount(halite), Constants.MAX_HALITE - myHalite);
         }
-        return (totalHalite - s.halite - cell.moveCost(halite)) / (turns == 0 ? 1 : turns);
+        totalHalite -= (cell.moveCost((int)(Magic.getCollectDownTo(game.gameMap) * 0.75))) * (distToDropoff - 1);
+        return (totalHalite /*- s.halite*/ - cell.moveCost(halite)) / (turns == 0 ? 1 : turns);
     }
 
     @Override

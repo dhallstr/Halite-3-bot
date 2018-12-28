@@ -14,6 +14,13 @@ public class Strategy {
         Log.log("moving ship " + ship.id.toString());
         Direction plannedMove = plan.getNextStep(game.gameMap, ship, 0);
         Intent intent = plan.shipPlans.get(ship.id);
+        Intent nextIntent = plan.getIntent(game.gameMap, ship.position, 0);
+
+        if (nextIntent != null && nextIntent != Intent.NONE && intent != nextIntent) {
+            Log.log("Setting the next intent.");
+            plan.shipPlans.put(ship.id, nextIntent);
+        }
+
         Log.log("D: " + plannedMove);
 
 
@@ -59,7 +66,7 @@ public class Strategy {
             return ship.move(plannedMove);
         }
         else if (plannedMove != null) {
-            resolveCancelledMove(game, ship, plan, commands);
+            //resolveCancelledMove(game, ship, plan, commands);
         }
 
 
@@ -70,6 +77,7 @@ public class Strategy {
                 (intent == Intent.DROPOFF && ship.halite != 0) ||
                   (game.gameMap.haliteOnMap < Magic.END_GAME_HALITE  * game.gameMap.width * game.gameMap.height && ship.halite > Magic.END_GAME_DELIVER_HALITE)) {
             g = new DropoffGoal(plan.me, false);
+            Log.log("Dropping off now!");
         }
         else if (ship.halite >= game.gameMap.at(ship).moveCost()) {
             g = new TerrainGoal(10, Magic.SEARCH_DEPTH);
@@ -88,10 +96,16 @@ public class Strategy {
             path = new Direction[] {Direction.STILL};
         }
         Log.log(Arrays.toString(path));
-        if (path[0] == Direction.STILL && plannedMove == null) {
+        if (path[0] == Direction.STILL && plannedMove != Direction.STILL) {
             resolveCancelledMove(game, ship, plan, commands);
         }
         plan.addPlan(game.gameMap, ship, path, g == null ? Intent.NONE : g.getIntent());
+
+        nextIntent = plan.getIntent(game.gameMap, ship.position, 0);
+        if (nextIntent != null && nextIntent != Intent.NONE && intent != nextIntent) {
+            Log.log("Setting the next intent.");
+            plan.shipPlans.put(ship.id, nextIntent);
+        }
 
         return ship.move(path[0]);
     }

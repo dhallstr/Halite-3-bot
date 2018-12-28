@@ -52,6 +52,9 @@ public class PlannedLocations {
                 setWasMined(map, p, i, 1);
             }
         }
+        if (intent == Intent.GATHER) {
+            addIntent(map, p, plan.length - 1, Intent.DROPOFF);
+        }
     }
 
     void cancelPlan(GameMap map, Ship s, int turnOffset) {
@@ -61,6 +64,7 @@ public class PlannedLocations {
             cancelPlan(map, s, turnOffset + 1);
             set(map, p, turnOffset, null);
             setWasMined(map, p, turnOffset, 0);
+            addIntent(map, p, turnOffset, null);
         }
     }
 
@@ -92,6 +96,11 @@ public class PlannedLocations {
         return f == null ? null : f.id;
     }
 
+    public Intent getIntent(GameMap map, Position p, int turnOffset) {
+        FutureNode f = getFuture(map, p, turnOffset);
+        return f == null ? null : f.nextIntent;
+    }
+
     public void set(GameMap map, Position p, int turnOffset, EntityId id) {
         if (cells[0][0].size() - 1 < turnOffset)
             return;
@@ -110,6 +119,12 @@ public class PlannedLocations {
         Position norm = map.normalize(p);
         if (cells[norm.y][norm.x].size() > turnOffset)
             cells[norm.y][norm.x].get(turnOffset).id = id;
+    }
+
+    private void addIntent(GameMap map, Position p, int turnOffset, Intent intent) {
+        Position norm = map.normalize(p);
+        if (cells[norm.y][norm.x].size() > turnOffset)
+            cells[norm.y][norm.x].get(turnOffset).nextIntent = intent;
     }
 
     Direction getNextStep(GameMap map, Ship s, int turnOffset) {
@@ -143,5 +158,6 @@ public class PlannedLocations {
     private class FutureNode {
         EntityId id = null;
         int wasMined = 0;
+        Intent nextIntent = null;
     }
 }

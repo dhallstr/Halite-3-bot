@@ -6,7 +6,7 @@ import hlt.GameMap;
 import java.util.ArrayList;
 
 public class Magic {
-    public static final String BOT_NAME = "Alkali";
+    public static final String BOT_NAME = "Xenon";
 
     // Dropoff constants
     public static final int MIN_DIST_FOR_BUILD = 15;
