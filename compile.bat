@@ -1,0 +1,1 @@
+javac MyBot.java dhallstr\*.java hlt\*.java

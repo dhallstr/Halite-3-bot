@@ -1,0 +1,1 @@
+..\halite3.exe --replay-directory ..\replays\ --no-logs %*
