@@ -144,12 +144,6 @@ public class GameMap {
         }
         Log.log(numinspired == 0 ? "No inspired" : "" + numinspired + " number of inspired locations");
     }
-
-    @Deprecated
-    public boolean isInInspireRange(Position pos, PlayerId me) {
-        return getEnemiesWithin(pos, Constants.INSPIRATION_RADIUS, me) >= Constants.INSPIRATION_SHIP_COUNT;
-    }
-
     public int numHaliteWithin(Position pos, int radius) {
         int total = 0;
 
