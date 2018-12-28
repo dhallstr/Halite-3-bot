@@ -23,7 +23,7 @@ public class TerrainGoal extends Goal {
         int totalHalite = s.halite - cell.lost + cell.gained;
         int distToDropoff = game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell.position);
         if (distToDropoff == 0) return Integer.MIN_VALUE;
-        int turns = cell.actualDist + distToDropoff;
+        int turns = cell.actualDist + distToDropoff * 3 / 4 + 3;
         int halite = plan.getProjectedHalite(game.gameMap, cell.position, cell.actualDist);
         int myHalite = totalHalite;
         for (int i = cell.dist; i < cell.actualDist; i++) {
@@ -31,8 +31,8 @@ public class TerrainGoal extends Goal {
             halite -= Math.min(cell.minedAmount(halite), Constants.MAX_HALITE - myHalite);
             myHalite += Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
         }
-        //totalHalite -= (cell.moveCost(game.gameMap.percentileHaliteNearMyDropoffs) * (distToDropoff - 1) + cell.moveCost(halite)) / 2;
-        return (totalHalite - s.halite) / (turns);
+        totalHalite -= (cell.moveCost(game.gameMap.percentileHaliteNearMyDropoffs) * (distToDropoff - 1) + cell.moveCost(halite)) * 3 / 4;
+        return (totalHalite) / (turns);
     }
 
     @Override

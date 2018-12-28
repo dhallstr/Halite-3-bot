@@ -25,8 +25,9 @@ public class Strategy {
 
 
         // *** RETURN HOME END GAME ***
-        if (intent == Intent.CRASH_HOME || game.turnNumber + 3 + game.gameMap.calculateDistanceToDropoff(game.me, ship.position) * 1.2 + 2 * game.me.ships.size() / 24 > Constants.MAX_TURNS) {
-            if (intent != Intent.CRASH_HOME || plannedMove == null || (plannedMove != Direction.STILL && ship.halite < game.gameMap.at(ship.position).moveCost())) {
+        if (intent == Intent.CRASH_HOME || game.turnNumber + 5 + game.gameMap.calculateDistanceToDropoff(game.me, ship.position) * 1.2 + 2 * game.me.ships.size() / 24 > Constants.MAX_TURNS) {
+            if (intent != Intent.CRASH_HOME || plannedMove == null || (plannedMove != Direction.STILL && ship.halite < game.gameMap.at(ship.position).moveCost()) ||
+                    !plan.isSafe(game.gameMap, ship.position.directionalOffset(plannedMove), ship, 1, false)) {
                 plan.cancelPlan(game.gameMap, ship, 1);
                 return returnHome(game, ship, plan, commands, plannedMove == null);
             }
@@ -102,7 +103,7 @@ public class Strategy {
         plan.addPlan(game.gameMap, ship, path, g == null ? Intent.NONE : g.getIntent());
 
         nextIntent = plan.getIntent(game.gameMap, ship.position, 0);
-        if (nextIntent != null && nextIntent != Intent.NONE && intent != nextIntent) {
+        if (nextIntent != null && nextIntent != Intent.NONE && intent != nextIntent && nextIntent != Intent.BUILD_DROPOFF) {
             Log.log("Setting the next intent.");
             plan.shipPlans.put(ship.id, nextIntent);
         }

@@ -23,10 +23,10 @@ public class Magic {
     // Mining constants
     // Tiles are mined down to COLLECTION_INT + COLLECTION_SLOPE * (FIND_PERCENTILE percentile of halite "near" a friendly dropoff, i.e. within SEARCH_DEPTH)
     public static double FIND_PERCENTILE = 0.75, NEAR_FIND_PERCENTILE = 0.5;
-    public static double COLLECTION_INT = 25,
+    public static double COLLECTION_INT = 23,
                         COLLECTION_SLOPE = 0.27;
     public static double END_GAME_FIND_PERCENTILE = 0.9;
-    public static int COLLECTION_END_GAME_HALITE = 30;
+    public static int COLLECTION_END_GAME_HALITE = 27;
     public static double END_GAME_COLLECTION_INT = 12,
                         END_GAME_COLLECTION_SLOPE = 0.2;
 
@@ -35,15 +35,15 @@ public class Magic {
     public static int END_GAME_DELIVER_HALITE, END_GAME_HALITE = 35;
 
     public static int SEARCH_DEPTH;
-    public static int NEAR_DROPOFF_SEARCH_DIST = 14;
+    public static int NEAR_DROPOFF_SEARCH_DIST = 8;
 
 
     public static ArrayList<int[]> INSPIRE_OFFSET;
 
     public static void updateConstants(boolean isTwoPlayer, int width, int height) {
         COLLECT_DOWN_TO = Constants.MAX_HALITE / 14;
-        START_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.96);
-        END_GAME_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.75);
+        START_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.85);
+        END_GAME_DELIVER_HALITE = (int)(Constants.MAX_HALITE * 0.5);
 
         INSPIRE_OFFSET = new ArrayList<>(2*Constants.INSPIRATION_RADIUS*(Constants.INSPIRATION_RADIUS+1)+1);
         for (int i = - Constants.INSPIRATION_RADIUS; i <= Constants.INSPIRATION_RADIUS; i++) {
