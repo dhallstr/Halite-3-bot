@@ -30,7 +30,7 @@ public class Game {
         me = players.get(myId.id);
         gameMap = GameMap._generate();
         totalShips = 0;
-        gameMap.percentileHaliteNearMyDropoffs = 0;
+        gameMap.percentileHalite = 0;
     }
 
     public void ready(final String name) {
@@ -68,15 +68,22 @@ public class Game {
         }
         gameMap.updateInRange(this, me.id);
         ArrayList<Integer> haliteAmounts = new ArrayList<>(gameMap.width * gameMap.height);
+        ArrayList<Integer> haliteAmounts2 = new ArrayList<>(gameMap.width * gameMap.height);
         for (int x = 0; x < gameMap.width; x++) {
             for (int y = 0; y < gameMap.height; y++) {
-                if (gameMap.calculateDistanceToDropoff(me, new Position(x, y)) < Magic.SEARCH_DEPTH) {
+                int dist = gameMap.calculateDistanceToDropoff(me, new Position(x, y));
+                if (dist < Magic.SEARCH_DEPTH) {
                     haliteAmounts.add(gameMap.at(new Position(x, y)).halite);
+                }
+                if (dist < Magic.NEAR_DROPOFF_SEARCH_DIST) {
+                    haliteAmounts2.add(gameMap.at(new Position(x, y)).halite);
                 }
             }
         }
         haliteAmounts.sort(Comparator.comparingInt(x -> x));
-        gameMap.percentileHaliteNearMyDropoffs = haliteAmounts.get((int)(haliteAmounts.size() * Magic.FIND_PERCENTILE));
+        haliteAmounts2.sort(Comparator.comparingInt(x -> x));
+        gameMap.percentileHalite = haliteAmounts.get((int)(haliteAmounts.size() * Magic.FIND_PERCENTILE));
+        gameMap.percentileHaliteNearMyDropoffs = haliteAmounts2.get((int)(haliteAmounts2.size() * Magic.NEAR_FIND_PERCENTILE));
     }
 
     public void endTurn(final Collection<Command> commands) {

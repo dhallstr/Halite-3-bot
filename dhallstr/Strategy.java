@@ -14,12 +14,20 @@ public class Strategy {
         Log.log("moving ship " + ship.id.toString());
         Direction plannedMove = plan.getNextStep(game.gameMap, ship, 0);
         Intent intent = plan.shipPlans.get(ship.id);
+        Intent nextIntent = plan.getIntent(game.gameMap, ship.position, 0);
+
+        if (nextIntent != null && nextIntent != Intent.NONE && intent != nextIntent) {
+            Log.log("Setting the next intent.");
+            plan.shipPlans.put(ship.id, nextIntent);
+        }
+
         Log.log("D: " + plannedMove);
 
 
         // *** RETURN HOME END GAME ***
-        if (intent == Intent.CRASH_HOME || game.turnNumber + 3 + game.gameMap.calculateDistanceToDropoff(game.me, ship.position) * 1.2 + 2 * game.me.ships.size() / 24 > Constants.MAX_TURNS) {
-            if (intent != Intent.CRASH_HOME || plannedMove == null) {
+        if (intent == Intent.CRASH_HOME || game.turnNumber + 5 + game.gameMap.calculateDistanceToDropoff(game.me, ship.position) * 1.2 + 2 * game.me.ships.size() / 24 > Constants.MAX_TURNS) {
+            if (intent != Intent.CRASH_HOME || plannedMove == null || (plannedMove != Direction.STILL && ship.halite < game.gameMap.at(ship.position).moveCost()) ||
+                    !plan.isSafe(game.gameMap, ship.position.directionalOffset(plannedMove), ship, 1, false)) {
                 plan.cancelPlan(game.gameMap, ship, 1);
                 return returnHome(game, ship, plan, commands, plannedMove == null);
             }
@@ -59,7 +67,7 @@ public class Strategy {
             return ship.move(plannedMove);
         }
         else if (plannedMove != null) {
-            resolveCancelledMove(game, ship, plan, commands);
+            //resolveCancelledMove(game, ship, plan, commands);
         }
 
 
@@ -67,9 +75,10 @@ public class Strategy {
 
         Goal g = null;
         if (ship.halite > Magic.START_DELIVER_HALITE ||
-                (intent == Intent.DROPOFF && ship.halite != 0) ||
+                (intent == Intent.DROPOFF && ship.halite > Magic.MIN_HALITE_FOR_DELIVER) ||
                   (game.gameMap.haliteOnMap < Magic.END_GAME_HALITE  * game.gameMap.width * game.gameMap.height && ship.halite > Magic.END_GAME_DELIVER_HALITE)) {
             g = new DropoffGoal(plan.me, false);
+            Log.log("Dropping off now!");
         }
         else if (ship.halite >= game.gameMap.at(ship).moveCost()) {
             g = new TerrainGoal(10, Magic.SEARCH_DEPTH);
@@ -88,10 +97,16 @@ public class Strategy {
             path = new Direction[] {Direction.STILL};
         }
         Log.log(Arrays.toString(path));
-        if (path[0] == Direction.STILL && plannedMove == null) {
+        if (path[0] == Direction.STILL && plannedMove != Direction.STILL) {
             resolveCancelledMove(game, ship, plan, commands);
         }
         plan.addPlan(game.gameMap, ship, path, g == null ? Intent.NONE : g.getIntent());
+
+        nextIntent = plan.getIntent(game.gameMap, ship.position, 0);
+        if (nextIntent != null && nextIntent != Intent.NONE && intent != nextIntent && nextIntent != Intent.BUILD_DROPOFF) {
+            Log.log("Setting the next intent.");
+            plan.shipPlans.put(ship.id, nextIntent);
+        }
 
         return ship.move(path[0]);
     }
@@ -124,7 +139,7 @@ public class Strategy {
                 isSpawnSafe(gameMap, me, plan, commandQueue);
     }
 
-    public static boolean isSpawnSafe(GameMap gameMap, Player me, PlannedLocations plan, ArrayList<Command> commands) {
+    private static boolean isSpawnSafe(GameMap gameMap, Player me, PlannedLocations plan, ArrayList<Command> commands) {
         return plan.isSafe(gameMap, me.shipyard.position, new Ship(me.id, EntityId.NONE, me.shipyard.position, 0), 1, false)&&
                 (gameMap.at(me.shipyard).ship == null || !gameMap.at(me.shipyard).ship.owner.equals(me.id) ||
                         (shipIsMoving(gameMap.at(me.shipyard).ship.id, commands)));
@@ -141,7 +156,7 @@ public class Strategy {
     }
 
     public static boolean shouldDisableCollisions(Game game) {
-        return !IS_TWO_PLAYER || (game.getEnemyShips() >= game.me.ships.size());
+        return !IS_TWO_PLAYER || game.getEnemyShips() > game.me.ships.size();
     }
 
     private static Command returnHome(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands, boolean cancelIfStill) {
@@ -150,8 +165,8 @@ public class Strategy {
             path = new Direction[] {Direction.STILL};
             resolveCancelledMove(game, ship, plan, commands);
         }
-       /* else if (path[0] == Direction.STILL)
-            resolveCancelledMove(game, ship, plan, commands);*/
+       else if (path[0] == Direction.STILL && cancelIfStill)
+            resolveCancelledMove(game, ship, plan, commands);
         plan.addPlan(game.gameMap, ship, path, Intent.CRASH_HOME);
         return ship.move(path[0]);
     }

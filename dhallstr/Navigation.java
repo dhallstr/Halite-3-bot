@@ -44,7 +44,7 @@ public class Navigation {
                     cellHalite -= mined;
                 }
             }
-            if (curr.actualDist == prevDist && s.halite - curr.lost + curr.gained < curr.moveCost(curr.halite)) {
+            if (curr.actualDist == prevDist && s.halite - curr.lost + curr.gained < curr.halite / Constants.MOVE_COST_RATIO) {// not using curr.moveCost() because we don't want to count on inspiration
                 curr.actualDist++;
                 curr.gained += Math.min(curr.collectAmount(plan.getProjectedHalite(map, curr.position, curr.dist)), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
                 cellHalite -= Math.min(curr.collectAmount(cellHalite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
@@ -61,7 +61,7 @@ public class Navigation {
 
 
             if (curr.actualDist > goal.getMaxTurns()) {
-                return finishSearch(game, s, goal, plan, map, best, bestScore, bestActualDist);
+                return finishSearch(s, map, best, bestScore, bestActualDist);
             }
 
 
@@ -96,19 +96,19 @@ public class Navigation {
                 curr.gained += curr.collectAmount(cellHalite);
             }
         }
-        return finishSearch(game, s, goal, plan, map, best, bestScore, bestActualDist);
+        return finishSearch(s, map, best, bestScore, bestActualDist);
     }
 
-    private static Direction[] finishSearch(Game game, Ship s, Goal goal, PlannedLocations plan, GameMap map, MapCell best, int bestScore, int bestActualDist) {
+    private static Direction[] finishSearch(Ship s, GameMap map, MapCell best, int bestScore, int bestActualDist) {
         if (best != null) {
             best.actualDist = bestActualDist;
             Log.log("Best goal at " + best.position.toString() + " with score " + bestScore);
-            return extractPath(map, plan, s, best);
+            return extractPath(map, s, best);
         }
         return new Direction[] { Direction.STILL};
     }
 
-    private static Direction[] extractPath(GameMap map, PlannedLocations plan, Ship s, MapCell curr) {
+    private static Direction[] extractPath(GameMap map, Ship s, MapCell curr) {
         Direction[] directions = new Direction[(curr.actualDist == 0) ? 1 : curr.actualDist];
         for (int i = 0; i < directions.length; i++) {
             directions[i] = Direction.STILL;
@@ -121,7 +121,7 @@ public class Navigation {
             curr = map.offset(curr, curr.path.invertDirection());
             cost += curr.moveCost();
 
-            int halite = curr.halite;// plan.getProjectedHalite(map, curr.position, curr.dist);
+            int halite = curr.halite;// not doing projected halite to be conservative
             for (int i = 0; i < prevDist - curr.dist - 1; i++) {
                 int mined = Math.min(curr.minedAmount(halite), Constants.MAX_HALITE - s.halite + cost);
                 int collected = Math.min(curr.collectAmount(halite), Constants.MAX_HALITE - s.halite + cost);
@@ -130,44 +130,7 @@ public class Navigation {
             }
             prevDist = curr.dist;
         }
-
-        if (cost <= s.halite)
-            return directions;
-
-        cost = curr.moveCost();
-        if (cost > s.halite) {
-            return new Direction[] {Direction.STILL};
-        }
-
-        Log.log("Uh oh, it seems you've reached code that should be dead (Navigation.java, line ~134)");
-        Log.log("Safety code is included so that a crash doesn't occur, but it is not at all ideal.");
-
-        int halite = curr.halite;// not using projected halite because this code is just a safety net (also there were problems when I tried)
-        for (int i = 0; i < directions.length; i++) {
-            curr = map.offset(curr, directions[i]);
-            if (directions[i] != Direction.STILL) {
-                cost += curr.moveCost();
-                halite = curr.halite;
-            }
-            else {
-                int mined = Math.min(curr.minedAmount(halite), Constants.MAX_HALITE - s.halite + cost);
-                int collected = Math.min(curr.collectAmount(halite), Constants.MAX_HALITE - s.halite + cost);
-                cost -= collected;
-                halite -= mined;
-            }
-
-            if (cost > s.halite) {
-                Direction[] dirs = new Direction[i+2];
-                for (int j = 0; j < i + 1; j++) {
-                    dirs[j] = directions[j];
-                }
-                dirs[i+1] = Direction.STILL;
-                return dirs;
-            }
-        }
-        if (!Log.DISABLE_LOGS)
-            throw new RuntimeException("This code should never have been reached.");
-        return directions;
+         return directions;
     }
 
 }
