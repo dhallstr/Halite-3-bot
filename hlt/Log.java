@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Log {
 
-    public static boolean DISABLE_LOGS = true;
+    public static boolean DISABLE_LOGS = false;
 
     private final FileWriter file;
 

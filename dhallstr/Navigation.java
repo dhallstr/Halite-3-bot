@@ -5,7 +5,7 @@ import hlt.*;
 import java.util.LinkedList;
 
 public class Navigation {
-
+    public static int modifiedPaths = 0;
     static Direction[] bfs(Game game, Ship s, Goal goal, PlannedLocations plan) {
 
         GameMap map = game.gameMap;
@@ -23,6 +23,8 @@ public class Navigation {
         while (!queue.isEmpty()) {
             MapCell curr = queue.poll();
             if (curr == null) continue;
+
+            curr.processed = true;
 
             int prevDist = curr.actualDist;
             int numStays = goal.getNumberStays(s, curr, plan, map);
@@ -74,6 +76,17 @@ public class Navigation {
                     m.actualDist = m.dist;
                     m.lost = curr.lost + curr.moveCost();
                     m.gained = curr.gained;
+                }
+                else if (m.visited && (!m.processed || m.actualDist == curr.actualDist - 1)) {
+                    // if this path is strictly better than the first one we found, change it
+                    if (curr.gained - curr.lost - curr.moveCost() >= m.gained - m.lost && curr.actualDist + 1 <= m.actualDist) {
+                        m.path = d;
+                        m.dist = curr.actualDist + 1;
+                        m.actualDist = m.dist;
+                        m.lost = curr.lost - curr.moveCost();
+                        m.gained = curr.gained;
+                        modifiedPaths++;
+                    }
                 }
             }
             if ((plan.isSafe(map, curr.position, s, curr.actualDist + 1, false) || goal.overrideUnsafe(curr)) && curr.actualDist - curr.dist < 2 &&

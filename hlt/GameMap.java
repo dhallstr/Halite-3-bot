@@ -144,12 +144,6 @@ public class GameMap {
         }
         Log.log(numinspired == 0 ? "No inspired" : "" + numinspired + " number of inspired locations");
     }
-
-    @Deprecated
-    public boolean isInInspireRange(Position pos, PlayerId me) {
-        return getEnemiesWithin(pos, Constants.INSPIRATION_RADIUS, me) >= Constants.INSPIRATION_SHIP_COUNT;
-    }
-
     public int numHaliteWithin(Position pos, int radius) {
         int total = 0;
 
@@ -230,6 +224,7 @@ public class GameMap {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 cells[i][j].visited = false;
+                cells[i][j].processed = false;
                 cells[i][j].path = Direction.STILL;
                 cells[i][j].dist = 0;
                 cells[i][j].actualDist = 0;

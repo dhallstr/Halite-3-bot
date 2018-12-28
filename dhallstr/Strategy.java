@@ -23,12 +23,13 @@ public class Strategy {
                 plan.cancelPlan(game.gameMap, ship, 1);
                 return returnHome(game, ship, plan, commands, plannedMove == null);
             }
+            else if (game.gameMap.at(ship).hasStructure() && ship.owner.equals(game.gameMap.at(ship).structure.owner)) {
+                return ship.stayStill();
+            }
             else
-                return ship.move(plannedMove);//returnHome(game, ship, plan, commands, plannedMove == null);//ship.move(plannedMove);
+                return ship.move(plannedMove);
         }
-        else if (intent == Intent.CRASH_HOME && game.gameMap.at(ship).hasStructure() && ship.owner.equals(game.gameMap.at(ship).structure.owner)) {
-            return ship.stayStill();
-        }
+
 
 
         // *** BUILD DROPOFFS ***
@@ -140,7 +141,7 @@ public class Strategy {
     }
 
     public static boolean shouldDisableCollisions(Game game) {
-        return !IS_TWO_PLAYER || (game.getEnemyShips() > game.me.ships.size());
+        return !IS_TWO_PLAYER || (game.getEnemyShips() >= game.me.ships.size());
     }
 
     private static Command returnHome(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands, boolean cancelIfStill) {

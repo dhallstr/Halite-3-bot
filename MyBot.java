@@ -36,6 +36,7 @@ public class MyBot {
             final Player me = game.me;
             final GameMap gameMap = game.gameMap;
             Strategy.COLLISIONS_DISABLED = Strategy.shouldDisableCollisions(game);
+            Navigation.modifiedPaths = 0;
 
             ArrayList<Command> commandQueue = new ArrayList<>();
 
@@ -48,6 +49,8 @@ public class MyBot {
                 me.halite -= Constants.SHIP_COST;
                 commandQueue.add(me.shipyard.spawn());
             }
+
+            Log.log("Modified paths: " + Navigation.modifiedPaths);
             game.endTurn(commandQueue);
             plan.updateTurn(game.turnNumber);
         }
