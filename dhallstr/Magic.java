@@ -22,7 +22,7 @@ public class Magic {
 
     // Mining constants
     // Tiles are mined down to COLLECTION_INT + COLLECTION_SLOPE * (FIND_PERCENTILE percentile of halite "near" a friendly dropoff, i.e. within SEARCH_DEPTH)
-    public static double FIND_PERCENTILE = 0.75;
+    public static double FIND_PERCENTILE = 0.75, NEAR_FIND_PERCENTILE = 0.5;
     public static double COLLECTION_INT = 25,
                         COLLECTION_SLOPE = 0.27;
     public static double END_GAME_FIND_PERCENTILE = 0.9;
@@ -35,6 +35,7 @@ public class Magic {
     public static int END_GAME_DELIVER_HALITE, END_GAME_HALITE = 35;
 
     public static int SEARCH_DEPTH;
+    public static int NEAR_DROPOFF_SEARCH_DIST = 14;
 
 
     public static ArrayList<int[]> INSPIRE_OFFSET;
@@ -68,8 +69,8 @@ public class Magic {
     }
 
     public static int getCollectDownTo(GameMap game) {
-        boolean isEndGame =game.percentileHaliteNearMyDropoffs > COLLECTION_END_GAME_HALITE;
+        boolean isEndGame =game.percentileHalite > COLLECTION_END_GAME_HALITE;
         if (isEndGame) FIND_PERCENTILE = END_GAME_FIND_PERCENTILE; // will take effect next turn
-        return (int)(isEndGame ? (COLLECTION_INT + COLLECTION_SLOPE * game.percentileHaliteNearMyDropoffs) : (END_GAME_COLLECTION_INT + END_GAME_COLLECTION_SLOPE * game.percentileHaliteNearMyDropoffs));
+        return (int)(isEndGame ? (COLLECTION_INT + COLLECTION_SLOPE * game.percentileHalite) : (END_GAME_COLLECTION_INT + END_GAME_COLLECTION_SLOPE * game.percentileHalite));
     }
 }
