@@ -70,8 +70,8 @@ public class Magic {
     }
 
     public static int getCollectDownTo(GameMap game) {
-        boolean isEndGame =game.percentileHalite > COLLECTION_END_GAME_HALITE;
-        if (isEndGame) FIND_PERCENTILE = END_GAME_FIND_PERCENTILE; // will take effect next turn
-        return (int)(isEndGame ? (COLLECTION_INT + COLLECTION_SLOPE * game.percentileHalite) : (END_GAME_COLLECTION_INT + END_GAME_COLLECTION_SLOPE * game.percentileHalite));
+        boolean prevEndGame = FIND_PERCENTILE == END_GAME_FIND_PERCENTILE;
+        if (game.percentileHalite > COLLECTION_END_GAME_HALITE) FIND_PERCENTILE = END_GAME_FIND_PERCENTILE; // will take effect next turn
+        return (int)(prevEndGame ? (COLLECTION_INT + COLLECTION_SLOPE * game.percentileHalite) : (END_GAME_COLLECTION_INT + END_GAME_COLLECTION_SLOPE * game.percentileHalite));
     }
 }
