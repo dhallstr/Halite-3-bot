@@ -102,4 +102,12 @@ public class Game {
         }
         return ships;
     }
+
+    public Ship getShip(EntityId id) {
+        for (Player p: players) {
+            Ship s = p.ships.get(id);
+            if (s != null) return s;
+        }
+        return null;
+    }
 }

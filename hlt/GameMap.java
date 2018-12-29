@@ -53,10 +53,6 @@ public class GameMap {
         return min;
     }
 
-    public int getEnemiesWithin(Position pos, int radius, PlayerId me) {
-        return getShipsWithin(pos, radius, me, true);
-    }
-
     public int getNumMyShipsWithin(Position pos, int radius, PlayerId me) {
         return getShipsWithin(pos, radius, me, false);
     }
@@ -92,17 +88,15 @@ public class GameMap {
         return total;
     }
 
-    public boolean isEnemyWithin(Position pos, int radius, PlayerId me) {
-        if (radius == 1) {
-            MapCell m = at(pos);
-            if (m.ship != null && !m.ship.owner.equals(me)) return true;
-            for (Direction d: Direction.ALL_CARDINALS) {
-                MapCell c = offset(m, d);
-                if (c.ship != null && !c.ship.owner.equals(me)) return true;
-            }
-            return false;
+    public Ship[] getEnemiesNextTo(Position pos, PlayerId me) {
+        Ship[] enemies = new Ship[Direction.ALL_CARDINALS.size()];
+
+        MapCell m = at(pos);
+        for (int i = 0; i < enemies.length; i++) {
+            MapCell c = offset(m, Direction.ALL_CARDINALS.get(i));
+            if (c.ship != null && c.ship.owner.id != me.id) enemies[i] = c.ship;
         }
-        return getEnemiesWithin(pos, radius, me) > 0;
+        return enemies;
     }
 
     void updateInRange(Game game, PlayerId me) {

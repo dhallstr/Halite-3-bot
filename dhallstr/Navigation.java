@@ -34,7 +34,7 @@ public class Navigation {
 
                 for (int i = 0; i < numStays; i++) {
 
-                    if ((!plan.isSafe(map, curr, s, curr.dist + 1 + i, false ) && !goal.overrideUnsafe(curr))) {
+                    if ((!plan.isSafe(game, curr, s, curr.dist + 1 + i, curr.dist + i < 3 ) && !goal.overrideUnsafe(curr))) {
                         curr.actualDist += -numStays + i;
                         break;
                     }
@@ -68,7 +68,7 @@ public class Navigation {
 
             for (Direction d: goal.sort(game.gameMap, curr, Direction.ALL_CARDINALS)) {
                 MapCell m = map.offset(curr, d);
-                if (!m.visited && (plan.isSafe(map, m, s, curr.actualDist + 1, curr.actualDist <= 1 && Strategy.COLLISIONS_DISABLED) || goal.overrideUnsafe(m))){
+                if (!m.visited && (plan.isSafe(game, m, s, curr.actualDist + 1, curr.actualDist <= 3) || goal.overrideUnsafe(m))){
                     queue.add(m);
                     m.visited = true;
                     m.path = d;
@@ -89,7 +89,7 @@ public class Navigation {
                     }
                 }
             }
-            if ((plan.isSafe(map, curr, s, curr.actualDist + 1, false) || goal.overrideUnsafe(curr)) && curr.actualDist - curr.dist < 2 &&
+            if ((plan.isSafe(game, curr, s, curr.actualDist + 1, curr.actualDist <= 3) || goal.overrideUnsafe(curr)) && curr.actualDist - curr.dist < 2 &&
                     !curr.hasStructure()) {
                 queue.add(curr);
                 curr.actualDist++;

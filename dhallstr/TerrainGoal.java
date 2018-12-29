@@ -31,7 +31,7 @@ public class TerrainGoal extends Goal {
             halite -= Math.min(cell.minedAmount(halite), Constants.MAX_HALITE - myHalite);
             myHalite += Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
         }
-        totalHalite -= (cell.moveCost(game.gameMap.percentileHaliteNearMyDropoffs) * (distToDropoff - 1) + cell.moveCost(halite)) * 3 / 4;
+        totalHalite -= cell.moveCost(halite);
         return (totalHalite - s.halite / 2) / (turns);
     }
 
