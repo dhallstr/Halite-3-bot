@@ -52,7 +52,7 @@ public class DropoffGoal extends Goal {
     }
 
     public ArrayList<Direction> sort (GameMap map, MapCell curr, ArrayList<Direction> dirs) {
-        //dirs.sort(Comparator.comparingInt(d -> map.at(curr.directionalOffset(d)).halite));
+        dirs.sort(Comparator.comparingInt(d -> map.at(curr.directionalOffset(d)).halite));
         return dirs;
     }
 }

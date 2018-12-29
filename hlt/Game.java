@@ -58,7 +58,7 @@ public class Game {
             for (final Ship ship : player.ships.values()) {
                 gameMap.at(ship).ship = ship;
             }
-            
+
             gameMap.at(player.shipyard).structure = player.shipyard;
 
             for (final Dropoff dropoff : player.dropoffs.values()) {

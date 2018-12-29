@@ -32,7 +32,7 @@ public class TerrainGoal extends Goal {
             myHalite += Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
         }
         totalHalite -= (cell.moveCost(game.gameMap.percentileHaliteNearMyDropoffs) * (distToDropoff - 1) + cell.moveCost(halite)) * 3 / 4;
-        return (totalHalite) / (turns);
+        return (totalHalite - s.halite / 2) / (turns);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class TerrainGoal extends Goal {
     }
 
     public ArrayList<Direction> sort(GameMap map, MapCell curr, ArrayList<Direction> dirs) {
-        //dirs.sort((d1, d2) -> map.at(curr.position.directionalOffset(d2)).halite - map.at(curr.position.directionalOffset(d1)).halite);
+        dirs.sort((d1, d2) -> map.at(curr.directionalOffset(d2)).halite - map.at(curr.directionalOffset(d1)).halite);
         return dirs;
     }
 }
