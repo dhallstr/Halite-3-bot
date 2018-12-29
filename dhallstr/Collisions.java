@@ -12,6 +12,7 @@ public class Collisions {
             return AVOID;
         }
         if (mine.halite > enemy.halite * 2) return AVOID;
+        // also consider enemy dropoff dist. vs mine, and enemy ships nearby vs. mine
         return ALLOW;
     }
 }
