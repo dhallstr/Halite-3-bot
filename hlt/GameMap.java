@@ -2,13 +2,12 @@ package hlt;
 
 import dhallstr.Magic;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class GameMap {
     public final int width;
     public final int height;
-    public final MapCell[][] cells;
+    private final MapCell[][] cells;
 
     public int haliteOnMap = 0;
     public int percentileHalite, percentileHaliteNearMyDropoffs;
@@ -28,17 +27,9 @@ public class GameMap {
         return cells[normalized.y][normalized.x];
     }
 
-    public MapCell at(final Entity entity) {
-        return at(entity.position);
-    }
-
     public MapCell offset(Position p, Direction d) {
         return at(p.directionalOffset(d));
     }
-
-    public MapCell offset(MapCell m, Direction d) {return offset(m.position, d);}
-
-    public MapCell offset(Entity e, Direction d) {return offset(e.position, d);}
 
     public int calculateDistance(final Position source, final Position target) {
         final Position normalizedSource = normalize(source);
@@ -56,7 +47,7 @@ public class GameMap {
     public int calculateDistanceToDropoff(Player p, Position pos) {
         int min = Integer.MAX_VALUE;
         for (Dropoff d: p.dropoffs.values()) {
-            int dist = calculateDistance(pos, d.position);
+            int dist = calculateDistance(pos, d);
             if (dist < min) min = dist;
         }
         return min;
@@ -114,7 +105,7 @@ public class GameMap {
         return getEnemiesWithin(pos, radius, me) > 0;
     }
 
-    public void updateInRange(Game game, PlayerId me) {
+    void updateInRange(Game game, PlayerId me) {
         haliteOnMap = 0;
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < height; j++) {
@@ -127,7 +118,7 @@ public class GameMap {
             if (p.id.id == me.id) continue;
             for (Ship s: p.ships.values()) {
                 for (int[] offset: Magic.INSPIRE_OFFSET) {
-                    cells[(s.position.y + offset[0] + height)%height][(s.position.x + offset[1] + width)%width].enemyShipsNearby++;
+                    cells[(s.y + offset[0] + height)%height][(s.x + offset[1] + width)%width].enemyShipsNearby++;
                 }
             }
         }
@@ -234,7 +225,7 @@ public class GameMap {
 
             for (int x = 0; x < width; ++x) {
                 final int halite = rowInput.getInt();
-                map.cells[y][x] = new MapCell(new Position(x, y), halite);
+                map.cells[y][x] = new MapCell(x, y, halite);
             }
         }
 

@@ -3,8 +3,8 @@ package hlt;
 public class Ship extends Entity {
     public final int halite;
 
-    public Ship(final PlayerId owner, final EntityId id, final Position position, final int halite) {
-        super(owner, id, position);
+    public Ship(final PlayerId owner, final EntityId id, final int x, final int y, final int halite) {
+        super(owner, id, x, y);
         this.halite = halite;
     }
 
@@ -32,13 +32,13 @@ public class Ship extends Entity {
         final int y = input.getInt();
         final int halite = input.getInt();
 
-        return new Ship(playerId, shipId, new Position(x, y), halite);
+        return new Ship(playerId, shipId, x, y, halite);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
         if (!super.equals(o)) return false;
 
         Ship ship = (Ship) o;

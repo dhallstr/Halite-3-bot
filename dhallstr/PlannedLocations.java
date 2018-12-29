@@ -44,7 +44,7 @@ public class PlannedLocations {
     void addPlan(GameMap map, Ship s, Direction[] plan, Intent intent) {
         cancelPlan(map, s, 1);
         shipPlans.put(s.id, intent);
-        Position p = s.position;
+        Position p = s;
         for (int i = 0; i < plan.length; i++) {
             p = p.directionalOffset(plan[i]);
             addLoc(map, p, s.id, i+1);
@@ -145,8 +145,8 @@ public class PlannedLocations {
     }
 
     private Position getLocation(GameMap map, Ship s, int turnOffset) {
-        if (turnOffset == 0) return s.position;
-        Position p = s.position;
+        if (turnOffset == 0) return s;
+        Position p = s;
         for (int i = 0; i < turnOffset; i++) {
             Direction d = getNextStep(map, p, s, i);
             if (d == null) return null;
