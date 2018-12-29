@@ -73,7 +73,7 @@ public class Strategy {
         Goal g = null;
         if (ship.halite > Magic.START_DELIVER_HALITE ||
                 (intent == Intent.DROPOFF && ship.halite > Magic.MIN_HALITE_FOR_DELIVER) ||
-                  (game.gameMap.haliteOnMap < Magic.END_GAME_HALITE  * game.gameMap.width * game.gameMap.height && ship.halite > Magic.END_GAME_DELIVER_HALITE)) {
+                (game.gameMap.haliteOnMap < Magic.END_GAME_HALITE  * game.gameMap.width * game.gameMap.height && ship.halite > Magic.END_GAME_DELIVER_HALITE)) {
             g = new DropoffGoal(plan.me, false);
             Log.log("Dropping off now!");
         }

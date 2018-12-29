@@ -40,6 +40,16 @@ public class MapCell extends Position {
     public int minedAmount(int halite) {
         return isInspired ? ((halite + Constants.INSPIRED_EXTRACT_RATIO - 1) / Constants.INSPIRED_EXTRACT_RATIO) : ((halite + Constants.EXTRACT_RATIO - 1) / Constants.EXTRACT_RATIO);
     }
+    public int haliteAfterXTurns(int initialHalite, int shipHalite, int x) {
+        int myHalite = shipHalite;
+        int halite = initialHalite;
+        for (int i = 0; i < x; i++) {
+
+            halite -= Math.min(minedAmount(halite), Constants.MAX_HALITE - myHalite);
+            myHalite += Math.min(collectAmount(halite), Constants.MAX_HALITE - myHalite);
+        }
+        return halite;
+    }
 
     public boolean hasStructure() {
         return structure != null;
