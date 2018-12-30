@@ -39,6 +39,6 @@ public class Player {
         final int shipyard_x = input.getInt();
         final int shipyard_y = input.getInt();
 
-        return new Player(playerId, new Shipyard(playerId, new Position(shipyard_x, shipyard_y)));
+        return new Player(playerId, new Shipyard(playerId, shipyard_x, shipyard_y));
     }
 }

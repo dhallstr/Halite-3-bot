@@ -1,33 +1,33 @@
 package hlt;
 
-public class Entity {
+public class Entity extends Position {
     public final PlayerId owner;
     public final EntityId id;
-    public final Position position;
 
-    public Entity(final PlayerId owner, final EntityId id, final Position position) {
+    public Entity(final PlayerId owner, final EntityId id, final int x, final int y) {
+        super(x, y);
         this.owner = owner;
         this.id = id;
-        this.position = position;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
+        if (getClass() != o.getClass()) return super.equals(o);
 
         Entity entity = (Entity) o;
 
         if (!owner.equals(entity.owner)) return false;
         if (!id.equals(entity.id)) return false;
-        return position.equals(entity.position);
+        return super.equals(entity);
     }
 
     @Override
     public int hashCode() {
         int result = owner.hashCode();
         result = 31 * result + id.hashCode();
-        result = 31 * result + position.hashCode();
+        result = 31 * result + super.hashCode();
         return result;
     }
 }

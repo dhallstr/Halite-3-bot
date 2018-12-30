@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Strategy {
-    public static boolean IS_TWO_PLAYER = true, COLLISIONS_DISABLED = false;
-    public static int lastDropoffBuilt = 0;
+    public static boolean IS_TWO_PLAYER = true;
+    private static int lastDropoffBuilt = 0;
 
     public static Command evaluateMove(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands) {
 
         Log.log("moving ship " + ship.id.toString());
         Direction plannedMove = plan.getNextStep(game.gameMap, ship, 0);
         Intent intent = plan.shipPlans.get(ship.id);
-        Intent nextIntent = plan.getIntent(game.gameMap, ship.position, 0);
+        Intent nextIntent = plan.getIntent(game.gameMap, ship, 0);
 
         if (nextIntent != null && nextIntent != Intent.NONE && intent != nextIntent) {
             Log.log("Setting the next intent.");
@@ -25,9 +25,9 @@ public class Strategy {
 
 
         // *** RETURN HOME END GAME ***
-        if (intent == Intent.CRASH_HOME || game.turnNumber + 5 + game.gameMap.calculateDistanceToDropoff(game.me, ship.position) * 1.2 + 2 * game.me.ships.size() / 24 > Constants.MAX_TURNS) {
-            if (intent != Intent.CRASH_HOME || plannedMove == null || (plannedMove != Direction.STILL && ship.halite < game.gameMap.at(ship.position).moveCost()) ||
-                    !plan.isSafe(game.gameMap, ship.position.directionalOffset(plannedMove), ship, 1, false)) {
+        if (intent == Intent.CRASH_HOME || game.turnNumber + 5 + game.gameMap.calculateDistanceToDropoff(game.me, ship) * 1.2 + 2 * game.me.ships.size() / 24 > Constants.MAX_TURNS) {
+            if (intent != Intent.CRASH_HOME || plannedMove == null || (plannedMove != Direction.STILL && ship.halite < game.gameMap.at(ship).moveCost()) ||
+                    !plan.isSafe(game, ship.directionalOffset(plannedMove), ship, 1, false)) {
                 plan.cancelPlan(game.gameMap, ship, 1);
                 return returnHome(game, ship, plan, commands, plannedMove == null);
             }
@@ -42,12 +42,12 @@ public class Strategy {
 
         // *** BUILD DROPOFFS ***
         if (intent == null || intent == Intent.NONE || intent == Intent.GATHER || intent == Intent.BUILD_DROPOFF) {
-            if (game.gameMap.calculateDistanceToDropoff(game.me, ship.position) >= Magic.MIN_DIST_FOR_BUILD && game.gameMap.numHaliteWithin(ship.position, Magic.BUILD_DROPOFF_RADIUS) >= Magic.MIN_HALITE_FOR_BUILD &&
+            if (game.gameMap.calculateDistanceToDropoff(game.me, ship) >= Magic.MIN_DIST_FOR_BUILD && game.gameMap.numHaliteWithin(ship, Magic.BUILD_DROPOFF_RADIUS) >= Magic.MIN_HALITE_FOR_BUILD &&
                     game.me.ships.size() >= game.me.dropoffs.size() * Magic.SHIPS_PER_DROPOFF && game.turnNumber + Magic.MIN_TURNS_LEFT_FOR_DROPOFF < Constants.MAX_TURNS &&
-                    game.gameMap.getNumMyShipsWithin(ship.position, Magic.DROPOFF_FRIENDLY_SHIP_RADIUS, game.me.id) >= Magic.MIN_FRIENDLY_AROUND_FOR_DROPOFF &&
+                    game.gameMap.getNumMyShipsWithin(ship, Magic.DROPOFF_FRIENDLY_SHIP_RADIUS, game.me.id) >= Magic.MIN_FRIENDLY_AROUND_FOR_DROPOFF &&
                     game.me.dropoffs.size() < Magic.MAX_DROPOFFS) {
-                if (lastDropoffBuilt != game.turnNumber && game.me.halite >= Constants.DROPOFF_COST - ship.halite - game.gameMap.at(ship.position).halite + Magic.BUILD_BUFFER_HALITE) {
-                    game.me.halite -= Constants.DROPOFF_COST - ship.halite - game.gameMap.at(ship.position).halite;
+                if (lastDropoffBuilt != game.turnNumber && game.me.halite >= Constants.DROPOFF_COST - ship.halite - game.gameMap.at(ship).halite + Magic.BUILD_BUFFER_HALITE) {
+                    game.me.halite -= Constants.DROPOFF_COST - ship.halite - game.gameMap.at(ship).halite;
                     lastDropoffBuilt = game.turnNumber;
                     return ship.makeDropoff();
                 }
@@ -60,14 +60,11 @@ public class Strategy {
 
 
         // *** use the move that was planned ahead ***
-        if (plannedMove != null && plan.isSafe(game.gameMap, ship.position.directionalOffset(plannedMove), ship, 1, COLLISIONS_DISABLED) &&
+        if (plannedMove != null && plan.isSafe(game, ship.directionalOffset(plannedMove), ship, 1, true) &&
                 !(game.gameMap.at(ship).hasStructure() && game.gameMap.at(ship).structure.owner == plan.me && plannedMove == Direction.STILL) &&
                 (ship.halite >= game.gameMap.at(ship).moveCost() || plannedMove == Direction.STILL) &&
                 !(intent == Intent.GATHER && plannedMove == Direction.STILL && ship.halite == Constants.MAX_HALITE)) {
             return ship.move(plannedMove);
-        }
-        else if (plannedMove != null) {
-            //resolveCancelledMove(game, ship, plan, commands);
         }
 
 
@@ -76,7 +73,7 @@ public class Strategy {
         Goal g = null;
         if (ship.halite > Magic.START_DELIVER_HALITE ||
                 (intent == Intent.DROPOFF && ship.halite > Magic.MIN_HALITE_FOR_DELIVER) ||
-                  (game.gameMap.haliteOnMap < Magic.END_GAME_HALITE  * game.gameMap.width * game.gameMap.height && ship.halite > Magic.END_GAME_DELIVER_HALITE)) {
+                (game.gameMap.haliteOnMap < Magic.END_GAME_HALITE  * game.gameMap.width * game.gameMap.height && ship.halite > Magic.END_GAME_DELIVER_HALITE)) {
             g = new DropoffGoal(plan.me, false);
             Log.log("Dropping off now!");
         }
@@ -102,7 +99,7 @@ public class Strategy {
         }
         plan.addPlan(game.gameMap, ship, path, g == null ? Intent.NONE : g.getIntent());
 
-        nextIntent = plan.getIntent(game.gameMap, ship.position, 0);
+        nextIntent = plan.getIntent(game.gameMap, ship, 0);
         if (nextIntent != null && nextIntent != Intent.NONE && intent != nextIntent && nextIntent != Intent.BUILD_DROPOFF) {
             Log.log("Setting the next intent.");
             plan.shipPlans.put(ship.id, nextIntent);
@@ -113,7 +110,7 @@ public class Strategy {
 
     private static void resolveCancelledMove(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands) {
         Log.log("resolving " + ship.id + "...");
-        EntityId here = plan.get(game.gameMap, ship.position, 1);
+        EntityId here = plan.get(game.gameMap, ship, 1);
         plan.cancelPlan(game.gameMap, ship, 1);
         plan.addPlan(game.gameMap, ship, new Direction[] {Direction.STILL}, Intent.NONE);
         if (here == null || ship.id.equals(here)) return;
@@ -136,13 +133,13 @@ public class Strategy {
                 (((game.gameMap.haliteOnMap - (game.gameMap.width * game.gameMap.height) *(Strategy.IS_TWO_PLAYER ? 8 : 3))) / (1620 + 18 * game.totalShips) > game.me.ships.size())) &&
                 me.halite >= Constants.SHIP_COST &&
                 (game.turnNumber > 5 || me.ships.size() <= 4) &&
-                isSpawnSafe(gameMap, me, plan, commandQueue);
+                isSpawnSafe(game, me, plan, commandQueue);
     }
 
-    private static boolean isSpawnSafe(GameMap gameMap, Player me, PlannedLocations plan, ArrayList<Command> commands) {
-        return plan.isSafe(gameMap, me.shipyard.position, new Ship(me.id, EntityId.NONE, me.shipyard.position, 0), 1, false)&&
-                (gameMap.at(me.shipyard).ship == null || !gameMap.at(me.shipyard).ship.owner.equals(me.id) ||
-                        (shipIsMoving(gameMap.at(me.shipyard).ship.id, commands)));
+    private static boolean isSpawnSafe(Game game, Player me, PlannedLocations plan, ArrayList<Command> commands) {
+        return plan.isSafe(game, me.shipyard, new Ship(me.id, EntityId.NONE, me.shipyard.x, me.shipyard.y, 0), 1, false)&&
+                (game.gameMap.at(me.shipyard).ship == null || !game.gameMap.at(me.shipyard).ship.owner.equals(me.id) ||
+                        (shipIsMoving(game.gameMap.at(me.shipyard).ship.id, commands)));
     }
 
     private static boolean shipIsMoving(EntityId id, ArrayList<Command> commands) {
@@ -153,10 +150,6 @@ public class Strategy {
             }
         }
         return false;
-    }
-
-    public static boolean shouldDisableCollisions(Game game) {
-        return !IS_TWO_PLAYER || game.getEnemyShips() > game.me.ships.size();
     }
 
     private static Command returnHome(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands, boolean cancelIfStill) {
