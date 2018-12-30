@@ -15,10 +15,7 @@ public class Collisions {
             return AVOID;
         }
         else {
-            if (game.getEnemyShips() > game.me.ships.size()) {
-                return AVOID;
-            }
-            if (mine.halite > enemy.halite * 2) return AVOID;
+            if (mine.halite > enemy.halite * 1.5) return AVOID;
             // also consider enemy dropoff dist. vs mine, and enemy ships nearby vs. mine
             return ALLOW;
         }
