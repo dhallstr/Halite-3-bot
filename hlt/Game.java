@@ -56,7 +56,7 @@ public class Game {
         totalShips = 0;
         for (final Player player : players) {
             for (final Ship ship : player.ships.values()) {
-                gameMap.at(ship).markUnsafe(ship);
+                gameMap.at(ship).ship = ship;
             }
 
             gameMap.at(player.shipyard).structure = player.shipyard;
@@ -101,5 +101,13 @@ public class Game {
             ships += p.ships.size();
         }
         return ships;
+    }
+
+    public Ship getShip(EntityId id) {
+        for (Player p: players) {
+            Ship s = p.ships.get(id);
+            if (s != null) return s;
+        }
+        return null;
     }
 }

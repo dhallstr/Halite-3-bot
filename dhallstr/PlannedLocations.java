@@ -32,19 +32,38 @@ public class PlannedLocations {
         }
     }
 
-    boolean isSafe(GameMap map, Position p, Ship ship, int turnOffset, boolean avoidEnemy) {
-        EntityId e = get(map, p, turnOffset);
+    boolean isSafe(Game game, Position p, Ship ship, int turnOffset, boolean avoidEnemy) {
+        EntityId e = get(game.gameMap, p, turnOffset);
+        Ship shipOnTile = game.gameMap.at(p).ship;
+        boolean enemyOnTile = shipOnTile != null && shipOnTile.owner.id != ship.owner.id;
         EntityId id = (ship == null) ? null : ship.id;
-        PlayerId playerId = (ship == null) ? null : ship.owner;
-        return (map.at(p).structure == null || map.at(p).structure.owner.equals(me)) &&
-                (e == null || e.equals(id)) &&
-                (!avoidEnemy || turnOffset > 3 || !map.isEnemyWithin(p, 1, playerId) || (map.at(p).hasStructure() && map.at(p).structure.owner.equals(me)));
+
+        Ship[] enemies = game.gameMap.getEnemiesNextTo(p, me);
+        int numEnemies = 0;
+        for (Ship enemy: enemies) { if (enemy != null) numEnemies++; }
+
+        int actualCollision = Collisions.AVOID;
+        if (shipOnTile != null && enemyOnTile) actualCollision = Collisions.COLLIDE;
+        else if (numEnemies > 0) actualCollision = Collisions.ALLOW;
+
+        int collision = Collisions.COLLIDE;
+        if (avoidEnemy) {
+            if (enemyOnTile)
+                collision = Collisions.shouldCollide(ship, shipOnTile, game);
+            for (Ship enemy: enemies) {
+                if (enemy != null)
+                    collision = Math.min(collision, Collisions.shouldCollide(ship, enemy, game));
+            }
+        }
+        return (game.gameMap.at(p).structure == null || game.gameMap.at(p).structure.owner.equals(me)) &&
+                (e == null || e.id == ship.id.id) &&
+                (actualCollision <= collision || (game.gameMap.at(p).hasStructure() && game.gameMap.at(p).structure.owner.equals(me)));
     }
 
     void addPlan(GameMap map, Ship s, Direction[] plan, Intent intent) {
         cancelPlan(map, s, 1);
         shipPlans.put(s.id, intent);
-        Position p = s.position;
+        Position p = s;
         for (int i = 0; i < plan.length; i++) {
             p = p.directionalOffset(plan[i]);
             addLoc(map, p, s.id, i+1);
@@ -145,8 +164,8 @@ public class PlannedLocations {
     }
 
     private Position getLocation(GameMap map, Ship s, int turnOffset) {
-        if (turnOffset == 0) return s.position;
-        Position p = s.position;
+        if (turnOffset == 0) return s;
+        Position p = s;
         for (int i = 0; i < turnOffset; i++) {
             Direction d = getNextStep(map, p, s, i);
             if (d == null) return null;

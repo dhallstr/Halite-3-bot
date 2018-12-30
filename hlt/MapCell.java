@@ -1,7 +1,6 @@
 package hlt;
 
-public class MapCell {
-    public final Position position;
+public class MapCell extends Position {
     public int halite;
     public Ship ship;
     public Entity structure;
@@ -16,14 +15,14 @@ public class MapCell {
     public int gained = 0;
 
     // These are used in other BFS applications
-    public boolean secondaryVisited = false;
-    public int secondaryDist = 0;
+    boolean secondaryVisited = false;
+    int secondaryDist = 0;
 
 
     public int enemyShipsNearby = 0;
 
-    public MapCell(final Position position, final int halite) {
-        this.position = position;
+    MapCell(final int x, final int y, final int halite) {
+        super(x, y);
         this.halite = halite;
     }
 
@@ -41,20 +40,19 @@ public class MapCell {
     public int minedAmount(int halite) {
         return isInspired ? ((halite + Constants.INSPIRED_EXTRACT_RATIO - 1) / Constants.INSPIRED_EXTRACT_RATIO) : ((halite + Constants.EXTRACT_RATIO - 1) / Constants.EXTRACT_RATIO);
     }
+    public int haliteAfterXTurns(int initialHalite, int shipHalite, int x) {
+        int myHalite = shipHalite;
+        int halite = initialHalite;
+        for (int i = 0; i < x; i++) {
 
-    public boolean isEmpty() {
-        return ship == null && structure == null;
-    }
-
-    public boolean isOccupied() {
-        return ship != null;
+            halite -= Math.min(minedAmount(halite), Constants.MAX_HALITE - myHalite);
+            myHalite += Math.min(collectAmount(halite), Constants.MAX_HALITE - myHalite);
+        }
+        return halite;
     }
 
     public boolean hasStructure() {
         return structure != null;
     }
 
-    public void markUnsafe(final Ship ship) {
-        this.ship = ship;
-    }
 }

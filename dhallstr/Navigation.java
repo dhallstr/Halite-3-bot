@@ -13,8 +13,8 @@ public class Navigation {
         map.setAllUnvisited();
 
         LinkedList<MapCell> queue = new LinkedList<>();
-        queue.add(map.at(s.position));
-        map.at(s.position).visited = true;
+        queue.add(map.at(s));
+        map.at(s).visited = true;
 
         MapCell best = null;
         int bestScore = Integer.MIN_VALUE;
@@ -28,13 +28,13 @@ public class Navigation {
 
             int prevDist = curr.actualDist;
             int numStays = goal.getNumberStays(s, curr, plan, map);
-            int cellHalite = plan.getProjectedHalite(map, curr.position, curr.dist);
+            int cellHalite = plan.getProjectedHalite(map, curr, curr.dist);
             if (numStays > 0) {
                 curr.actualDist+= numStays;
 
                 for (int i = 0; i < numStays; i++) {
 
-                    if ((!plan.isSafe(map, curr.position, s, curr.dist + 1 + i, false ) && !goal.overrideUnsafe(curr))) {
+                    if ((!plan.isSafe(game, curr, s, curr.dist + 1 + i, curr.dist + i < 3 ) && !goal.overrideUnsafe(curr))) {
                         curr.actualDist += -numStays + i;
                         break;
                     }
@@ -46,7 +46,7 @@ public class Navigation {
             }
             if (curr.actualDist == prevDist && s.halite - curr.lost + curr.gained < curr.halite / Constants.MOVE_COST_RATIO) {// not using curr.moveCost() because we don't want to count on inspiration
                 curr.actualDist++;
-                curr.gained += Math.min(curr.collectAmount(plan.getProjectedHalite(map, curr.position, curr.dist)), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
+                curr.gained += Math.min(curr.collectAmount(plan.getProjectedHalite(map, curr, curr.dist)), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
                 cellHalite -= Math.min(curr.collectAmount(cellHalite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
             }
 
@@ -68,7 +68,7 @@ public class Navigation {
 
             for (Direction d: goal.sort(game.gameMap, curr, Direction.ALL_CARDINALS)) {
                 MapCell m = map.offset(curr, d);
-                if (!m.visited && (plan.isSafe(map, m.position, s, curr.actualDist + 1, curr.actualDist <= 1 && Strategy.COLLISIONS_DISABLED) || goal.overrideUnsafe(m))){
+                if (!m.visited && (plan.isSafe(game, m, s, curr.actualDist + 1, curr.actualDist <= 3) || goal.overrideUnsafe(m))){
                     queue.add(m);
                     m.visited = true;
                     m.path = d;
@@ -89,7 +89,7 @@ public class Navigation {
                     }
                 }
             }
-            if ((plan.isSafe(map, curr.position, s, curr.actualDist + 1, false) || goal.overrideUnsafe(curr)) && curr.actualDist - curr.dist < 2 &&
+            if ((plan.isSafe(game, curr, s, curr.actualDist + 1, curr.actualDist <= 3) || goal.overrideUnsafe(curr)) && curr.actualDist - curr.dist < 2 &&
                     !curr.hasStructure()) {
                 queue.add(curr);
                 curr.actualDist++;
@@ -102,7 +102,7 @@ public class Navigation {
     private static Direction[] finishSearch(Ship s, GameMap map, MapCell best, int bestScore, int bestActualDist) {
         if (best != null) {
             best.actualDist = bestActualDist;
-            Log.log("Best goal at " + best.position.toString() + " with score " + bestScore);
+            Log.log("Best goal at " + best.toString() + " with score " + bestScore);
             return extractPath(map, s, best);
         }
         return new Direction[] { Direction.STILL};

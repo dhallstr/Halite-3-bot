@@ -1,8 +1,8 @@
 package hlt;
 
 public class Dropoff extends Entity {
-    public Dropoff(final PlayerId owner, final EntityId id, final Position position) {
-        super(owner, id, position);
+    public Dropoff(final PlayerId owner, final EntityId id, int x, int y) {
+        super(owner, id, x, y);
     }
 
     static Dropoff _generate(final PlayerId playerId) {
@@ -12,6 +12,6 @@ public class Dropoff extends Entity {
         final int x = input.getInt();
         final int y = input.getInt();
 
-        return new Dropoff(playerId, dropoffId, new Position(x, y));
+        return new Dropoff(playerId, dropoffId, x, y);
     }
 }

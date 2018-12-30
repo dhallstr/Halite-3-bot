@@ -59,7 +59,8 @@ public class Magic {
         END_GAME_HALITE += (int)((size - 32) / 32.0 * (45 - END_GAME_HALITE));
         if (isTwoPlayer) {
             MAX_DROPOFFS = (int)(size / 11);
-            SEARCH_DEPTH = 65;
+            SEARCH_DEPTH = 100;//65;
+            END_GAME_HALITE = 15;
         }
         else {
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);

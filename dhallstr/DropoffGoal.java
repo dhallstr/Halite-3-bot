@@ -25,7 +25,7 @@ public class DropoffGoal extends Goal {
     @Override
     public int getNumberStays(Ship s, MapCell cell, PlannedLocations plan, GameMap map) {
         if (crashOkay) return 0;
-        int halite = plan.getProjectedHalite(map, cell.position, cell.dist);
+        int halite = plan.getProjectedHalite(map, cell, cell.dist);
         int myHalite = s.halite - cell.lost + cell.gained;
         if (halite <= Magic.getCollectDownTo(map) || myHalite == Constants.MAX_HALITE) return 0;
         int turnsStayed;
@@ -52,7 +52,7 @@ public class DropoffGoal extends Goal {
     }
 
     public ArrayList<Direction> sort (GameMap map, MapCell curr, ArrayList<Direction> dirs) {
-        dirs.sort(Comparator.comparingInt(d -> map.at(curr.position.directionalOffset(d)).halite));
+        dirs.sort(Comparator.comparingInt(d -> map.at(curr.directionalOffset(d)).halite));
         return dirs;
     }
 }
