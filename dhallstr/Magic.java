@@ -32,7 +32,7 @@ public class Magic {
 
     public static int COLLECT_DOWN_TO;
     public static int START_DELIVER_HALITE, MIN_HALITE_FOR_DELIVER;
-    public static int END_GAME_DELIVER_HALITE, END_GAME_HALITE = 35;
+    public static int END_GAME_DELIVER_HALITE, END_GAME_HALITE;
 
     public static int SEARCH_DEPTH;
     public static int NEAR_DROPOFF_SEARCH_DIST = 8;
@@ -59,14 +59,14 @@ public class Magic {
         END_GAME_HALITE += (int)((size - 32) / 32.0 * (45 - END_GAME_HALITE));
         if (isTwoPlayer) {
             MAX_DROPOFFS = (int)(size / 11);
-            SEARCH_DEPTH = 100;//65;
+            SEARCH_DEPTH = 75;
             END_GAME_HALITE = 15;
         }
         else {
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
             END_GAME_HALITE = 25;
             MAX_DROPOFFS = (int)(size / 11);
-            SEARCH_DEPTH = 45;
+            SEARCH_DEPTH = 60;
         }
     }
 

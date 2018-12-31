@@ -10,7 +10,7 @@ public class MapCell extends Position {
     // These are used in navigation and their value should never be used elsewhere
     public boolean visited = false, processed = false;
     public Direction path = Direction.STILL;
-    public int dist = 0, actualDist = 0;
+    public int dist = 0, actualDist = 0, depth = 0;
     public int lost = 0;
     public int gained = 0;
 
