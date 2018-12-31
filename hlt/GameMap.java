@@ -173,6 +173,7 @@ public class GameMap {
                 cells[i][j].path = Direction.STILL;
                 cells[i][j].dist = 0;
                 cells[i][j].actualDist = 0;
+                cells[i][j].depth = 0;
                 cells[i][j].lost = 0;
                 cells[i][j].gained = 0;
             }

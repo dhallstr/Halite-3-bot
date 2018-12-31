@@ -10,7 +10,7 @@ public class MapCell extends Position {
     // These are used in navigation and their value should never be used elsewhere
     public boolean visited = false, processed = false;
     public Direction path = Direction.STILL;
-    public int dist = 0, actualDist = 0;
+    public int dist = 0, actualDist = 0, depth = 0;
     public int lost = 0;
     public int gained = 0;
 
@@ -49,6 +49,16 @@ public class MapCell extends Position {
             myHalite += Math.min(collectAmount(halite), Constants.MAX_HALITE - myHalite);
         }
         return halite;
+    }
+    public int haliteCollectedAfterXTurns(int initialHalite, int shipHalite, int x) {
+        int myHalite = shipHalite;
+        int halite = initialHalite;
+        for (int i = 0; i < x; i++) {
+
+            halite -= Math.min(minedAmount(halite), Constants.MAX_HALITE - myHalite);
+            myHalite += Math.min(collectAmount(halite), Constants.MAX_HALITE - myHalite);
+        }
+        return myHalite - shipHalite;
     }
 
     public boolean hasStructure() {
