@@ -50,6 +50,16 @@ public class MapCell extends Position {
         }
         return halite;
     }
+    public int haliteCollectedAfterXTurns(int initialHalite, int shipHalite, int x) {
+        int myHalite = shipHalite;
+        int halite = initialHalite;
+        for (int i = 0; i < x; i++) {
+
+            halite -= Math.min(minedAmount(halite), Constants.MAX_HALITE - myHalite);
+            myHalite += Math.min(collectAmount(halite), Constants.MAX_HALITE - myHalite);
+        }
+        return myHalite - shipHalite;
+    }
 
     public boolean hasStructure() {
         return structure != null;

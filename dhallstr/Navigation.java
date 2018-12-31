@@ -76,21 +76,19 @@ public class Navigation {
                     m.lost = curr.lost + curr.moveCost();
                     m.gained = curr.gained;
                 }
-                else if (m.visited && curr.path != d.invertDirection() && m.path != Direction.STILL && curr.depth <= m.depth && !m.processed) {
+                else if (m.visited && curr.path != d.invertDirection() && m.path != Direction.STILL && curr.depth <= m.depth && (!m.processed || m.dist == curr.actualDist + 1)) {
                     // maybe change the path to be from curr to m
                     Direction prevDir = m.path;
                     int prevADist = m.actualDist, prevDDist = m.dist, prevDepth = m.depth, prevLost = m.lost, prevGained = m.gained;
                     int prevScore = goal.rateTile(game, m, s, plan);
                     m.path = d;
-                    m.actualDist += curr.actualDist + 1  - m.dist;
+                    m.actualDist += curr.actualDist + 1  - prevDDist;
                     m.dist = curr.actualDist + 1;
                     m.depth = curr.depth + 1;
                     m.lost = curr.lost + curr.moveCost();
-                    m.gained = curr.gained;
+                    m.gained = curr.gained + m.haliteCollectedAfterXTurns(plan.getProjectedHalite(map, m, m.dist), s.halite + curr.gained - m.lost, prevADist - prevDDist);
                     int score = goal.rateTile(game, m, s, plan);
-                    if (score < prevScore) {
-                    //if (curr.gained - curr.lost - curr.moveCost() >= m.gained - m.lost && curr.actualDist + 1 <= m.actualDist) {
-
+                    if (!(score > prevScore && m.dist == prevDDist) && score <= prevScore + (m.dist - prevDDist) * game.gameMap.percentileHalite / (m.actualDist * Constants.EXTRACT_RATIO)) {
                         m.path = prevDir;
                         m.actualDist = prevADist;
                         m.dist = prevDDist;
@@ -100,6 +98,11 @@ public class Navigation {
                     }
                     else {
                         modifiedPaths++;
+                        if (best.score <= score || m.equals(best.endCell)) {
+                            best.endCell = m;
+                            best.score = score;
+                            best.actualDist = m.actualDist;
+                        }
                     }
                 }
             }
@@ -127,22 +130,10 @@ public class Navigation {
         for (int i = 0; i < directions.length; i++) {
             directions[i] = Direction.STILL;
         }
-        int cost = 0;
 
-        int prevDist = curr.dist;
         while (curr.dist != 0) {
             directions[curr.dist - 1] = curr.path;
             curr = map.offset(curr, curr.path.invertDirection());
-            cost += curr.moveCost();
-
-            int halite = curr.halite;// not doing projected halite to be conservative
-            for (int i = 0; i < prevDist - curr.dist - 1; i++) {
-                int mined = Math.min(curr.minedAmount(halite), Constants.MAX_HALITE - s.halite + cost);
-                int collected = Math.min(curr.collectAmount(halite), Constants.MAX_HALITE - s.halite + cost);
-                cost -= collected;
-                halite -= mined;
-            }
-            prevDist = curr.dist;
         }
          return directions;
     }
