@@ -1,6 +1,7 @@
 package hlt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public enum Direction {
     NORTH('n'),
@@ -11,7 +12,7 @@ public enum Direction {
 
     public final char charValue;
 
-    public final static ArrayList<Direction> ALL_CARDINALS = new ArrayList<>();
+    public static ArrayList<Direction> ALL_CARDINALS = new ArrayList<>();
     static {
         ALL_CARDINALS.add(NORTH);
         ALL_CARDINALS.add(SOUTH);
@@ -27,6 +28,24 @@ public enum Direction {
             case WEST: return EAST;
             case STILL: return STILL;
             default: throw new IllegalStateException("Unknown direction " + this);
+        }
+    }
+
+    public static void setAllCardinals(int playerId) {
+        switch(playerId) {
+            case 0:
+                ALL_CARDINALS = new ArrayList<>(Arrays.asList(new Direction[] {NORTH, EAST, SOUTH, WEST}));
+                break;
+            case 1:
+                ALL_CARDINALS = new ArrayList<>(Arrays.asList(new Direction[] {NORTH, WEST, SOUTH, EAST}));
+                break;
+            case 2:
+                ALL_CARDINALS = new ArrayList<>(Arrays.asList(new Direction[] {SOUTH, EAST, NORTH, WEST}));
+                break;
+            case 3:
+                ALL_CARDINALS = new ArrayList<>(Arrays.asList(new Direction[] {SOUTH, WEST, NORTH, EAST}));
+                break;
+            default: throw new IllegalArgumentException("playerId must be in the range [0-3]. Instead, " + playerId + " was given");
         }
     }
 
