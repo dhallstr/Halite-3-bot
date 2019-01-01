@@ -176,6 +176,7 @@ public class GameMap {
                 cells[i][j].depth = 0;
                 cells[i][j].lost = 0;
                 cells[i][j].gained = 0;
+                cells[i][j].score = Integer.MIN_VALUE;
             }
         }
     }

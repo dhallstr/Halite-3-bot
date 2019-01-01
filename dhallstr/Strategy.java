@@ -58,16 +58,6 @@ public class Strategy {
             }
         }
 
-
-        // *** use the move that was planned ahead ***
-        if (false && plannedMove != null && plan.isSafe(game, ship.directionalOffset(plannedMove), ship, 1, true) &&
-                !(game.gameMap.at(ship).hasStructure() && game.gameMap.at(ship).structure.owner == plan.me && plannedMove == Direction.STILL) &&
-                (ship.halite >= game.gameMap.at(ship).moveCost() || plannedMove == Direction.STILL) &&
-                !(intent == Intent.GATHER && plannedMove == Direction.STILL && ship.halite == Constants.MAX_HALITE)) {
-            return ship.move(plannedMove);
-        }
-
-
         // *** create a new goal ***
 
         Goal g = null;

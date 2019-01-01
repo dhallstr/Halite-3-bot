@@ -13,6 +13,7 @@ public class MapCell extends Position {
     public int dist = 0, actualDist = 0, depth = 0;
     public int lost = 0;
     public int gained = 0;
+    public int score = Integer.MIN_VALUE;
 
     // These are used in other BFS applications
     boolean secondaryVisited = false;
