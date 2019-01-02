@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Strategy {
-    public static boolean IS_TWO_PLAYER = true;
+    public static boolean IS_TWO_PLAYER = true, PREVENT_TIMEOUT_MODE = false, LOW_ON_TIME = false;
     private static int lastDropoffBuilt = 0;
 
     public static Command evaluateMove(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands) {
 
         Log.log("moving ship " + ship.id.toString());
+        ship.processed = true;
         Direction plannedMove = plan.getNextStep(game.gameMap, ship, 0);
         Intent intent = plan.shipPlans.get(ship.id);
         Intent nextIntent = plan.getIntent(game.gameMap, ship, 0);
@@ -57,6 +58,16 @@ public class Strategy {
                 plan.shipPlans.put(ship.id, intent);
             }
         }
+
+
+        // *** use the move that was planned ahead ***
+        if (LOW_ON_TIME && plannedMove != null && plan.isSafe(game, ship.directionalOffset(plannedMove), ship, 1, true) &&
+                !(game.gameMap.at(ship).hasStructure() && game.gameMap.at(ship).structure.owner == plan.me && plannedMove == Direction.STILL) &&
+                (ship.halite >= game.gameMap.at(ship).moveCost() || plannedMove == Direction.STILL) &&
+                !(intent == Intent.GATHER && plannedMove == Direction.STILL && ship.halite == Constants.MAX_HALITE)) {
+            return ship.move(plannedMove);
+        }
+
 
         // *** create a new goal ***
 
@@ -112,6 +123,9 @@ public class Strategy {
             if (newShip != null) {
                 Command.cancelCommand(commands, here);
                 resolveCancelledMove(game, newShip, plan, commands);
+
+                if (ship.processed)
+                    commands.add(Strategy.evaluateMove(game, ship, plan, commands));
             }
         }
 

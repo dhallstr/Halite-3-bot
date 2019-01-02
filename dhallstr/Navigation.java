@@ -59,7 +59,7 @@ public class Navigation {
             }
 
 
-            if (curr.depth > goal.getMaxTurns() || curr.depth >= best.depth + 15 && curr.depth > 27) {
+            if (curr.depth > goal.getMaxTurns() || (curr.depth >= best.depth + 17 && curr.depth > 27 && Strategy.PREVENT_TIMEOUT_MODE)) {
                 return finishSearch(s, map, best);
             }
 

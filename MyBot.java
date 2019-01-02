@@ -26,16 +26,24 @@ public class MyBot {
 
         for (;;) {
             game.updateFrame();
+            long startTurn = System.currentTimeMillis();
 
             final Player me = game.me;
             final GameMap gameMap = game.gameMap;
             Navigation.modifiedPaths = 0;
+            Strategy.LOW_ON_TIME = false;
 
             ArrayList<Command> commandQueue = new ArrayList<>();
             Ship[] ships = new Ship[me.ships.values().size()];
             me.ships.values().toArray(ships);
             Arrays.sort(ships, (s1, s2) -> (s1.id.id - s2.id.id));
+
             for (final Ship ship: ships) {
+                if (System.currentTimeMillis() - startTurn > 1700) {
+                    Strategy.PREVENT_TIMEOUT_MODE = true;
+                    Strategy.LOW_ON_TIME = true;
+                }
+                if (ship.processed) throw new RuntimeException("Error, already processed");
                 commandQueue.add(Strategy.evaluateMove(game, ship, plan, commandQueue));
             }
 
