@@ -43,8 +43,9 @@ public class MyBot {
                     Strategy.PREVENT_TIMEOUT_MODE = true;
                     Strategy.LOW_ON_TIME = true;
                 }
-                if (ship.processed) throw new RuntimeException("Error, already processed");
-                commandQueue.add(Strategy.evaluateMove(game, ship, plan, commandQueue));
+                Command newCommand = Strategy.evaluateMove(game, ship, plan, commandQueue);
+                if (newCommand != null)
+                    commandQueue.add(newCommand);
             }
 
             if (Strategy.shouldSpawn(game, plan, me, gameMap, commandQueue))

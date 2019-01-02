@@ -12,6 +12,7 @@ public class Strategy {
     public static Command evaluateMove(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands) {
 
         Log.log("moving ship " + ship.id.toString());
+        if (ship.processed) return null;
         ship.processed = true;
         Direction plannedMove = plan.getNextStep(game.gameMap, ship, 0);
         Intent intent = plan.shipPlans.get(ship.id);
@@ -95,10 +96,18 @@ public class Strategy {
             path = new Direction[] {Direction.STILL};
         }
         Log.log(Arrays.toString(path));
+        ArrayList<Ship> needToRecalculate = new ArrayList<>();
         if (path[0] == Direction.STILL && plannedMove != Direction.STILL) {
-            resolveCancelledMove(game, ship, plan, commands);
+            resolveCancelledMove(game, ship, plan, commands, needToRecalculate);
         }
         plan.addPlan(game.gameMap, ship, path, g == null ? Intent.NONE : g.getIntent());
+
+        for (Ship s: needToRecalculate) {
+            if (!s.processed) {
+                Command c = Strategy.evaluateMove(game, s, plan, commands);
+                if (c != null) commands.add(c);
+            }
+        }
 
         nextIntent = plan.getIntent(game.gameMap, ship, 0);
         if (nextIntent != null && nextIntent != Intent.NONE && intent != nextIntent && nextIntent != Intent.BUILD_DROPOFF) {
@@ -109,7 +118,7 @@ public class Strategy {
         return ship.move(path[0]);
     }
 
-    private static void resolveCancelledMove(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands) {
+    private static void resolveCancelledMove(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands, ArrayList<Ship> needToRecalculate) {
         Log.log("resolving " + ship.id + "...");
         EntityId here = plan.get(game.gameMap, ship, 1);
         plan.cancelPlan(game.gameMap, ship, 1);
@@ -120,12 +129,11 @@ public class Strategy {
         if (here != ship.id) {
             // Need to cancel this ship's move, if it was made already
             Ship newShip = game.me.ships.get(here);
-            if (newShip != null) {
+            if (newShip != null && newShip.processed) {
                 Command.cancelCommand(commands, here);
-                resolveCancelledMove(game, newShip, plan, commands);
-
-                if (ship.processed)
-                    commands.add(Strategy.evaluateMove(game, ship, plan, commands));
+                newShip.processed = false;
+                resolveCancelledMove(game, newShip, plan, commands, needToRecalculate);
+                needToRecalculate.add(newShip);
             }
         }
 
@@ -160,10 +168,10 @@ public class Strategy {
         Direction[] path = Navigation.bfs(game, ship, new DropoffGoal(plan.me, true), plan);
         if (path == null || path.length == 0) {
             path = new Direction[] {Direction.STILL};
-            resolveCancelledMove(game, ship, plan, commands);
+            resolveCancelledMove(game, ship, plan, commands, new ArrayList<Ship>());
         }
        else if (path[0] == Direction.STILL && cancelIfStill)
-            resolveCancelledMove(game, ship, plan, commands);
+            resolveCancelledMove(game, ship, plan, commands, new ArrayList<Ship>());
         plan.addPlan(game.gameMap, ship, path, Intent.CRASH_HOME);
         return ship.move(path[0]);
     }
