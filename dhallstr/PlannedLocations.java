@@ -36,6 +36,8 @@ public class PlannedLocations {
         int actualCollision = Collisions.AVOID, collision = Collisions.COLLIDE;
         EntityId e = get(game.gameMap, p, turnOffset);
 
+        if (turnOffset > 3) avoidEnemy = false;
+
         if (avoidEnemy) {
             Ship shipOnTile = game.gameMap.at(p).ship;
             boolean enemyOnTile = shipOnTile != null && shipOnTile.owner.id != ship.owner.id;

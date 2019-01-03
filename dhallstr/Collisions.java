@@ -8,16 +8,20 @@ public class Collisions {
     public static int COLLIDE = 2;
 
     public static int shouldCollide(Ship mine, Ship enemy, Game game) {
+        int support = game.gameMap.at(mine).friendlyShipsNearby;
+        int opposition = game.gameMap.at(enemy).enemyShipsNearby;
+        if (enemy.halite > Constants.MAX_HALITE * 0.6 && support > opposition * 2 + 2 && game.turnNumber + 60 > Constants.MAX_TURNS) {
+            return COLLIDE;
+        }
         if (!Strategy.IS_TWO_PLAYER) {
-            // Never COLLIDE, but sometimes allow or avoid
-            // for now, I'm going to allow collisions if I have less halite
-            if (mine.halite < enemy.halite) return ALLOW;
-            return AVOID;
+            if (mine.halite < enemy.halite + 30 && support > opposition - 1) return ALLOW;
+            else if (mine.halite < Constants.MAX_HALITE * 0.7 && support > opposition - 4) return ALLOW;
+            else return AVOID;
         }
         else {
-            if (mine.halite > enemy.halite * 1.5) return AVOID;
-            // also consider enemy dropoff dist. vs mine, and enemy ships nearby vs. mine
-            return ALLOW;
+            if (mine.halite < Constants.MAX_HALITE * 0.7 && enemy.halite > Constants.MAX_HALITE * 0.5 && support > opposition * 1.8) return COLLIDE;
+            else if (mine.halite < enemy.halite + 30 && support > opposition) return ALLOW;
+            else return AVOID;
         }
     }
 }

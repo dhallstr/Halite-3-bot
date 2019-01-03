@@ -39,7 +39,7 @@ public class MyBot {
             Arrays.sort(ships, (s1, s2) -> (s1.id.id - s2.id.id));
 
             for (final Ship ship: ships) {
-                if (System.currentTimeMillis() - startTurn > 1700) {
+                if (System.currentTimeMillis() - startTurn > 1500) {
                     Strategy.PREVENT_TIMEOUT_MODE = true;
                     Strategy.LOW_ON_TIME = true;
                 }
