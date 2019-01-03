@@ -99,6 +99,7 @@ public class Strategy {
         ArrayList<Ship> needToRecalculate = new ArrayList<>();
         if (path[0] == Direction.STILL && plannedMove != Direction.STILL) {
             resolveCancelledMove(game, ship, plan, commands, needToRecalculate);
+            ship.processed = true;
         }
         plan.addPlan(game.gameMap, ship, path, g == null ? Intent.NONE : g.getIntent());
 
@@ -121,9 +122,9 @@ public class Strategy {
     private static void resolveCancelledMove(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands, ArrayList<Ship> needToRecalculate) {
         Log.log("resolving " + ship.id + "...");
         EntityId here = plan.get(game.gameMap, ship, 1);
-        plan.cancelPlan(game.gameMap, ship, 1);
+        plan.cancelPlan(game.gameMap, ship, 0);
         plan.addPlan(game.gameMap, ship, new Direction[] {Direction.STILL}, Intent.NONE);
-        if (here == null || ship.id.equals(here)) return;
+        if (here == null || ship.id.id == here.id) return;
 
 
         if (here != ship.id) {
