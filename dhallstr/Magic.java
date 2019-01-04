@@ -67,6 +67,15 @@ public class Magic {
             MAX_DROPOFFS = (int)(size / 11);
             SEARCH_DEPTH = 75;
             END_GAME_HALITE = 15;
+
+            // CLOP adjustments
+            COLLECTION_INT = 18.7964;
+            COLLECTION_SLOPE = 1.12599;
+            FIND_PERCENTILE = 0.461508;
+            END_GAME_HALITE = 25;
+            END_GAME_FIND_PERCENTILE = 0.335921;
+            END_GAME_COLLECTION_INT = 20.511;
+            END_GAME_COLLECTION_SLOPE = 1.13451;
         }
         else {
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
