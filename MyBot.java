@@ -19,6 +19,7 @@ public class MyBot {
         Strategy.IS_TWO_PLAYER = game.players.size() <= 2;
         Magic.updateConstants(Strategy.IS_TWO_PLAYER, game.gameMap.width, game.gameMap.height);
         Direction.setAllCardinals(game.myId.id);
+        Magic.commandLineParams(args);
 
         game.ready(Magic.BOT_NAME);
 

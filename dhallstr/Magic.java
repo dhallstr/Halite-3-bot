@@ -76,6 +76,35 @@ public class Magic {
         }
     }
 
+    public static void commandLineParams(String[] args) {
+        if (args.length % 2 == 1 || args.length == 0) return;
+        for (int i = 0; i < args.length; i += 2) {
+            switch(args[i]) {
+                case "COLLECTION_INT":
+                    COLLECTION_INT = Double.parseDouble(args[i + 1]);
+                    break;
+                case "COLLECTION_SLOPE":
+                    COLLECTION_SLOPE = Double.parseDouble(args[i+1]);
+                    break;
+                case "FIND_PERCENTILE":
+                    FIND_PERCENTILE = Double.parseDouble(args[i+1]);
+                    break;
+                case "END_GAME_FIND_PERCENTILE":
+                    END_GAME_FIND_PERCENTILE = Double.parseDouble(args[i+1]);
+                    break;
+                case "COLLECTION_END_GAME_HALITE":
+                    COLLECTION_END_GAME_HALITE = Integer.parseInt(args[i+1]);
+                    break;
+                case "END_GAME_COLLECTION_INT":
+                    END_GAME_COLLECTION_INT = Double.parseDouble(args[i+1]);
+                    break;
+                case "END_GAME_COLLECTION_SLOPE":
+                    END_GAME_COLLECTION_SLOPE = Double.parseDouble(args[i+1]);
+                    break;
+            }
+        }
+    }
+
     public static int getCollectDownTo(GameMap game) {
         boolean prevEndGame = FIND_PERCENTILE == END_GAME_FIND_PERCENTILE;
         if (game.percentileHalite > COLLECTION_END_GAME_HALITE) FIND_PERCENTILE = END_GAME_FIND_PERCENTILE; // will take effect next turn
