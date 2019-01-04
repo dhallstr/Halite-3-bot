@@ -103,16 +103,25 @@ public class GameMap {
         haliteOnMap = 0;
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < height; j++) {
+                cells[i][j].enemyShipsInInspirationRange = 0;
+                cells[i][j].friendlyShipsNearby = 0;
                 cells[i][j].enemyShipsNearby = 0;
                 haliteOnMap += cells[i][j].halite;
             }
         }
 
         for (Player p: game.players) {
-            if (p.id.id == me.id) continue;
             for (Ship s: p.ships.values()) {
-                for (int[] offset: Magic.INSPIRE_OFFSET) {
-                    cells[(s.y + offset[0] + height)%height][(s.x + offset[1] + width)%width].enemyShipsNearby++;
+                if (p.id.id != me.id) {
+                    for (int[] offset : Magic.INSPIRE_OFFSET) {
+                        cells[(s.y + offset[0] + height) % height][(s.x + offset[1] + width) % width].enemyShipsInInspirationRange++;
+                    }
+                }
+                for (int[] offset : Magic.NEARBY_SHIP_OFFSET) {
+                    if (p.id.id == me.id)
+                        cells[(s.y + offset[0] + height) % height][(s.x + offset[1] + width) % width].friendlyShipsNearby++;
+                    else
+                        cells[(s.y + offset[0] + height) % height][(s.x + offset[1] + width) % width].enemyShipsNearby++;
                 }
             }
         }
@@ -120,7 +129,7 @@ public class GameMap {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < height; j++) {
                 if (Constants.INSPIRATION_ENABLED) {
-                    cells[i][j].isInspired = (cells[i][j].enemyShipsNearby >= Constants.INSPIRATION_SHIP_COUNT);
+                    cells[i][j].isInspired = (cells[i][j].enemyShipsInInspirationRange >= Constants.INSPIRATION_SHIP_COUNT);
                     if (cells[i][j].isInspired) {
                         numInspired++;
                     }
@@ -176,6 +185,7 @@ public class GameMap {
                 cells[i][j].depth = 0;
                 cells[i][j].lost = 0;
                 cells[i][j].gained = 0;
+                cells[i][j].score = Integer.MIN_VALUE;
             }
         }
     }

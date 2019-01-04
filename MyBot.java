@@ -5,17 +5,10 @@ import dhallstr.*;
 import hlt.*;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Arrays;
 
 public class MyBot {
     public static void main(final String[] args) {
-        final long rngSeed;
-        if (args.length >= 1) {
-            rngSeed = Integer.parseInt(args[1]);
-        } else {
-            rngSeed = System.nanoTime();
-        }
-        final Random rng = new Random(rngSeed);
 
         Game game = new Game();
         // At this point "game" variable is populated with initial map data.
@@ -25,22 +18,34 @@ public class MyBot {
         PlannedLocations plan = new PlannedLocations(game.gameMap.width, game.gameMap.height, game.me.id);
         Strategy.IS_TWO_PLAYER = game.players.size() <= 2;
         Magic.updateConstants(Strategy.IS_TWO_PLAYER, game.gameMap.width, game.gameMap.height);
+        Direction.setAllCardinals(game.myId.id);
 
         game.ready(Magic.BOT_NAME);
 
-        Log.log("Successfully created bot! My Player ID is " + game.myId + ". Bot rng seed is " + rngSeed + ".");
+        Log.log("Successfully created bot! My Player ID is " + game.myId + ".");
 
         for (;;) {
             game.updateFrame();
+            long startTurn = System.currentTimeMillis();
 
             final Player me = game.me;
             final GameMap gameMap = game.gameMap;
             Navigation.modifiedPaths = 0;
+            Strategy.LOW_ON_TIME = false;
 
             ArrayList<Command> commandQueue = new ArrayList<>();
+            Ship[] ships = new Ship[me.ships.values().size()];
+            me.ships.values().toArray(ships);
+            Arrays.sort(ships, (s1, s2) -> (s1.id.id - s2.id.id));
 
-            for (final Ship ship : me.ships.values()) {
-                commandQueue.add(Strategy.evaluateMove(game, ship, plan, commandQueue));
+            for (final Ship ship: ships) {
+                if (System.currentTimeMillis() - startTurn > 1500) {
+                    Strategy.PREVENT_TIMEOUT_MODE = true;
+                    Strategy.LOW_ON_TIME = true;
+                }
+                Command newCommand = Strategy.evaluateMove(game, ship, plan, commandQueue);
+                if (newCommand != null)
+                    commandQueue.add(newCommand);
             }
 
             if (Strategy.shouldSpawn(game, plan, me, gameMap, commandQueue))

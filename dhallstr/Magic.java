@@ -36,9 +36,10 @@ public class Magic {
 
     public static int SEARCH_DEPTH;
     public static int NEAR_DROPOFF_SEARCH_DIST = 8;
+    public static int NEAR_SHIP_DIST = 7;// how far away a ship can be from another to be considered "near"
 
 
-    public static ArrayList<int[]> INSPIRE_OFFSET;
+    public static ArrayList<int[]> INSPIRE_OFFSET, NEARBY_SHIP_OFFSET;
 
     public static void updateConstants(boolean isTwoPlayer, int width, int height) {
         COLLECT_DOWN_TO = Constants.MAX_HALITE / 14;
@@ -48,10 +49,15 @@ public class Magic {
 
         INSPIRE_OFFSET = new ArrayList<>(2*Constants.INSPIRATION_RADIUS*(Constants.INSPIRATION_RADIUS+1)+1);
         for (int i = - Constants.INSPIRATION_RADIUS; i <= Constants.INSPIRATION_RADIUS; i++) {
-            for (int j = - Constants.INSPIRATION_RADIUS; j <= Constants.INSPIRATION_RADIUS; j++) {
-                if (Math.abs(i) + Math.abs(j) <= Constants.INSPIRATION_RADIUS) {
-                    INSPIRE_OFFSET.add(new int[] {i, j});
-                }
+            for (int j = Math.abs(i) - Constants.INSPIRATION_RADIUS; j <= Constants.INSPIRATION_RADIUS - Math.abs(i); j++) {
+                INSPIRE_OFFSET.add(new int[] {i, j});
+            }
+        }
+
+        NEARBY_SHIP_OFFSET = new ArrayList<>(2*NEAR_SHIP_DIST*(NEAR_SHIP_DIST+1)+1);
+        for (int i = - NEAR_SHIP_DIST; i <= NEAR_SHIP_DIST; i++) {
+            for (int j = Math.abs(i)- NEAR_SHIP_DIST; j <= NEAR_SHIP_DIST - Math.abs(i); j++) {
+                NEARBY_SHIP_OFFSET.add(new int[] {i, j});
             }
         }
 

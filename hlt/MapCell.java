@@ -13,13 +13,14 @@ public class MapCell extends Position {
     public int dist = 0, actualDist = 0, depth = 0;
     public int lost = 0;
     public int gained = 0;
+    public int score = Integer.MIN_VALUE;
 
     // These are used in other BFS applications
     boolean secondaryVisited = false;
     int secondaryDist = 0;
 
 
-    public int enemyShipsNearby = 0;
+    public int enemyShipsInInspirationRange = 0, enemyShipsNearby = 0, friendlyShipsNearby = 0;
 
     MapCell(final int x, final int y, final int halite) {
         super(x, y);

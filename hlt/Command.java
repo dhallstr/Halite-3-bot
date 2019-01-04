@@ -18,12 +18,15 @@ public class Command {
     public static Command move(final EntityId id, final Direction direction) {
         return new Command("m " + id + ' ' + direction.charValue, id);
     }
-    public static void cancelCommand(ArrayList<Command> commands, EntityId id) {
+    public static boolean cancelCommand(ArrayList<Command> commands, EntityId id) {
+        boolean removed = false;
         for (int i = commands.size() - 1; i >= 0; i--) {
             if (id.equals(commands.get(i).id)) {
                 commands.remove(i);
+                removed = true;
             }
         }
+        return removed;
     }
 
     public boolean isMovingAway() {

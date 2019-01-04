@@ -49,16 +49,17 @@ public class Navigation {
             }
 
             if (goal.meetsGoal(curr)) {
-                int score = goal.rateTile(game, curr, s, plan);
-                if (score > best.score) {
+                curr.score = goal.rateTile(game, curr, s, plan);
+                if (curr.score > best.score) {
                     best.endCell = curr;
-                    best.score = score;
+                    best.score = curr.score;
                     best.actualDist = curr.actualDist;
+                    best.depth = curr.depth;
                 }
             }
 
 
-            if (curr.depth > goal.getMaxTurns()) {
+            if (curr.depth > goal.getMaxTurns() || (curr.depth >= best.depth + 17 && curr.depth > 27 && Strategy.PREVENT_TIMEOUT_MODE)) {
                 return finishSearch(s, map, best);
             }
 
@@ -80,28 +81,30 @@ public class Navigation {
                     // maybe change the path to be from curr to m
                     Direction prevDir = m.path;
                     int prevADist = m.actualDist, prevDDist = m.dist, prevDepth = m.depth, prevLost = m.lost, prevGained = m.gained;
-                    int prevScore = goal.rateTile(game, m, s, plan);
+                    int prevScore = m.score == Integer.MIN_VALUE ? goal.rateTile(game, m, s, plan) : m.score;
                     m.path = d;
                     m.actualDist += curr.actualDist + 1  - prevDDist;
                     m.dist = curr.actualDist + 1;
                     m.depth = curr.depth + 1;
                     m.lost = curr.lost + curr.moveCost();
                     m.gained = curr.gained + m.haliteCollectedAfterXTurns(plan.getProjectedHalite(map, m, m.dist), s.halite + curr.gained - m.lost, prevADist - prevDDist);
-                    int score = goal.rateTile(game, m, s, plan);
-                    if (!(score > prevScore && m.dist == prevDDist) && score <= prevScore + (m.dist - prevDDist) * game.gameMap.percentileHalite / (m.actualDist * Constants.EXTRACT_RATIO)) {
+                    m.score = goal.rateTile(game, m, s, plan);
+                    if (!(m.score > prevScore && m.dist == prevDDist) && m.score <= prevScore + (m.dist - prevDDist) * game.gameMap.percentileHalite / (m.actualDist * Constants.EXTRACT_RATIO)) {
                         m.path = prevDir;
                         m.actualDist = prevADist;
                         m.dist = prevDDist;
                         m.depth = prevDepth;
                         m.lost = prevLost;
                         m.gained = prevGained;
+                        m.score = prevScore;
                     }
                     else {
                         modifiedPaths++;
-                        if (best.score <= score || m.equals(best.endCell)) {
+                        if (best.score <= m.score || m.equals(best.endCell)) {
                             best.endCell = m;
-                            best.score = score;
+                            best.score = m.score;
                             best.actualDist = m.actualDist;
+                            best.depth = m.depth;
                         }
                     }
                 }
@@ -142,6 +145,7 @@ public class Navigation {
         MapCell endCell = null;
         int score = Integer.MIN_VALUE;
         int actualDist = 0;
+        int depth = 0;
     }
 
 }
