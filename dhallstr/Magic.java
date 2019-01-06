@@ -10,13 +10,13 @@ public class Magic {
 
     // Dropoff constants
     public static final int MIN_DIST_FOR_BUILD = 15;
-    public static final int BUILD_DROPOFF_RADIUS = 6;
-    public static final int MIN_HALITE_FOR_BUILD = 9000;
+    public static final int BUILD_DROPOFF_RADIUS = 8;
+    public static final int MIN_HALITE_FOR_BUILD = 8000;
     public static final int BUILD_BUFFER_HALITE = 0;
-    public static final int SHIPS_PER_DROPOFF = 15;
+    public static final int SHIPS_PER_DROPOFF = 13;
     public static final int MIN_TURNS_LEFT_FOR_DROPOFF = 70;
     public static final int DROPOFF_FRIENDLY_SHIP_RADIUS = 10;
-    public static final int MIN_FRIENDLY_AROUND_FOR_DROPOFF = 7;
+    public static final int MIN_FRIENDLY_AROUND_FOR_DROPOFF = 8;
     public static int MAX_DROPOFFS = 1;// includes shipyard
 
 
@@ -64,7 +64,7 @@ public class Magic {
         int size = (width + height) / 2; // in case it is a rectangle
         END_GAME_HALITE += (int)((size - 32) / 32.0 * (45 - END_GAME_HALITE));
         if (isTwoPlayer) {
-            MAX_DROPOFFS = (int)(size / 11);
+            MAX_DROPOFFS = size / 8;
             SEARCH_DEPTH = 75;
             END_GAME_HALITE = 15;
 
@@ -80,8 +80,17 @@ public class Magic {
         else {
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
             END_GAME_HALITE = 25;
-            MAX_DROPOFFS = (int)(size / 11);
+            MAX_DROPOFFS = size / 11;
             SEARCH_DEPTH = 60;
+
+            // CLOP adjustments
+            /*COLLECTION_INT = 22.4547;
+            COLLECTION_SLOPE = 0.960414;
+            FIND_PERCENTILE = 0.672092;
+            END_GAME_HALITE = 27;
+            END_GAME_FIND_PERCENTILE = 0.513232;
+            END_GAME_COLLECTION_INT = 23.8891;
+            END_GAME_COLLECTION_SLOPE = 0.939532;*/
         }
     }
 

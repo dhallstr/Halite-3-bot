@@ -9,6 +9,8 @@ public class Strategy {
     public static boolean IS_TWO_PLAYER = true, PREVENT_TIMEOUT_MODE = false, LOW_ON_TIME = false;
     private static int lastDropoffBuilt = 0;
 
+    private static DropoffCreation nextDropoff = null;
+
     public static Command evaluateMove(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands) {
 
         Log.log("moving ship " + ship.id.toString());
@@ -43,22 +45,28 @@ public class Strategy {
 
 
         // *** BUILD DROPOFFS ***
-        if (intent == null || intent == Intent.NONE || intent == Intent.GATHER || intent == Intent.BUILD_DROPOFF) {
-            if (game.gameMap.calculateDistanceToDropoff(game.me, ship) >= Magic.MIN_DIST_FOR_BUILD && game.gameMap.numHaliteWithin(ship, Magic.BUILD_DROPOFF_RADIUS) >= Magic.MIN_HALITE_FOR_BUILD &&
-                    game.me.ships.size() >= game.me.dropoffs.size() * Magic.SHIPS_PER_DROPOFF && game.turnNumber + Magic.MIN_TURNS_LEFT_FOR_DROPOFF < Constants.MAX_TURNS &&
-                    game.gameMap.getNumMyShipsWithin(ship, Magic.DROPOFF_FRIENDLY_SHIP_RADIUS, game.me.id) >= Magic.MIN_FRIENDLY_AROUND_FOR_DROPOFF &&
-                    game.me.dropoffs.size() < Magic.MAX_DROPOFFS) {
-                if (lastDropoffBuilt != game.turnNumber && game.me.halite >= Constants.DROPOFF_COST - ship.halite - game.gameMap.at(ship).halite + Magic.BUILD_BUFFER_HALITE) {
-                    game.me.halite -= Constants.DROPOFF_COST - ship.halite - game.gameMap.at(ship).halite;
-                    lastDropoffBuilt = game.turnNumber;
-                    return ship.makeDropoff();
-                }
+        if (nextDropoff == null && game.gameMap.calculateDistanceToDropoff(game.me, ship) >= Magic.MIN_DIST_FOR_BUILD && game.gameMap.numHaliteWithin(ship, Magic.BUILD_DROPOFF_RADIUS) >= Magic.MIN_HALITE_FOR_BUILD &&
+                game.me.ships.size() >= game.me.dropoffs.size() * Magic.SHIPS_PER_DROPOFF && game.turnNumber + Magic.MIN_TURNS_LEFT_FOR_DROPOFF < Constants.MAX_TURNS &&
+                game.gameMap.getNumMyShipsWithin(ship, Magic.DROPOFF_FRIENDLY_SHIP_RADIUS, game.me.id) >= Magic.MIN_FRIENDLY_AROUND_FOR_DROPOFF &&
+                game.me.dropoffs.size() < Magic.MAX_DROPOFFS && lastDropoffBuilt != game.turnNumber) {
+            nextDropoff = DropoffCreation.findBestPosition(game, ship, Magic.BUILD_DROPOFF_RADIUS);
+            nextDropoff.findBestShip(game);
+            Log.log("Started Dropoff, requesting ship " + nextDropoff.builder.id);
+        }
+        if (nextDropoff != null) nextDropoff.findBestShip(game);
+        if (nextDropoff != null && nextDropoff.builder.id == ship.id.id) {
+            if (nextDropoff.equals(ship) && lastDropoffBuilt != game.turnNumber && game.me.halite >= Constants.DROPOFF_COST - ship.halite - game.gameMap.at(ship).halite + Magic.BUILD_BUFFER_HALITE) {
+                game.me.halite -= Constants.DROPOFF_COST - ship.halite - game.gameMap.at(ship).halite;
+                lastDropoffBuilt = game.turnNumber;
+                nextDropoff = null;
+                return ship.makeDropoff();
             }
-            else if (intent == Intent.BUILD_DROPOFF) {
-                intent = Intent.NONE;
-                plan.shipPlans.put(ship.id, intent);
+            else if (nextDropoff.equals(ship)) {
+                plan.addPlan(game.gameMap, ship, new Direction[] {Direction.STILL}, Intent.BUILD_DROPOFF);
+                return ship.stayStill();
             }
         }
+
 
 
         // *** use the move that was planned ahead ***
@@ -73,7 +81,10 @@ public class Strategy {
         // *** create a new goal ***
 
         Goal g = null;
-        if (ship.halite > Magic.START_DELIVER_HALITE ||
+        if (nextDropoff != null && nextDropoff.builder.id == ship.id.id) {
+            g = new BuildDropoffGoal(nextDropoff);
+        }
+        else if (ship.halite > Magic.START_DELIVER_HALITE ||
                 (intent == Intent.DROPOFF && ship.halite > Magic.MIN_HALITE_FOR_DELIVER) ||
                 (game.gameMap.haliteOnMap < Magic.END_GAME_HALITE  * game.gameMap.width * game.gameMap.height && ship.halite > Magic.END_GAME_DELIVER_HALITE)) {
             g = new DropoffGoal(plan.me, false);
@@ -145,6 +156,7 @@ public class Strategy {
         return (game.turnNumber <= (Strategy.IS_TWO_PLAYER ? Constants.MAX_TURNS - 85 : Constants.MAX_TURNS - 85) &&
                 (((game.gameMap.haliteOnMap - (game.gameMap.width * game.gameMap.height) *(IS_TWO_PLAYER ? 6 : 3))) / (1000 + (IS_TWO_PLAYER ? 10 : 7) * game.totalShips) > game.me.ships.size())) &&
                 me.halite >= Constants.SHIP_COST &&
+                (nextDropoff == null || game.me.halite >= Constants.DROPOFF_COST - game.gameMap.at(nextDropoff).halite + Constants.SHIP_COST) &&
                 isSpawnSafe(game, me, plan, commandQueue);
     }
 
