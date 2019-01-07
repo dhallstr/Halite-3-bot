@@ -36,6 +36,7 @@ public class Strategy {
                 return returnHome(game, ship, plan, commands, plannedMove == null);
             }
             else if (game.gameMap.at(ship).hasStructure() && ship.owner.equals(game.gameMap.at(ship).structure.owner)) {
+                resolveCancelledMove(game, ship, plan, commands, new ArrayList<>());
                 return ship.stayStill();
             }
             else
@@ -62,7 +63,7 @@ public class Strategy {
                 return ship.makeDropoff();
             }
             else if (nextDropoff.equals(ship)) {
-                plan.addPlan(game.gameMap, ship, new Direction[] {Direction.STILL}, Intent.BUILD_DROPOFF);
+                resolveCancelledMove(game, ship, plan, commands, new ArrayList<>());
                 return ship.stayStill();
             }
         }
