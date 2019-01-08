@@ -14,13 +14,13 @@ public class Collisions {
             return COLLIDE;
         }
         if (!Strategy.IS_TWO_PLAYER) {
-            if (mine.halite < enemy.halite + 30 && support > opposition - 1 && support > 3) return ALLOW;
-            else if (mine.halite < Constants.MAX_HALITE * 0.6 && support > opposition * 1.3 + 3 && support > 3) return ALLOW;
+            if (mine.halite < enemy.halite + 60 && support > opposition + 2 && support > 3) return ALLOW;
+            else if (mine.halite < Constants.MAX_HALITE * 0.6 && enemy.halite > mine.halite - 60 && support > opposition * 1.3 + 3 && support > 3) return ALLOW;
             else return AVOID;
         }
         else {
-            if (mine.halite < Constants.MAX_HALITE * 0.7 && enemy.halite > Constants.MAX_HALITE * 0.5 && support > opposition * 1.8) return COLLIDE;
-            else if (mine.halite < enemy.halite + 30 && support > opposition && support > 2) return ALLOW;
+            if (mine.halite < Constants.MAX_HALITE * 0.7 && enemy.halite > Constants.MAX_HALITE * 0.5 && support > opposition * 1.8 && support > 2) return COLLIDE;
+            else if (mine.halite < enemy.halite && support > opposition && support > 1) return ALLOW;
             else return AVOID;
         }
     }
