@@ -45,7 +45,7 @@ public class DropoffCreation extends Position {
     }
 
     private static int scoreLoc(Game game, MapCell loc) {
-        if (game.gameMap.calculateDistanceToDropoff(game.me, loc) < 6) return 0;
-        return game.gameMap.numHaliteWithin(loc, Magic.BUILD_DROPOFF_RADIUS) + loc.friendlyShipsNearby * 100 - loc.enemyShipsNearby * 150;
+        if (game.gameMap.calculateDistanceToDropoff(game.me, loc) < Magic.MIN_DIST_FOR_BUILD - 3) return 0;
+        return game.gameMap.numHaliteWithin(loc, Magic.BUILD_DROPOFF_RADIUS) + loc.friendlyShipsNearby * 120 - loc.enemyShipsNearby * 80;
     }
 }

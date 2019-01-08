@@ -36,7 +36,6 @@ public class Strategy {
                 return returnHome(game, ship, plan, commands, plannedMove == null);
             }
             else if (game.gameMap.at(ship).hasStructure() && ship.owner.equals(game.gameMap.at(ship).structure.owner)) {
-                resolveCancelledMove(game, ship, plan, commands, new ArrayList<>());
                 return ship.stayStill();
             }
             else
@@ -155,7 +154,7 @@ public class Strategy {
 
     public static boolean shouldSpawn(Game game, PlannedLocations plan, Player me, GameMap gameMap, ArrayList<Command> commandQueue) {
         return (game.turnNumber <= (Strategy.IS_TWO_PLAYER ? Constants.MAX_TURNS - 85 : Constants.MAX_TURNS - 85) &&
-                (((game.gameMap.haliteOnMap - (game.gameMap.width * game.gameMap.height) *(IS_TWO_PLAYER ? 6 : 3))) / (1000 + (IS_TWO_PLAYER ? 10 : 7) * game.totalShips) > game.me.ships.size())) &&
+                (((game.gameMap.haliteOnMap - (game.gameMap.width * game.gameMap.height) *(IS_TWO_PLAYER ? 6 : 3))) / (1000 + (IS_TWO_PLAYER ? 10 : 6) * game.totalShips) > game.me.ships.size())) &&
                 me.halite >= Constants.SHIP_COST &&
                 (nextDropoff == null || game.me.halite >= Constants.DROPOFF_COST - game.gameMap.at(nextDropoff).halite + Constants.SHIP_COST) &&
                 isSpawnSafe(game, me, plan, commandQueue);
