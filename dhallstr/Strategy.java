@@ -36,7 +36,6 @@ public class Strategy {
                 return returnHome(game, ship, plan, commands, plannedMove == null);
             }
             else if (game.gameMap.at(ship).hasStructure() && ship.owner.equals(game.gameMap.at(ship).structure.owner)) {
-                resolveCancelledMove(game, ship, plan, commands, new ArrayList<>());
                 return ship.stayStill();
             }
             else

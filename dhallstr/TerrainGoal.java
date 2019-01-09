@@ -26,8 +26,8 @@ public class TerrainGoal extends Goal {
         if (distToDropoff == 0) return Integer.MIN_VALUE;
 
         int turns = cell.actualDist + distToDropoff * 3 / 4 + 4;
-        totalHalite -= /*game.gameMap.percentileHaliteNearMyDropoffs * (distToDropoff - 1) +*/
-                cell.moveCost(cell.haliteAfterXTurns(plan.getProjectedHalite(game.gameMap, cell, cell.actualDist), totalHalite, cell.actualDist - cell.dist));
+        totalHalite -= /*game.gameMap.percentileHaliteNearMyDropoffs * (distToDropoff - 1) / Constants.MOVE_COST_RATIO +*/
+         cell.moveCost(cell.haliteAfterXTurns(plan.getProjectedHalite(game.gameMap, cell, cell.actualDist), totalHalite, cell.actualDist - cell.dist));
         return (totalHalite - s.halite / 2) / (turns);
     }
 
