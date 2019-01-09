@@ -19,7 +19,7 @@ public class DropoffGoal extends Goal {
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
-        return meetsGoal(cell) ? (300 - (int)(cell.lost * (Strategy.IS_TWO_PLAYER ? 1 : 2)) + cell.gained - Math.min(Math.max(Magic.getCollectDownTo(game.gameMap) / Constants.MOVE_COST_RATIO, 6), 40) * cell.actualDist) : Integer.MIN_VALUE;
+        return (isGoal(cell) ? 10000 : 0) - (int)(cell.lost * (Strategy.IS_TWO_PLAYER ? 1 : 2)) + cell.gained - Math.min(Math.max(Magic.getCollectDownTo(game.gameMap) / Constants.MOVE_COST_RATIO, 6), 40) * (cell.actualDist + game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell));
     }
 
     @Override
@@ -39,8 +39,12 @@ public class DropoffGoal extends Goal {
         return turnsStayed;
     }
 
-    public boolean meetsGoal(MapCell cell) {
+    private boolean isGoal(MapCell cell) {
         return cell.structure != null && cell.structure.owner.equals(id);
+    }
+
+    public boolean meetsGoal(MapCell cell) {
+        return true;
     }
 
     public int getMaxTurns() {
