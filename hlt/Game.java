@@ -72,7 +72,7 @@ public class Game {
         for (int x = 0; x < gameMap.width; x++) {
             for (int y = 0; y < gameMap.height; y++) {
                 int dist = gameMap.calculateDistanceToDropoff(me, new Position(x, y));
-                if (dist < Magic.SEARCH_DEPTH) {
+                if (dist < Magic.HALITE_SEARCH_DEPTH) {
                     haliteAmounts.add(gameMap.at(new Position(x, y)).halite);
                 }
                 if (dist < Magic.NEAR_DROPOFF_SEARCH_DIST) {

@@ -35,6 +35,7 @@ public class Magic {
     public static int END_GAME_DELIVER_HALITE, END_GAME_HALITE;
 
     public static int SEARCH_DEPTH;
+    public static int HALITE_SEARCH_DEPTH = 30;//only used for gameMap.halitePercentile
     public static int NEAR_DROPOFF_SEARCH_DIST = 8;
     public static int NEAR_SHIP_DIST = 7;// how far away a ship can be from another to be considered "near"
 

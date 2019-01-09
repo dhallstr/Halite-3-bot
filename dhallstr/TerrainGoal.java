@@ -20,7 +20,7 @@ public class TerrainGoal extends Goal {
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
-        int totalHalite = s.halite - cell.lost + cell.gained;
+        int totalHalite = s.halite - (int)(cell.lost * 1.3) + cell.gained;
 
         int distToDropoff = game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell);
         if (distToDropoff == 0) return Integer.MIN_VALUE;
