@@ -20,15 +20,17 @@ public class TerrainGoal extends Goal {
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
-        int totalHalite = s.halite - (int)(cell.lost * 1.3) + cell.gained;
+        int totalHalite = s.halite - cell.lost + cell.gained;
 
         int distToDropoff = game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell);
-        if (distToDropoff == 0) return Integer.MIN_VALUE;
+        if (distToDropoff == 0 || cell.actualDist == 0) return Integer.MIN_VALUE;
 
-        int turns = cell.actualDist + distToDropoff * 3 / 4 + 4;
-        totalHalite -= /*game.gameMap.percentileHaliteNearMyDropoffs * (distToDropoff - 1) / Constants.MOVE_COST_RATIO +*/
+        int turns = cell.actualDist + (distToDropoff + 1) / 2;
+        totalHalite -= /*(game.gameMap.percentileHaliteNearMyDropoffs * (distToDropoff - 1) / Constants.MOVE_COST_RATIO) +*/
          cell.moveCost(cell.haliteAfterXTurns(plan.getProjectedHalite(game.gameMap, cell, cell.actualDist), totalHalite, cell.actualDist - cell.dist));
-        return (totalHalite - s.halite / 2) / (turns);
+        //return (totalHalite - s.halite / 2) / (turns);
+        int collectDownTo = Magic.getCollectDownTo(game.gameMap);
+        return (collectDownTo / Constants.EXTRACT_RATIO * (totalHalite - s.halite / 2)) / (collectDownTo / Constants.EXTRACT_RATIO * cell.actualDist + collectDownTo / Constants.MOVE_COST_RATIO * distToDropoff);
     }
 
     @Override
@@ -42,7 +44,7 @@ public class TerrainGoal extends Goal {
             int collected = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
             halite -= mined;
             myHalite += collected;
-            if (halite <= Magic.getCollectDownTo(map) || myHalite == Constants.MAX_HALITE) break;
+            if (halite <= Magic.getCollectDownTo(map) || myHalite >= Constants.MAX_HALITE - Magic.getMinHaliteMined(map)) break;
         }
         return turnsStayed;
     }

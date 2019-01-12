@@ -6,7 +6,7 @@ import hlt.GameMap;
 import java.util.ArrayList;
 
 public class Magic {
-    public static final String BOT_NAME = "Xenon";
+    public static final String BOT_NAME = "Nix";
 
     // Dropoff constants
     public static final int MIN_DIST_FOR_BUILD = 15;
@@ -128,5 +128,9 @@ public class Magic {
         boolean prevEndGame = FIND_PERCENTILE == END_GAME_FIND_PERCENTILE;
         if (game.percentileHalite > COLLECTION_END_GAME_HALITE) FIND_PERCENTILE = END_GAME_FIND_PERCENTILE; // will take effect next turn
         return (int)(prevEndGame ? (COLLECTION_INT + COLLECTION_SLOPE * game.percentileHalite) : (END_GAME_COLLECTION_INT + END_GAME_COLLECTION_SLOPE * game.percentileHalite));
+    }
+
+    public static int getMinHaliteMined(GameMap map) {
+        return getCollectDownTo(map) / (Constants.EXTRACT_RATIO * 3);
     }
 }

@@ -19,7 +19,7 @@ public class DropoffGoal extends Goal {
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
-        return (meetsGoal(cell) ? 10000 : 0) - (int)(cell.lost * (Strategy.IS_TWO_PLAYER ? 1.5 : 2)) + cell.gained - Magic.getCollectDownTo(game.gameMap) / Constants.EXTRACT_RATIO * (cell.actualDist + game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell));
+        return (meetsGoal(cell) ? 10000 : 0) - (int)(cell.lost * (Strategy.IS_TWO_PLAYER ? 1 : 1)) + cell.gained - Magic.getCollectDownTo(game.gameMap) / Constants.EXTRACT_RATIO * (cell.actualDist + game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell));
     }
 
     @Override
