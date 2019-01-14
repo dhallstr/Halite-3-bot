@@ -10,8 +10,8 @@ public class Magic {
 
     // Dropoff constants
     public static final int MIN_DIST_FOR_BUILD = 9;
-    public static final int BUILD_DROPOFF_RADIUS = 8;
-    public static final int MIN_SCORE_FOR_DROPOFF = 10000;
+    public static final int BUILD_DROPOFF_RADIUS = 7;
+    public static final int MIN_SCORE_FOR_DROPOFF = 7000;
     public static final int SHIPS_PER_DROPOFF = 15;
     public static int MAX_DROPOFFS = 1;// includes shipyard
 
