@@ -99,6 +99,7 @@ public class GameMap {
                         numInspired++;
                     }
                 }
+                cells[i][j].haliteNearby = numHaliteWithin(new Position(i, j), Magic.BUILD_DROPOFF_RADIUS);
             }
         }
         Log.log(numInspired == 0 ? "No inspired" : "" + numInspired + " number of inspired locations");
