@@ -24,28 +24,28 @@ public class DropoffCreation extends Position {
         return best;
     }
 
-    public static DropoffCreation findBestPosition(Game game, Position initial, int dist) {
+    public static DropoffCreation findBestPosition(Game game) {
+        if (game.me.dropoffs.values().size() >= Magic.MAX_DROPOFFS || game.me.dropoffs.values().size() * Magic.SHIPS_PER_DROPOFF > game.me.ships.values().size()) return null;
         int bestx = -1, besty = -1;
         int bestScore = Integer.MIN_VALUE;
-        for (int i = -dist; i <= dist; i++) {
-            for (int j = Math.abs(i) - dist; j <= dist - Math.abs(i); j++) {
-                MapCell test = game.gameMap.at(new Position(initial.x + i, initial.y + j));
-                int score = scoreLoc(game, test);
+        for (int y = 0; y < game.gameMap.height; y++) {
+            for (int x = 0; x < game.gameMap.width; x++) {
+                int score = scoreLoc(game, game.gameMap.at(new Position(x, y)));
                 if (score > bestScore) {
+                    bestx = x;
+                    besty = y;
                     bestScore = score;
-                    bestx = test.x;
-                    besty = test.y;
                 }
             }
         }
-        if (bestScore == Integer.MIN_VALUE) {
+        if (bestScore < Magic.MIN_SCORE_FOR_DROPOFF) {
             return null;
         }
         return new DropoffCreation(bestx, besty);
     }
 
     private static int scoreLoc(Game game, MapCell loc) {
-        if (game.gameMap.calculateDistanceToDropoff(game.me, loc) < Magic.MIN_DIST_FOR_BUILD - 5) return 0;
-        return game.gameMap.numHaliteWithin(loc, Magic.BUILD_DROPOFF_RADIUS) + loc.friendlyShipsNearby * 100 - loc.enemyShipsNearby * 150;
+        if (game.gameMap.calculateDistanceToDropoff(game.me, loc) < Magic.MIN_DIST_FOR_BUILD || loc.friendlyShipsNearby < 2) return 0;
+        return game.gameMap.numHaliteWithin(loc, Magic.BUILD_DROPOFF_RADIUS) + (loc.friendlyShipsNearby - 1) * 100 - loc.enemyShipsNearby * 200;
     }
 }

@@ -38,6 +38,7 @@ public class MyBot {
             Ship[] ships = new Ship[me.ships.values().size()];
             me.ships.values().toArray(ships);
             Arrays.sort(ships, (s1, s2) -> (s1.id.id - s2.id.id));
+            Strategy.adjustDropoffGoal(game);
 
             for (final Ship ship: ships) {
                 if (System.currentTimeMillis() - startTurn > 1500) {
@@ -56,6 +57,7 @@ public class MyBot {
             }
 
             Log.log("Modified paths: " + Navigation.modifiedPaths);
+            if (System.currentTimeMillis() - startTurn < 1000) Strategy.PREVENT_TIMEOUT_MODE = false;
             game.endTurn(commandQueue);
             plan.updateTurn(game.turnNumber);
         }

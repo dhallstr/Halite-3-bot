@@ -20,15 +20,14 @@ public class TerrainGoal extends Goal {
 
     @Override
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
-        int totalHalite = s.halite - cell.lost + cell.gained;
+        int totalHalite = s.halite - (int)(cell.lost) + cell.gained;
 
         int distToDropoff = game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell);
         if (distToDropoff == 0) return Integer.MIN_VALUE;
 
         int turns = cell.actualDist + distToDropoff * 3 / 4 + 4;
-        totalHalite -= /*game.gameMap.percentileHaliteNearMyDropoffs * (distToDropoff - 1) / Constants.MOVE_COST_RATIO +*/
-         cell.moveCost(cell.haliteAfterXTurns(plan.getProjectedHalite(game.gameMap, cell, cell.actualDist), totalHalite, cell.actualDist - cell.dist));
-        return (totalHalite - s.halite / 2) / (turns);
+        totalHalite -= cell.moveCost(cell.haliteAfterXTurns(plan.getProjectedHalite(game.gameMap, cell, cell.actualDist), totalHalite, cell.actualDist - cell.dist));
+        return 10000 * (totalHalite - s.halite / 2) / (turns);
     }
 
     @Override
@@ -42,7 +41,7 @@ public class TerrainGoal extends Goal {
             int collected = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
             halite -= mined;
             myHalite += collected;
-            if (halite <= Magic.getCollectDownTo(map) || myHalite == Constants.MAX_HALITE) break;
+            if (halite <= Magic.getCollectDownTo(map) || myHalite >= Constants.MAX_HALITE - Magic.getMinHaliteMined(map)) break;
         }
         return turnsStayed;
     }

@@ -45,17 +45,8 @@ public class Strategy {
 
 
         // *** BUILD DROPOFFS ***
-        if (nextDropoff == null && game.gameMap.calculateDistanceToDropoff(game.me, ship) >= Magic.MIN_DIST_FOR_BUILD && game.gameMap.numHaliteWithin(ship, Magic.BUILD_DROPOFF_RADIUS) >= Magic.MIN_HALITE_FOR_BUILD &&
-                game.me.ships.size() >= game.me.dropoffs.size() * Magic.SHIPS_PER_DROPOFF && game.turnNumber + Magic.MIN_TURNS_LEFT_FOR_DROPOFF < Constants.MAX_TURNS &&
-                game.gameMap.getNumMyShipsWithin(ship, Magic.DROPOFF_FRIENDLY_SHIP_RADIUS, game.me.id) >= Magic.MIN_FRIENDLY_AROUND_FOR_DROPOFF &&
-                game.me.dropoffs.size() < Magic.MAX_DROPOFFS && lastDropoffBuilt != game.turnNumber) {
-            nextDropoff = DropoffCreation.findBestPosition(game, ship, Magic.BUILD_DROPOFF_RADIUS);
-            nextDropoff.findBestShip(game);
-            Log.log("Started Dropoff, requesting ship " + nextDropoff.builder.id);
-        }
-        if (nextDropoff != null) nextDropoff.findBestShip(game);
         if (nextDropoff != null && nextDropoff.builder.id == ship.id.id) {
-            if (nextDropoff.equals(ship) && lastDropoffBuilt != game.turnNumber && game.me.halite >= Constants.DROPOFF_COST - ship.halite - game.gameMap.at(ship).halite + Magic.BUILD_BUFFER_HALITE) {
+            if (nextDropoff.equals(ship) && lastDropoffBuilt != game.turnNumber && game.me.halite >= Constants.DROPOFF_COST - ship.halite - game.gameMap.at(ship).halite) {
                 game.me.halite -= Constants.DROPOFF_COST - ship.halite - game.gameMap.at(ship).halite;
                 lastDropoffBuilt = game.turnNumber;
                 nextDropoff = null;
@@ -164,6 +155,14 @@ public class Strategy {
         return plan.isSafe(game, me.shipyard, new Ship(me.id, EntityId.NONE, me.shipyard.x, me.shipyard.y, 0), 1, false)&&
                 (game.gameMap.at(me.shipyard).ship == null || !game.gameMap.at(me.shipyard).ship.owner.equals(me.id) ||
                         (shipIsMoving(game.gameMap.at(me.shipyard).ship.id, commands)));
+    }
+
+    public static void adjustDropoffGoal(Game game) {
+        nextDropoff = DropoffCreation.findBestPosition(game);
+        if (nextDropoff != null) {
+            nextDropoff.findBestShip(game);
+            Log.log("Started Dropoff, requesting ship " + nextDropoff.builder.id);
+        }
     }
 
     private static boolean shipIsMoving(EntityId id, ArrayList<Command> commands) {

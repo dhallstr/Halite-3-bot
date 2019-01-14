@@ -6,17 +6,13 @@ import hlt.GameMap;
 import java.util.ArrayList;
 
 public class Magic {
-    public static final String BOT_NAME = "Xenon";
+    public static final String BOT_NAME = "Nix";
 
     // Dropoff constants
-    public static final int MIN_DIST_FOR_BUILD = 15;
+    public static final int MIN_DIST_FOR_BUILD = 9;
     public static final int BUILD_DROPOFF_RADIUS = 8;
-    public static final int MIN_HALITE_FOR_BUILD = 8000;
-    public static final int BUILD_BUFFER_HALITE = 0;
-    public static final int SHIPS_PER_DROPOFF = 13;
-    public static final int MIN_TURNS_LEFT_FOR_DROPOFF = 70;
-    public static final int DROPOFF_FRIENDLY_SHIP_RADIUS = 10;
-    public static final int MIN_FRIENDLY_AROUND_FOR_DROPOFF = 8;
+    public static final int MIN_SCORE_FOR_DROPOFF = 10000;
+    public static final int SHIPS_PER_DROPOFF = 15;
     public static int MAX_DROPOFFS = 1;// includes shipyard
 
 
@@ -35,6 +31,7 @@ public class Magic {
     public static int END_GAME_DELIVER_HALITE, END_GAME_HALITE;
 
     public static int SEARCH_DEPTH;
+    public static int HALITE_SEARCH_DEPTH = 30;//only used for gameMap.halitePercentile
     public static int NEAR_DROPOFF_SEARCH_DIST = 8;
     public static int NEAR_SHIP_DIST = 7;// how far away a ship can be from another to be considered "near"
 
@@ -127,5 +124,9 @@ public class Magic {
         boolean prevEndGame = FIND_PERCENTILE == END_GAME_FIND_PERCENTILE;
         if (game.percentileHalite > COLLECTION_END_GAME_HALITE) FIND_PERCENTILE = END_GAME_FIND_PERCENTILE; // will take effect next turn
         return (int)(prevEndGame ? (COLLECTION_INT + COLLECTION_SLOPE * game.percentileHalite) : (END_GAME_COLLECTION_INT + END_GAME_COLLECTION_SLOPE * game.percentileHalite));
+    }
+
+    public static int getMinHaliteMined(GameMap map) {
+        return getCollectDownTo(map) / (Constants.EXTRACT_RATIO * 3);
     }
 }
