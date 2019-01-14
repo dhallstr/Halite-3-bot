@@ -53,41 +53,6 @@ public class GameMap {
         return min;
     }
 
-    public int getNumMyShipsWithin(Position pos, int radius, PlayerId me) {
-        return getShipsWithin(pos, radius, me, false);
-    }
-
-    private int getShipsWithin(Position pos, int radius, PlayerId me, boolean searchForEnemiesNotMe) {
-        setAllSecondaryUnvisited();
-        int total = 0;
-        LinkedList<MapCell> queue = new LinkedList<>();
-        queue.add(at(pos));
-        at(pos).secondaryVisited = true;
-
-        while (!queue.isEmpty()) {
-            MapCell curr = queue.poll();
-            if (curr == null) continue;
-
-
-            if (curr.secondaryDist > radius) {
-                break;
-            }
-
-            for (Direction d: Direction.ALL_CARDINALS) {
-                MapCell m = offset(curr, d);
-                if (!m.secondaryVisited){
-                    queue.add(m);
-                    m.secondaryVisited = true;
-                    m.secondaryDist = curr.secondaryDist + 1;
-                    if (m.ship != null && searchForEnemiesNotMe != m.ship.owner.equals(me))
-                        total++;
-                }
-            }
-        }
-
-        return total;
-    }
-
     public Ship[] getEnemiesNextTo(Position pos, PlayerId me) {
         Ship[] enemies = new Ship[Direction.ALL_CARDINALS.size()];
 
