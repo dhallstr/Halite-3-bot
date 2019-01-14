@@ -11,7 +11,7 @@ public class Magic {
     // Dropoff constants
     public static final int MIN_DIST_FOR_BUILD = 9;
     public static final int BUILD_DROPOFF_RADIUS = 8;
-    public static final int MIN_SCORE_FOR_DROPOFF = 8000;
+    public static final int MIN_SCORE_FOR_DROPOFF = 10000;
     public static final int SHIPS_PER_DROPOFF = 15;
     public static int MAX_DROPOFFS = 1;// includes shipyard
 
@@ -61,7 +61,7 @@ public class Magic {
         int size = (width + height) / 2; // in case it is a rectangle
         END_GAME_HALITE += (int)((size - 32) / 32.0 * (45 - END_GAME_HALITE));
         if (isTwoPlayer) {
-            MAX_DROPOFFS = size / 6;
+            MAX_DROPOFFS = size / 8;
             SEARCH_DEPTH = 75;
             END_GAME_HALITE = 15;
 
@@ -77,7 +77,7 @@ public class Magic {
         else {
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
             END_GAME_HALITE = 25;
-            MAX_DROPOFFS = size / 8;
+            MAX_DROPOFFS = size / 11;
             SEARCH_DEPTH = 60;
 
             // CLOP adjustments
