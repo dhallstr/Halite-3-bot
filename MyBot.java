@@ -41,7 +41,10 @@ public class MyBot {
             Strategy.adjustDropoffGoal(game);
 
             for (final Ship ship: ships) {
-                if (System.currentTimeMillis() - startTurn > 1500) {
+                if (System.currentTimeMillis() - startTurn > 1950) {
+                    break;
+                }
+                else if (System.currentTimeMillis() - startTurn > 1500) {
                     Strategy.PREVENT_TIMEOUT_MODE = true;
                     Strategy.LOW_ON_TIME = true;
                 }
