@@ -20,7 +20,7 @@ public class MapCell extends Position {
     int secondaryDist = 0;
 
 
-    public int enemyShipsInInspirationRange = 0, enemyShipsNearby = 0, friendlyShipsNearby = 0;
+    public int enemyShipsInInspirationRange = 0, enemyShipsNearby = 0, friendlyShipsNearby = 0, haliteNearby = 0;
 
     MapCell(final int x, final int y, final int halite) {
         super(x, y);

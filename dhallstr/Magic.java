@@ -1,17 +1,17 @@
 package dhallstr;
 
-import hlt.Constants;
-import hlt.GameMap;
+import hlt.*;
 
 import java.util.ArrayList;
 
 public class Magic {
-    public static final String BOT_NAME = "Nix";
+    public static final String BOT_NAME = "Kraken";
 
     // Dropoff constants
     public static final int MIN_DIST_FOR_BUILD = 9;
     public static final int BUILD_DROPOFF_RADIUS = 8;
-    public static final int MIN_SCORE_FOR_DROPOFF = 10000;
+    private static final int NUM_IN_BUILD_RADIUS = 2*BUILD_DROPOFF_RADIUS*(BUILD_DROPOFF_RADIUS+1)+1;
+    public static final int MIN_SCORE_FOR_DROPOFF = 9000;
     public static final int SHIPS_PER_DROPOFF = 15;
     public static int MAX_DROPOFFS = 1;// includes shipyard
 
@@ -25,6 +25,7 @@ public class Magic {
     public static int COLLECTION_END_GAME_HALITE = 27;
     public static double END_GAME_COLLECTION_INT = 12,
                         END_GAME_COLLECTION_SLOPE = 0.2;
+    public static double MINING_WEIGHT = 0;
 
     public static int COLLECT_DOWN_TO;
     public static int START_DELIVER_HALITE, MIN_HALITE_FOR_DELIVER;
@@ -79,15 +80,6 @@ public class Magic {
             END_GAME_HALITE = 25;
             MAX_DROPOFFS = size / 11;
             SEARCH_DEPTH = 60;
-
-            // CLOP adjustments
-            /*COLLECTION_INT = 22.4547;
-            COLLECTION_SLOPE = 0.960414;
-            FIND_PERCENTILE = 0.672092;
-            END_GAME_HALITE = 27;
-            END_GAME_FIND_PERCENTILE = 0.513232;
-            END_GAME_COLLECTION_INT = 23.8891;
-            END_GAME_COLLECTION_SLOPE = 0.939532;*/
         }
     }
 
@@ -120,13 +112,15 @@ public class Magic {
         }
     }
 
-    public static int getCollectDownTo(GameMap game) {
+    static int getCollectDownTo(GameMap game, MapCell loc, int shipHalite) {
         boolean prevEndGame = FIND_PERCENTILE == END_GAME_FIND_PERCENTILE;
         if (game.percentileHalite > COLLECTION_END_GAME_HALITE) FIND_PERCENTILE = END_GAME_FIND_PERCENTILE; // will take effect next turn
-        return (int)(prevEndGame ? (COLLECTION_INT + COLLECTION_SLOPE * game.percentileHalite) : (END_GAME_COLLECTION_INT + END_GAME_COLLECTION_SLOPE * game.percentileHalite));
+        double weight = MINING_WEIGHT;
+        if (shipHalite < 50) weight = 0.7;
+        return (int)((prevEndGame ? (COLLECTION_INT + COLLECTION_SLOPE * game.percentileHalite) : (END_GAME_COLLECTION_INT + END_GAME_COLLECTION_SLOPE * game.percentileHalite)) * (1 - weight) + weight * loc.haliteNearby / NUM_IN_BUILD_RADIUS);
     }
 
-    public static int getMinHaliteMined(GameMap map) {
-        return getCollectDownTo(map) / (Constants.EXTRACT_RATIO * 3);
+    static int getMinHaliteMined(GameMap map, MapCell loc, int shipHalite) {
+        return getCollectDownTo(map, loc, shipHalite) / (Constants.EXTRACT_RATIO * 3);
     }
 }

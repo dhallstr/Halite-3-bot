@@ -93,21 +93,4 @@ public class Game {
         }
         System.out.println();
     }
-
-    public int getEnemyShips() {
-        int ships = 0;
-        for (Player p: players) {
-            if (p.id.equals(me.id)) continue;
-            ships += p.ships.size();
-        }
-        return ships;
-    }
-
-    public Ship getShip(EntityId id) {
-        for (Player p: players) {
-            Ship s = p.ships.get(id);
-            if (s != null) return s;
-        }
-        return null;
-    }
 }

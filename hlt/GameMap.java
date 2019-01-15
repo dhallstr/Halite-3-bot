@@ -53,41 +53,6 @@ public class GameMap {
         return min;
     }
 
-    public int getNumMyShipsWithin(Position pos, int radius, PlayerId me) {
-        return getShipsWithin(pos, radius, me, false);
-    }
-
-    private int getShipsWithin(Position pos, int radius, PlayerId me, boolean searchForEnemiesNotMe) {
-        setAllSecondaryUnvisited();
-        int total = 0;
-        LinkedList<MapCell> queue = new LinkedList<>();
-        queue.add(at(pos));
-        at(pos).secondaryVisited = true;
-
-        while (!queue.isEmpty()) {
-            MapCell curr = queue.poll();
-            if (curr == null) continue;
-
-
-            if (curr.secondaryDist > radius) {
-                break;
-            }
-
-            for (Direction d: Direction.ALL_CARDINALS) {
-                MapCell m = offset(curr, d);
-                if (!m.secondaryVisited){
-                    queue.add(m);
-                    m.secondaryVisited = true;
-                    m.secondaryDist = curr.secondaryDist + 1;
-                    if (m.ship != null && searchForEnemiesNotMe != m.ship.owner.equals(me))
-                        total++;
-                }
-            }
-        }
-
-        return total;
-    }
-
     public Ship[] getEnemiesNextTo(Position pos, PlayerId me) {
         Ship[] enemies = new Ship[Direction.ALL_CARDINALS.size()];
 
@@ -102,7 +67,7 @@ public class GameMap {
     void updateInRange(Game game, PlayerId me) {
         haliteOnMap = 0;
         for (int i = 0; i < height; i++) {
-            for (int j = 0; j < height; j++) {
+            for (int j = 0; j < width; j++) {
                 cells[i][j].enemyShipsInInspirationRange = 0;
                 cells[i][j].friendlyShipsNearby = 0;
                 cells[i][j].enemyShipsNearby = 0;
@@ -127,13 +92,14 @@ public class GameMap {
         }
         int numInspired = 0;
         for (int i = 0; i < height; i++) {
-            for (int j = 0; j < height; j++) {
+            for (int j = 0; j < width; j++) {
                 if (Constants.INSPIRATION_ENABLED) {
                     cells[i][j].isInspired = (cells[i][j].enemyShipsInInspirationRange >= Constants.INSPIRATION_SHIP_COUNT);
                     if (cells[i][j].isInspired) {
                         numInspired++;
                     }
                 }
+                cells[i][j].haliteNearby = numHaliteWithin(cells[i][j], Magic.BUILD_DROPOFF_RADIUS);
             }
         }
         Log.log(numInspired == 0 ? "No inspired" : "" + numInspired + " number of inspired locations");

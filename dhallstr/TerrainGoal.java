@@ -34,14 +34,14 @@ public class TerrainGoal extends Goal {
     public int getNumberStays(Ship s, MapCell cell, PlannedLocations plan, GameMap map) {
         int halite = plan.getProjectedHalite(map, cell, cell.dist);
         int myHalite = s.halite - cell.lost + cell.gained;
-        if (halite <= Magic.getCollectDownTo(map) || myHalite == Constants.MAX_HALITE) return 0;
+        if (halite <= Magic.getCollectDownTo(map, cell, myHalite) || myHalite == Constants.MAX_HALITE) return 0;
         int turnsStayed;
         for (turnsStayed = 1; ; turnsStayed++) {
             int mined = Math.min(cell.minedAmount(halite), Constants.MAX_HALITE - myHalite);
             int collected = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
             halite -= mined;
             myHalite += collected;
-            if (halite <= Magic.getCollectDownTo(map) || myHalite >= Constants.MAX_HALITE - Magic.getMinHaliteMined(map)) break;
+            if (halite <= Magic.getCollectDownTo(map, cell, myHalite) || myHalite >= Constants.MAX_HALITE - Magic.getMinHaliteMined(map, cell, myHalite)) break;
         }
         return turnsStayed;
     }
