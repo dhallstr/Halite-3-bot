@@ -78,7 +78,7 @@ public class Magic {
         else {
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
             END_GAME_HALITE = 25;
-            MAX_DROPOFFS = size / 11;
+            MAX_DROPOFFS = size / 10;
             SEARCH_DEPTH = 60;
         }
     }
@@ -116,7 +116,7 @@ public class Magic {
         boolean prevEndGame = FIND_PERCENTILE == END_GAME_FIND_PERCENTILE;
         if (game.percentileHalite > COLLECTION_END_GAME_HALITE) FIND_PERCENTILE = END_GAME_FIND_PERCENTILE; // will take effect next turn
         double weight = MINING_WEIGHT;
-        if (shipHalite < 50) weight = 0.7;
+        if (shipHalite < 60) weight = 0.6;
         return (int)((prevEndGame ? (COLLECTION_INT + COLLECTION_SLOPE * game.percentileHalite) : (END_GAME_COLLECTION_INT + END_GAME_COLLECTION_SLOPE * game.percentileHalite)) * (1 - weight) + weight * loc.haliteNearby / NUM_IN_BUILD_RADIUS);
     }
 

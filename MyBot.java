@@ -26,8 +26,8 @@ public class MyBot {
         Log.log("Successfully created bot! My Player ID is " + game.myId + ".");
 
         for (;;) {
-            game.updateFrame();
             long startTurn = System.currentTimeMillis();
+            game.updateFrame();
 
             final Player me = game.me;
             final GameMap gameMap = game.gameMap;
@@ -37,7 +37,7 @@ public class MyBot {
             ArrayList<Command> commandQueue = new ArrayList<>();
             Ship[] ships = new Ship[me.ships.values().size()];
             me.ships.values().toArray(ships);
-            Arrays.sort(ships, (s1, s2) -> (s1.id.id - s2.id.id));
+            Arrays.sort(ships, (s1, s2) -> (s1.halite - s2.halite));
             Strategy.adjustDropoffGoal(game);
 
             for (final Ship ship: ships) {
