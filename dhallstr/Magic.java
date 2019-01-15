@@ -9,9 +9,9 @@ public class Magic {
 
     // Dropoff constants
     public static final int MIN_DIST_FOR_BUILD = 9;
-    public static final int BUILD_DROPOFF_RADIUS = 7;
+    public static final int BUILD_DROPOFF_RADIUS = 8;
     private static final int NUM_IN_BUILD_RADIUS = 2*BUILD_DROPOFF_RADIUS*(BUILD_DROPOFF_RADIUS+1)+1;
-    public static final int MIN_SCORE_FOR_DROPOFF = 7000;
+    public static final int MIN_SCORE_FOR_DROPOFF = 9000;
     public static final int SHIPS_PER_DROPOFF = 15;
     public static int MAX_DROPOFFS = 1;// includes shipyard
 
@@ -116,9 +116,8 @@ public class Magic {
         boolean prevEndGame = FIND_PERCENTILE == END_GAME_FIND_PERCENTILE;
         if (game.percentileHalite > COLLECTION_END_GAME_HALITE) FIND_PERCENTILE = END_GAME_FIND_PERCENTILE; // will take effect next turn
         double weight = MINING_WEIGHT;
-        if (shipHalite < 75) weight = 0.5;
-        int halite = (int)((1 - weight) * game.percentileHalite + weight * loc.haliteNearby / NUM_IN_BUILD_RADIUS);
-        return (int)(prevEndGame ? (COLLECTION_INT + COLLECTION_SLOPE * halite) : (END_GAME_COLLECTION_INT + END_GAME_COLLECTION_SLOPE * halite));
+        if (shipHalite < 50) weight = 0.7;
+        return (int)((prevEndGame ? (COLLECTION_INT + COLLECTION_SLOPE * game.percentileHalite) : (END_GAME_COLLECTION_INT + END_GAME_COLLECTION_SLOPE * game.percentileHalite)) * (1 - weight) + weight * loc.haliteNearby / NUM_IN_BUILD_RADIUS);
     }
 
     static int getMinHaliteMined(GameMap map, MapCell loc, int shipHalite) {

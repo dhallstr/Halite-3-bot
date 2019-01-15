@@ -67,7 +67,7 @@ public class GameMap {
     void updateInRange(Game game, PlayerId me) {
         haliteOnMap = 0;
         for (int i = 0; i < height; i++) {
-            for (int j = 0; j < height; j++) {
+            for (int j = 0; j < width; j++) {
                 cells[i][j].enemyShipsInInspirationRange = 0;
                 cells[i][j].friendlyShipsNearby = 0;
                 cells[i][j].enemyShipsNearby = 0;
@@ -92,14 +92,14 @@ public class GameMap {
         }
         int numInspired = 0;
         for (int i = 0; i < height; i++) {
-            for (int j = 0; j < height; j++) {
+            for (int j = 0; j < width; j++) {
                 if (Constants.INSPIRATION_ENABLED) {
                     cells[i][j].isInspired = (cells[i][j].enemyShipsInInspirationRange >= Constants.INSPIRATION_SHIP_COUNT);
                     if (cells[i][j].isInspired) {
                         numInspired++;
                     }
                 }
-                cells[i][j].haliteNearby = numHaliteWithin(new Position(i, j), Magic.BUILD_DROPOFF_RADIUS);
+                cells[i][j].haliteNearby = numHaliteWithin(cells[i][j], Magic.BUILD_DROPOFF_RADIUS);
             }
         }
         Log.log(numInspired == 0 ? "No inspired" : "" + numInspired + " number of inspired locations");
