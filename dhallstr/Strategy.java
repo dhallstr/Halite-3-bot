@@ -103,7 +103,7 @@ public class Strategy {
             resolveCancelledMove(game, ship, plan, commands, needToRecalculate);
             ship.processed = true;
         }
-        plan.addPlan(game.gameMap, ship, path, g == null ? Intent.NONE : g.getIntent());
+        plan.addPlan(game.gameMap, ship, path, g == null ? Intent.GATHER : g.getIntent());
 
         for (Ship s: needToRecalculate) {
             if (!s.processed) {
@@ -113,7 +113,7 @@ public class Strategy {
         }
 
         nextIntent = plan.getIntent(game.gameMap, ship, 0);
-        if (nextIntent != null && nextIntent != Intent.NONE && intent != nextIntent && nextIntent != Intent.BUILD_DROPOFF) {
+        if (nextIntent != null && nextIntent != Intent.NONE && intent != nextIntent) {
             Log.log("Setting the next intent.");
             plan.shipPlans.put(ship.id, nextIntent);
         }
@@ -125,7 +125,7 @@ public class Strategy {
         Log.log("resolving " + ship.id + "...");
         EntityId here = plan.get(game.gameMap, ship, 1);
         plan.cancelPlan(game.gameMap, ship, 0);
-        plan.addPlan(game.gameMap, ship, new Direction[] {Direction.STILL}, Intent.NONE);
+        plan.addPlan(game.gameMap, ship, new Direction[] {Direction.STILL}, Intent.GATHER);
         if (here == null || ship.id.id == here.id) return;
 
 

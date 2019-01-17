@@ -76,7 +76,8 @@ public class Magic {
             END_GAME_COLLECTION_SLOPE = 1.13451;
         }
         else {
-            END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.85);
+            END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
+            MIN_HALITE_FOR_DELIVER = (int) (Constants.MAX_HALITE * 0.4);
             END_GAME_HALITE = 25;
             MAX_DROPOFFS = size / 11;
             SEARCH_DEPTH = 60;
