@@ -73,7 +73,7 @@ public class PlannedLocations {
             }
         }
         if (intent == Intent.GATHER) {
-            addIntent(map, p, plan.length - 1, Intent.DROPOFF);
+            //addIntent(map, p, plan.length - 1, Intent.DROPOFF);
         }
     }
 

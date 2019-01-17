@@ -99,7 +99,8 @@ public class GameMap {
                         numInspired++;
                     }
                 }
-                cells[i][j].haliteNearby = numHaliteWithin(cells[i][j], Magic.BUILD_DROPOFF_RADIUS);
+                if (cells[i][j].friendlyShipsNearby + cells[i][j].enemyShipsNearby > 0 || cells[i][j].haliteNearby == -1)
+                    cells[i][j].haliteNearby = numHaliteWithin(cells[i][j], Magic.BUILD_DROPOFF_RADIUS);
             }
         }
         Log.log(numInspired == 0 ? "No inspired" : "" + numInspired + " number of inspired locations");
