@@ -113,7 +113,7 @@ public class Strategy {
         }
 
         nextIntent = plan.getIntent(game.gameMap, ship, 0);
-        if (nextIntent != null && nextIntent != Intent.NONE && intent != nextIntent) {
+        if (nextIntent != null && nextIntent != Intent.NONE && intent != nextIntent && nextIntent != Intent.BUILD_DROPOFF) {
             Log.log("Setting the next intent.");
             plan.shipPlans.put(ship.id, nextIntent);
         }
