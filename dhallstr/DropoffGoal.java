@@ -27,14 +27,13 @@ public class DropoffGoal extends Goal {
         if (crashOkay) return 0;
         int halite = plan.getProjectedHalite(map, cell, cell.dist);
         int myHalite = s.halite - cell.lost + cell.gained;
-        if (halite <= Magic.getCollectDownTo(map, cell, myHalite) || myHalite == Constants.MAX_HALITE) return 0;
         int turnsStayed;
-        for (turnsStayed = 1; ; turnsStayed++) {
+        for (turnsStayed = 0; ; turnsStayed++) {
             int mined = Math.min(cell.minedAmount(halite), Constants.MAX_HALITE - myHalite);
             int collected = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
             halite -= mined;
             myHalite += collected;
-            if (halite <= Magic.getCollectDownTo(map, cell, myHalite) || myHalite == Constants.MAX_HALITE) break;
+            if (collected < Magic.getMinHaliteMinedDeliver(map, cell, myHalite)) break;
         }
         return turnsStayed;
     }

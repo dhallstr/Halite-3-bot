@@ -122,6 +122,10 @@ public class Magic {
     }
 
     static int getMinHaliteMined(GameMap map, MapCell loc, int shipHalite) {
-        return getCollectDownTo(map, loc, shipHalite) / (Constants.EXTRACT_RATIO * 3);
+        return getCollectDownTo(map, loc, shipHalite) / (Constants.EXTRACT_RATIO * 3) * 2;
+    }
+
+    static int getMinHaliteMinedDeliver(GameMap map, MapCell loc, int shipHalite) {
+        return getCollectDownTo(map, loc, shipHalite) / (Constants.EXTRACT_RATIO * 2);
     }
 }
