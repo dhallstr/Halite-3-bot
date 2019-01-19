@@ -53,6 +53,19 @@ public class GameMap {
         return min;
     }
 
+    public Dropoff getClosestDropoff(Player p, Position pos) {
+        int min = Integer.MAX_VALUE;
+        Dropoff minD = null;
+        for (Dropoff d: p.dropoffs.values()) {
+            int dist = calculateDistance(pos, d);
+            if (dist < min) {
+                min = dist;
+                minD = d;
+            }
+        }
+        return minD;
+    }
+
     public Ship[] getEnemiesNextTo(Position pos, PlayerId me) {
         Ship[] enemies = new Ship[Direction.ALL_CARDINALS.size()];
 
@@ -99,7 +112,8 @@ public class GameMap {
                         numInspired++;
                     }
                 }
-                cells[i][j].haliteNearby = numHaliteWithin(cells[i][j], Magic.BUILD_DROPOFF_RADIUS);
+                if (cells[i][j].friendlyShipsNearby + cells[i][j].enemyShipsNearby > 0 || cells[i][j].haliteNearby == -1)
+                    cells[i][j].haliteNearby = numHaliteWithin(cells[i][j], Magic.BUILD_DROPOFF_RADIUS);
             }
         }
         Log.log(numInspired == 0 ? "No inspired" : "" + numInspired + " number of inspired locations");

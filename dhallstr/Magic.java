@@ -77,6 +77,7 @@ public class Magic {
         }
         else {
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
+            MIN_HALITE_FOR_DELIVER = (int) (Constants.MAX_HALITE * 0.4);
             END_GAME_HALITE = 25;
             MAX_DROPOFFS = size / 11;
             SEARCH_DEPTH = 60;
@@ -112,6 +113,34 @@ public class Magic {
         }
     }
 
+    private static double[][] overlap = new double[BUILD_DROPOFF_RADIUS * 2][BUILD_DROPOFF_RADIUS * 2];
+
+    public static void generateOverlaps() {
+        for (int i = 0; i < overlap.length; i++) {
+            for (int j = 0; j < overlap[i].length; j++) {
+                int numInRange = 0, numInBoth = 0;
+                for (int x = -BUILD_DROPOFF_RADIUS; x <= BUILD_DROPOFF_RADIUS; x++) {
+                    for (int y = -BUILD_DROPOFF_RADIUS; y <= BUILD_DROPOFF_RADIUS; y++) {
+                        if (Math.abs(x) + Math.abs(y) > BUILD_DROPOFF_RADIUS) continue;
+                        numInRange++;
+                        if (Math.abs(x - i) + Math.abs(y - j) <= BUILD_DROPOFF_RADIUS) numInBoth++;
+                    }
+                }
+                overlap[i][j] = ((double)numInBoth) / numInRange;
+            }
+        }
+    }
+
+    static double dropoffRatio(MapCell cell, Game game) {
+        Dropoff close = game.gameMap.getClosestDropoff(game.me, cell);
+        int dist = game.gameMap.calculateDistance(cell, close);
+        if (dist >= 2 * BUILD_DROPOFF_RADIUS) return 1;
+        double overlapRatio = overlap[Math.min(Math.abs(cell.x - close.x), game.gameMap.width - Math.abs(cell.x-close.x))][Math.min(Math.abs(cell.y - close.y), game.gameMap.width - Math.abs(cell.y-close.y))];
+        return 1 - overlapRatio;
+    }
+
+
+
     static int getCollectDownTo(GameMap game, MapCell loc, int shipHalite) {
         boolean prevEndGame = FIND_PERCENTILE == END_GAME_FIND_PERCENTILE;
         if (game.percentileHalite > COLLECTION_END_GAME_HALITE) FIND_PERCENTILE = END_GAME_FIND_PERCENTILE; // will take effect next turn
@@ -121,6 +150,10 @@ public class Magic {
     }
 
     static int getMinHaliteMined(GameMap map, MapCell loc, int shipHalite) {
-        return getCollectDownTo(map, loc, shipHalite) / (Constants.EXTRACT_RATIO * 3);
+        return getCollectDownTo(map, loc, shipHalite) / (Constants.EXTRACT_RATIO * 3) * 2;
+    }
+
+    static int getMinHaliteMinedDeliver(GameMap map, MapCell loc, int shipHalite) {
+        return getCollectDownTo(map, loc, shipHalite) / (Constants.EXTRACT_RATIO * 3) * 2;
     }
 }
