@@ -20,6 +20,7 @@ public class MyBot {
         Magic.updateConstants(Strategy.IS_TWO_PLAYER, game.gameMap.width, game.gameMap.height);
         Direction.setAllCardinals(game.myId.id);
         Magic.commandLineParams(args);
+        Magic.generateOverlaps();
 
         game.ready(Magic.BOT_NAME);
 

@@ -53,6 +53,19 @@ public class GameMap {
         return min;
     }
 
+    public Dropoff getClosestDropoff(Player p, Position pos) {
+        int min = Integer.MAX_VALUE;
+        Dropoff minD = null;
+        for (Dropoff d: p.dropoffs.values()) {
+            int dist = calculateDistance(pos, d);
+            if (dist < min) {
+                min = dist;
+                minD = d;
+            }
+        }
+        return minD;
+    }
+
     public Ship[] getEnemiesNextTo(Position pos, PlayerId me) {
         Ship[] enemies = new Ship[Direction.ALL_CARDINALS.size()];
 
