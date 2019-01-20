@@ -9,7 +9,7 @@ public class Strategy {
     public static boolean IS_TWO_PLAYER = true, PREVENT_TIMEOUT_MODE = false, LOW_ON_TIME = false;
     private static int lastDropoffBuilt = 0;
 
-    private static DropoffCreation nextDropoff = null;
+    public static DropoffCreation nextDropoff = null;
 
     public static Command evaluateMove(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands) {
 
@@ -29,7 +29,7 @@ public class Strategy {
 
 
         // *** RETURN HOME END GAME ***
-        if (intent == Intent.CRASH_HOME || game.turnNumber + 5 + game.gameMap.calculateDistanceToDropoff(game.me, ship) * 1.2 + 2 * game.me.ships.size() / 24 > Constants.MAX_TURNS) {
+        if (intent == Intent.CRASH_HOME || game.turnNumber + 5 + game.gameMap.calculateDistanceToDropoff(game.me, ship, false) * 1.2 + 2 * game.me.ships.size() / 24 > Constants.MAX_TURNS) {
             if (intent != Intent.CRASH_HOME || plannedMove == null || (plannedMove != Direction.STILL && ship.halite < game.gameMap.at(ship).moveCost()) ||
                     !plan.isSafe(game, ship.directionalOffset(plannedMove), ship, 1, false)) {
                 plan.cancelPlan(game.gameMap, ship, 1);

@@ -1,6 +1,7 @@
 package hlt;
 
 import dhallstr.Magic;
+import dhallstr.Strategy;
 
 import java.util.LinkedList;
 
@@ -44,8 +45,11 @@ public class GameMap {
         return toroidal_dx + toroidal_dy;
     }
 
-    public int calculateDistanceToDropoff(Player p, Position pos) {
+    public int calculateDistanceToDropoff(Player p, Position pos, boolean includeUnbuilt) {
         int min = Integer.MAX_VALUE;
+        if (includeUnbuilt && Strategy.nextDropoff != null) {
+            min = calculateDistance(pos, Strategy.nextDropoff);
+        }
         for (Dropoff d: p.dropoffs.values()) {
             int dist = calculateDistance(pos, d);
             if (dist < min) min = dist;
@@ -166,6 +170,7 @@ public class GameMap {
                 cells[i][j].lost = 0;
                 cells[i][j].gained = 0;
                 cells[i][j].score = Integer.MIN_VALUE;
+                cells[i][j].extra = 0;
             }
         }
     }
