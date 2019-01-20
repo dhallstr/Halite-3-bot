@@ -13,7 +13,7 @@ for i in range(1, len(sys.argv)):
         out += '"java -classpath ..\\versions\\' + sys.argv[i] + ' MyBot"'
     elif (sys.argv[i] == 'curr'):
         out += '"java MyBot"'
-    elif (RepresentsInt(sys.argv[i])):
+    elif (RepresentsInt(sys.argv[i]) and not (i != 0 and sys.argv[i-1] == '-s')):
           out += '--width ' + sys.argv[i] + ' --height ' + sys.argv[i]
     elif (sys.argv[i][0] == 'run'):
         continue  #this is to prevent infinite recursion from taking up all the CPU
