@@ -1,4 +1,10 @@
 import sys
+def RepresentsInt(s):
+    try: 
+        int(s)
+        return True
+    except ValueError:
+        return False
 out = ''
 for i in range(1, len(sys.argv)):
     if (' ' in sys.argv[i]):
@@ -7,6 +13,8 @@ for i in range(1, len(sys.argv)):
         out += '"java -classpath ..\\versions\\' + sys.argv[i] + ' MyBot"'
     elif (sys.argv[i] == 'curr'):
         out += '"java MyBot"'
+    elif (RepresentsInt(sys.argv[i])):
+          out += '--width ' + sys.argv[i] + ' --height ' + sys.argv[i]
     elif (sys.argv[i][0] == 'run'):
         continue  #this is to prevent infinite recursion from taking up all the CPU
     else:
