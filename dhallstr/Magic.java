@@ -24,8 +24,9 @@ public class Magic {
     public static double END_GAME_FIND_PERCENTILE = 0.9;
     public static int COLLECTION_END_GAME_HALITE = 27;
     public static double END_GAME_COLLECTION_INT = 12,
-                        END_GAME_COLLECTION_SLOPE = 0.2;
+                        END_GAME_COLLECTION_SLOPE = 0.25;
     public static double MINING_WEIGHT = 0;
+    public static boolean MINE_FURTHER_ON_DELIVER = true;
 
     public static int COLLECT_DOWN_TO;
     public static int START_DELIVER_HALITE, MIN_HALITE_FOR_DELIVER;
@@ -65,17 +66,19 @@ public class Magic {
             MAX_DROPOFFS = size / 8;
             SEARCH_DEPTH = 75;
             END_GAME_HALITE = 15;
+            if (size <= 32) MINE_FURTHER_ON_DELIVER = false;
 
             // CLOP adjustments
             COLLECTION_INT = 18.7964;
             COLLECTION_SLOPE = 1.12599;
             FIND_PERCENTILE = 0.461508;
             END_GAME_HALITE = 25;
-            END_GAME_FIND_PERCENTILE = 0.335921;
-            END_GAME_COLLECTION_INT = 20.511;
+            END_GAME_FIND_PERCENTILE = 0.3333;
+            END_GAME_COLLECTION_INT = 3;
             END_GAME_COLLECTION_SLOPE = 1.13451;
         }
         else {
+            //if (size <= 40) MINE_FURTHER_ON_DELIVER = false;
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
             MIN_HALITE_FOR_DELIVER = (int) (Constants.MAX_HALITE * 0.4);
             END_GAME_HALITE = 25;
@@ -154,6 +157,6 @@ public class Magic {
     }
 
     static int getMinHaliteMinedDeliver(GameMap map, MapCell loc, int shipHalite) {
-        return getCollectDownTo(map, loc, shipHalite) / (Constants.EXTRACT_RATIO * 3) * 2;
+        return (int)(getCollectDownTo(map, loc, shipHalite) / (Constants.EXTRACT_RATIO) * (MINE_FURTHER_ON_DELIVER ? 2.0/3.0 : 1));
     }
 }
