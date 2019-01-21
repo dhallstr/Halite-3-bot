@@ -38,7 +38,7 @@ public class Navigation {
                     }
                     int mined = Math.min(curr.minedAmount(cellHalite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
                     int collected = Math.min(curr.collectAmount(cellHalite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
-                    if (collected > mined && !Strategy.IS_TWO_PLAYER) {
+                    if (collected > mined && (Strategy.IS_TWO_PLAYER && game.gameMap.width == game.gameMap.height && game.gameMap.width == 40)) {
                         curr.extra -= mined / 2;// small penalty for inspiration in  2p
                     }
                     curr.gained += collected;
