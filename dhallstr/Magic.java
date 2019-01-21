@@ -82,7 +82,8 @@ public class Magic {
             END_GAME_COLLECTION_SLOPE = 1.13451;
         }
         else {
-            //if (size <= 40) MINE_FURTHER_ON_DELIVER = false;
+            //if (size <= 40)
+            MINE_FURTHER_ON_DELIVER = false;
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
             MIN_HALITE_FOR_DELIVER = (int) (Constants.MAX_HALITE * 0.4);
             END_GAME_HALITE = 25;
