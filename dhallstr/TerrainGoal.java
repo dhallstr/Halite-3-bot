@@ -22,10 +22,11 @@ public class TerrainGoal extends Goal {
     public int rateTile(Game game, MapCell cell, Ship s, PlannedLocations plan) {
         int totalHalite = s.halite - (int)(cell.lost) + cell.gained;
 
-        int distToDropoff = game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell, false);
-        if (distToDropoff == 0) return Integer.MIN_VALUE;
+        int distToDropoff = game.gameMap.calculateDistanceToDropoff(game.players.get(s.owner.id), cell, Strategy.IS_TWO_PLAYER);
+        if (distToDropoff == 0 || cell.actualDist == 0) return Integer.MIN_VALUE;
 
         int turns = cell.actualDist + distToDropoff * 3 / 4 + 4;
+        //if (!Strategy.IS_TWO_PLAYER) turns = (int)(cell.actualDist + 4 * Math.log(distToDropoff) + 0.42);
         totalHalite -= cell.moveCost(cell.haliteAfterXTurns(plan.getProjectedHalite(game.gameMap, cell, cell.actualDist), totalHalite, cell.actualDist - cell.dist));
         return 10000 * (totalHalite - s.halite / 2 + cell.extra) / (turns);
     }

@@ -24,13 +24,14 @@ public class Magic {
     public static double END_GAME_FIND_PERCENTILE = 0.9;
     public static int COLLECTION_END_GAME_HALITE = 27;
     public static double END_GAME_COLLECTION_INT = 12,
-                        END_GAME_COLLECTION_SLOPE = 0.25;
+                        END_GAME_COLLECTION_SLOPE = 0.2;
     public static double MINING_WEIGHT = 0;
     public static boolean MINE_FURTHER_ON_DELIVER = true;
 
     public static int COLLECT_DOWN_TO;
     public static int START_DELIVER_HALITE, MIN_HALITE_FOR_DELIVER;
     public static int END_GAME_DELIVER_HALITE, END_GAME_HALITE;
+    public static boolean SPAWN_MORE = false;
 
     public static int SEARCH_DEPTH;
     public static int HALITE_SEARCH_DEPTH = 30;//only used for gameMap.halitePercentile
@@ -66,7 +67,10 @@ public class Magic {
             MAX_DROPOFFS = size / 8;
             SEARCH_DEPTH = 75;
             END_GAME_HALITE = 15;
-            if (size <= 32) MINE_FURTHER_ON_DELIVER = false;
+            if (size <= 32) {
+                MINE_FURTHER_ON_DELIVER = false;
+                SPAWN_MORE = true;
+            }
 
             // CLOP adjustments
             COLLECTION_INT = 18.7964;

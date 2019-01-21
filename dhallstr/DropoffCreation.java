@@ -46,6 +46,6 @@ public class DropoffCreation extends Position {
 
     private static int scoreLoc(Game game, MapCell loc) {
         if (game.gameMap.calculateDistanceToDropoff(game.me, loc, false) < Magic.MIN_DIST_FOR_BUILD || loc.friendlyShipsNearby < 2) return 0;
-        return (int)(loc.haliteNearby * Magic.dropoffRatio(loc, game)) + (5 - Math.max(5, loc.friendlyShipsNearby)) * -200 - loc.enemyShipsNearby * 100;
+        return (int)(loc.haliteNearby * Magic.dropoffRatio(loc, game)) + (5 - Math.max(5, loc.friendlyShipsNearby)) * -100 - loc.enemyShipsNearby * 100;
     }
 }
