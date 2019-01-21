@@ -78,7 +78,7 @@ public class Magic {
             FIND_PERCENTILE = 0.461508;
             END_GAME_HALITE = 25;
             END_GAME_FIND_PERCENTILE = 0.3333;
-            END_GAME_COLLECTION_INT = 3;
+            END_GAME_COLLECTION_INT = 20;
             END_GAME_COLLECTION_SLOPE = 1.13451;
         }
         else {
