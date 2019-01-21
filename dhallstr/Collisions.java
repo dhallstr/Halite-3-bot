@@ -13,7 +13,7 @@ public class Collisions {
         if (enemy.halite > Constants.MAX_HALITE * 0.6 && support > opposition * 2 + 2 && game.turnNumber + 60 > Constants.MAX_TURNS) {
             return COLLIDE;
         }
-        else if (game.gameMap.at(mine).hasStructure()) {
+        else if (game.gameMap.at(mine).hasStructure() || game.gameMap.at(enemy).hasStructure()) {
             return COLLIDE;
         }
         if (!Strategy.IS_TWO_PLAYER) {
