@@ -23,8 +23,8 @@ public class Magic {
                         COLLECTION_SLOPE = 0.27;
     public static double END_GAME_FIND_PERCENTILE = 0.901;
     public static int COLLECTION_END_GAME_HALITE = 0;
-    public static double END_GAME_COLLECTION_INT = 12,
-                        END_GAME_COLLECTION_SLOPE = 0.27;
+    public static double END_GAME_COLLECTION_INT = 0,
+                        END_GAME_COLLECTION_SLOPE = 0.4;
     public static double MINING_WEIGHT = 0;
     public static boolean MINE_FURTHER_ON_DELIVER = true;
 
