@@ -38,9 +38,7 @@ public class Navigation {
                     }
                     int mined = Math.min(curr.minedAmount(cellHalite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
                     int collected = Math.min(curr.collectAmount(cellHalite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
-                    if (collected > mined && (Strategy.IS_TWO_PLAYER && game.gameMap.width == game.gameMap.height && game.gameMap.width == 40)) {
-                        curr.extra -= mined / 2;// small penalty for inspiration in  2p
-                    }
+                    // add extra here if desired
                     curr.gained += collected;
                     cellHalite -= mined;
                 }
@@ -62,7 +60,7 @@ public class Navigation {
             }
 
 
-            if (curr.depth > goal.getMaxTurns() || (curr.depth >= best.depth + 17 && curr.depth > 27 && Strategy.PREVENT_TIMEOUT_MODE)) {
+            if (curr.actualDist > goal.getMaxTurns() || (curr.depth >= best.depth + 17 && curr.depth > 27 && Strategy.PREVENT_TIMEOUT_MODE)) {
                 return finishSearch(s, map, best);
             }
 

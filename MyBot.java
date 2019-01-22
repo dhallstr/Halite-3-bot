@@ -41,6 +41,7 @@ public class MyBot {
             Arrays.sort(ships, (s1, s2) -> (Strategy.IS_TWO_PLAYER ? (s1.id.id - s2.id.id) : (s1.halite - s2.halite)));
             Strategy.adjustDropoffGoal(game);
 
+            Log.log("Turn initialization: " + (System.currentTimeMillis() - startTurn));
             for (final Ship ship: ships) {
                 if (System.currentTimeMillis() - startTurn > 1950) {
                     break;

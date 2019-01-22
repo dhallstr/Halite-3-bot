@@ -33,7 +33,7 @@ public class DropoffGoal extends Goal {
             int collected = Math.min(cell.collectAmount(halite), Constants.MAX_HALITE - myHalite);
             halite -= mined;
             myHalite += collected;
-            if (collected < Magic.getMinHaliteMinedDeliver(map, cell, myHalite)) break;
+            if (collected <= Magic.getMinHaliteMinedDeliver(map, cell, myHalite) || collected == 0) break;
         }
         return turnsStayed;
     }
