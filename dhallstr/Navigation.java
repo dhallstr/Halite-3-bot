@@ -38,6 +38,7 @@ public class Navigation {
                     }
                     int mined = Math.min(curr.minedAmount(cellHalite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
                     int collected = Math.min(curr.collectAmount(cellHalite), Constants.MAX_HALITE - s.halite + curr.lost - curr.gained);
+                    // add extra here if desired
                     curr.gained += collected;
                     cellHalite -= mined;
                 }
@@ -59,7 +60,7 @@ public class Navigation {
             }
 
 
-            if (curr.depth > goal.getMaxTurns() || (curr.depth >= best.depth + 17 && curr.depth > 27 && Strategy.PREVENT_TIMEOUT_MODE)) {
+            if (curr.actualDist > goal.getMaxTurns() || (curr.depth >= best.depth + 17 && curr.depth > 27 && Strategy.PREVENT_TIMEOUT_MODE)) {
                 return finishSearch(s, map, best);
             }
 
@@ -75,18 +76,20 @@ public class Navigation {
                     m.depth = curr.depth + 1;
                     m.actualDist = m.dist;
                     m.lost = curr.lost + curr.moveCost();
+                    m.extra = curr.extra;
                     m.gained = curr.gained;
                 }
                 else if (m.visited && curr.path != d.invertDirection() && m.path != Direction.STILL && curr.depth <= m.depth && (!m.processed || m.dist == curr.actualDist + 1)) {
                     // maybe change the path to be from curr to m
                     Direction prevDir = m.path;
-                    int prevADist = m.actualDist, prevDDist = m.dist, prevDepth = m.depth, prevLost = m.lost, prevGained = m.gained;
+                    int prevADist = m.actualDist, prevDDist = m.dist, prevDepth = m.depth, prevLost = m.lost, prevGained = m.gained, prevExtra = m.extra;
                     int prevScore = m.score == Integer.MIN_VALUE ? goal.rateTile(game, m, s, plan) : m.score;
                     m.path = d;
                     m.actualDist += curr.actualDist + 1  - prevDDist;
                     m.dist = curr.actualDist + 1;
                     m.depth = curr.depth + 1;
                     m.lost = curr.lost + curr.moveCost();
+                    m.extra = curr.extra;
                     m.gained = curr.gained + m.haliteCollectedAfterXTurns(plan.getProjectedHalite(map, m, m.dist), s.halite + curr.gained - m.lost, prevADist - prevDDist);
                     m.score = goal.rateTile(game, m, s, plan);
                     if (!(m.score > prevScore && m.dist == prevDDist) && m.score <= prevScore + (m.dist - prevDDist) * game.gameMap.percentileHalite / (m.actualDist * Constants.EXTRACT_RATIO)) {
@@ -97,6 +100,7 @@ public class Navigation {
                         m.lost = prevLost;
                         m.gained = prevGained;
                         m.score = prevScore;
+                        m.extra = prevExtra;
                     }
                     else {
                         modifiedPaths++;

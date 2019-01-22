@@ -9,7 +9,7 @@ public class Strategy {
     public static boolean IS_TWO_PLAYER = true, PREVENT_TIMEOUT_MODE = false, LOW_ON_TIME = false;
     private static int lastDropoffBuilt = 0;
 
-    private static DropoffCreation nextDropoff = null;
+    public static DropoffCreation nextDropoff = null;
 
     public static Command evaluateMove(Game game, Ship ship, PlannedLocations plan, ArrayList<Command> commands) {
 
@@ -29,7 +29,7 @@ public class Strategy {
 
 
         // *** RETURN HOME END GAME ***
-        if (intent == Intent.CRASH_HOME || game.turnNumber + 5 + game.gameMap.calculateDistanceToDropoff(game.me, ship) * 1.2 + 2 * game.me.ships.size() / 24 > Constants.MAX_TURNS) {
+        if (intent == Intent.CRASH_HOME || game.turnNumber + 5 + game.gameMap.calculateDistanceToDropoff(game.me, ship, false) * 1.2 + 2 * game.me.ships.size() / 24 > Constants.MAX_TURNS) {
             if (intent != Intent.CRASH_HOME || plannedMove == null || (plannedMove != Direction.STILL && ship.halite < game.gameMap.at(ship).moveCost()) ||
                     !plan.isSafe(game, ship.directionalOffset(plannedMove), ship, 1, false)) {
                 plan.cancelPlan(game.gameMap, ship, 1);
@@ -77,7 +77,7 @@ public class Strategy {
         }
         else if (ship.halite > Magic.START_DELIVER_HALITE ||
                 (intent == Intent.DROPOFF && ship.halite > Magic.MIN_HALITE_FOR_DELIVER) ||
-                (game.gameMap.haliteOnMap < Magic.END_GAME_HALITE  * game.gameMap.width * game.gameMap.height && ship.halite > Magic.END_GAME_DELIVER_HALITE)) {
+                (Magic.isEndGame && ship.halite > Magic.END_GAME_DELIVER_HALITE)) {
             g = new DropoffGoal(plan.me, false);
             Log.log("Dropping off now!");
         }
@@ -144,11 +144,12 @@ public class Strategy {
 
 
     public static boolean shouldSpawn(Game game, PlannedLocations plan, Player me, GameMap gameMap, ArrayList<Command> commandQueue) {
-        return (game.turnNumber <= (Strategy.IS_TWO_PLAYER ? Constants.MAX_TURNS - 85 : Constants.MAX_TURNS - 85) &&
-                (((game.gameMap.haliteOnMap - (game.gameMap.width * game.gameMap.height) *(IS_TWO_PLAYER ? 6 : 3))) / (1000 + (IS_TWO_PLAYER ? 10 : 7) * game.totalShips) > game.me.ships.size())) &&
+        return (game.turnNumber <= (Strategy.IS_TWO_PLAYER ? Constants.MAX_TURNS - 75 : Constants.MAX_TURNS - 75) &&
+                (( Magic.SPAWN_MORE && ((game.gameMap.haliteOnMap - (game.gameMap.width * game.gameMap.height) * (IS_TWO_PLAYER ? 4 : 4))) / (1000 + (IS_TWO_PLAYER ? 8 : 6) * game.totalShips) > game.me.ships.size()) ||
+                 (!Magic.SPAWN_MORE && ((game.gameMap.haliteOnMap - (game.gameMap.width * game.gameMap.height) * (IS_TWO_PLAYER ? 6 : 3))) / (1000 + (IS_TWO_PLAYER ? 10 : 7) * game.totalShips) > game.me.ships.size())) &&
                 me.halite >= Constants.SHIP_COST &&
                 (nextDropoff == null || game.me.halite >= Constants.DROPOFF_COST - game.gameMap.at(nextDropoff).halite + Constants.SHIP_COST) &&
-                isSpawnSafe(game, me, plan, commandQueue);
+                isSpawnSafe(game, me, plan, commandQueue));
     }
 
     private static boolean isSpawnSafe(Game game, Player me, PlannedLocations plan, ArrayList<Command> commands) {
