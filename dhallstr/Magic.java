@@ -18,13 +18,13 @@ public class Magic {
 
     // Mining constants
     // Tiles are mined down to COLLECTION_INT + COLLECTION_SLOPE * (FIND_PERCENTILE percentile of halite "near" a friendly dropoff, i.e. within SEARCH_DEPTH)
-    public static double FIND_PERCENTILE = 0.9, NEAR_FIND_PERCENTILE = 0.5;
+    public static double FIND_PERCENTILE = 0.45, NEAR_FIND_PERCENTILE = 0.5;
     public static double COLLECTION_INT = 18.8,
-                        COLLECTION_SLOPE = 0.27;
+                        COLLECTION_SLOPE = 1.1;
     public static double END_GAME_FIND_PERCENTILE = 0.5;
-    public static int COLLECTION_END_GAME_HALITE = 23;
+    public static int COLLECTION_END_GAME_HALITE = 13;
     public static double END_GAME_COLLECTION_INT = 0,
-                        END_GAME_COLLECTION_SLOPE = 1.15;
+                        END_GAME_COLLECTION_SLOPE = 1;
     public static double MINING_WEIGHT = 0;
     public static boolean MINE_FURTHER_ON_DELIVER = true;
     public static boolean isEndGame = false;
@@ -75,8 +75,8 @@ public class Magic {
             COLLECTION_SLOPE = 1.12599;
 
             FIND_PERCENTILE = 0.3333;
-            COLLECTION_END_GAME_HALITE = 20;
-            END_GAME_FIND_PERCENTILE = 0.65;
+            COLLECTION_END_GAME_HALITE = 15;
+            END_GAME_FIND_PERCENTILE = 0.5;
             END_GAME_COLLECTION_INT = 0;
             END_GAME_COLLECTION_SLOPE = 1;
         }
