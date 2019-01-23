@@ -5,7 +5,7 @@ import hlt.*;
 import java.util.ArrayList;
 
 public class Magic {
-    public static final String BOT_NAME = "Angel 2.0";
+    public static final String BOT_NAME = "Angel 3.0";
 
     // Dropoff constants
     public static final int MIN_DIST_FOR_BUILD = 9;
@@ -82,6 +82,7 @@ public class Magic {
             END_GAME_COLLECTION_SLOPE = 1.13451;
         }
         else {
+            END_GAME_HALITE = 15;
             //if (size <= 40)
             MINE_FURTHER_ON_DELIVER = false;
             END_GAME_DELIVER_HALITE = (int) (Constants.MAX_HALITE * 0.4);
@@ -90,7 +91,7 @@ public class Magic {
             MAX_DROPOFFS = size / 11;
             SEARCH_DEPTH = 60;
         }
-        END_GAME_HALITE += (int)((size - 32) / 32.0 * (45 - END_GAME_HALITE));
+        //END_GAME_HALITE += (int)((size - 32) / 32.0 * (45 - END_GAME_HALITE));
     }
 
     public static void commandLineParams(String[] args) {
