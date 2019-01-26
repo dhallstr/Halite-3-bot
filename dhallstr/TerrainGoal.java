@@ -56,7 +56,11 @@ public class TerrainGoal extends Goal {
     }
 
     public ArrayList<Direction> sort(GameMap map, MapCell curr, ArrayList<Direction> dirs) {
-        dirs.sort((d1, d2) -> map.at(curr.directionalOffset(d2)).halite - map.at(curr.directionalOffset(d1)).halite);
+        dirs.sort((d1, d2) -> (map.at(curr.directionalOffset(d1)).halite - map.at(curr.directionalOffset(d2)).halite) * (isOverMax(map, curr, d1, d2) ? -1 : 1) + (isOverMax(map, curr, d1, d2) ? Constants.MAX_HALITE * 10 : 0));
         return dirs;
+    }
+    private boolean isOverMax(GameMap map, MapCell curr, Direction d1, Direction d2) {
+        return map.at(curr.directionalOffset(d1)).halite > Magic.getCollectDownTo(map, map.at(curr.directionalOffset(d1)), Constants.MAX_HALITE) ||
+                map.at(curr.directionalOffset(d2)).halite > Magic.getCollectDownTo(map, map.at(curr.directionalOffset(d2)), Constants.MAX_HALITE);
     }
 }
